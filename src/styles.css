@@ -1,0 +1,139 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+  }
+  
+  /* Navbar Styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1f2833;
+    color: white;
+    padding: 1vh 2vw;
+  }
+  
+  .navbar-left,
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-left .brand-name {
+    margin-left: 1vw;
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  
+  .navbar-right i {
+    margin-left: 1vw;
+    font-size: 1.2rem;
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    width: 20vw;
+    background-color: #1f2833;
+    color: white;
+    padding: 2vh 1vw;
+    height: calc(100vh - 8vh);
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2vh;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  .menu-item i {
+    margin-right: 1vw;
+    color: #45a29e;
+  }
+  
+  /* Content Section */
+  .content-container {
+    flex: 1;
+    padding: 2vh 3vw;
+    background-color: white;
+    overflow-y: auto;
+  }
+  
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2vh;
+  }
+  
+  .content-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .action-buttons .btn {
+    padding: 1vh 2vw;
+    margin-left: 1vw;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .import-btn {
+    background-color: #c5c6c7;
+    color: black;
+  }
+  
+  .create-btn {
+    background-color: #45a29e;
+    color: white;
+  }
+  
+  .guides-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+  
+  .guides-table th,
+  .guides-table td {
+    text-align: left;
+    padding: 1vh 1vw;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .guides-table th {
+    background-color: #c5c6c7;
+  }
+  
+  .taxonomy-tag {
+    display: inline-block;
+    background-color: #45a29e;
+    color: white;
+    padding: 0.5vh 1vw;
+    border-radius: 3px;
+    margin-right: 0.5vw;
+  }
+  

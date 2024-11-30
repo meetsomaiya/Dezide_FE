@@ -1,0 +1,36 @@
+.navbar-881 {
+    width: 100%;
+    height: 8vh;
+    background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2vw;
+    color: white;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .navbar-brand-881 {
+    font-size: 2vh;
+    font-weight: bold;
+  }
+  
+  .navbar-actions-881 {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-icon-881 {
+    margin-left: 1vw;
+    font-size: 2.5vh;
+    cursor: pointer;
+    transition: transform 0.3s, color 0.3s;
+  }
+  
+  .navbar-icon-881:hover {
+    transform: scale(1.2);
+    color: #facc15;
+  }
+  

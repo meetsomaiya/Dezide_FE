@@ -1,0 +1,104 @@
+/* Main Container */
+.dynamic-guides-882 {
+  margin-left: 15vw;
+  margin-top: 8vh;
+  padding: 2vh 3vw;
+  background: #f8fafc;
+  height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 1vh;
+}
+
+/* Header Styling */
+.header-882 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2vh;
+}
+
+.header-882 h1 {
+  font-size: 2.5vh;
+  color: #1e293b;
+  font-weight: bold;
+}
+
+/* Create Button */
+.btn-create-882 {
+  padding: 0.8vh 2vw;
+  font-size: 1.6vh;
+  color: white;
+  background: #2563eb;
+  border: none;
+  border-radius: 0.5vh;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.btn-create-882:hover {
+  background: #1e40af;
+  transform: scale(1.05);
+}
+
+/* Table Styling */
+.table-882 {
+  border-collapse: collapse;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  width: calc(100% - 50%);
+  transform: translateX(-50%);
+}
+
+.table-882 th {
+  background: #1e40af;
+  color: white;
+  text-align: left;
+  padding: 1vh 1vw;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table-882 td {
+  padding: 1vh 1vw;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-882 tbody tr:nth-child(even) {
+  background: #f1f5f9;
+}
+
+.table-882 tbody tr:hover {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+/* Checkbox Styling */
+.table-882 input[type="checkbox"] {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dynamic-guides-882 {
+    margin: 5vw;
+    padding: 2vh;
+  }
+
+  .header-882 h1 {
+    font-size: 2vh;
+  }
+
+  .btn-create-882 {
+    font-size: 1.4vh;
+    padding: 0.6vh 1.5vw;
+  }
+
+  .table-882 th, .table-882 td {
+    padding: 0.8vh 0.5vw;
+    font-size: 1.2vh;
+  }
+}
