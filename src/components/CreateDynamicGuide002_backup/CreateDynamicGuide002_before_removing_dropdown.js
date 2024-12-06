@@ -1,43 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset } from '@fortawesome/free-solid-svg-icons';
 import './CreateDynamicGuide002.css'; // Import the CSS file
 
 const CreateDynamicGuide002 = () => {
   // States for dropdowns
+  const [turbineModel, setTurbineModel] = useState('');
+  const [temperatureVariant, setTemperatureVariant] = useState('');
   const [models, setModels] = useState([]); // State to hold turbine models
   const [variants, setVariants] = useState([]); // State to hold temperature variants
-
-  // State variables for visibility and values of each "box"
-  const [isBoxVisible1, setIsBoxVisible1] = useState(false);
-  const [turbineModel1, setTurbineModel1] = useState('');
-  const [temperatureVariant1, setTemperatureVariant1] = useState('');
-
-  const [isBoxVisible2, setIsBoxVisible2] = useState(false);
-  const [turbineModel2, setTurbineModel2] = useState('');
-  const [temperatureVariant2, setTemperatureVariant2] = useState('');
-
-  const [isBoxVisible3, setIsBoxVisible3] = useState(false);
-  const [turbineModel3, setTurbineModel3] = useState('');
-  const [temperatureVariant3, setTemperatureVariant3] = useState('');
-
-  const handleToggleBox1 = () => {
-    setIsBoxVisible1(!isBoxVisible1); // Toggle visibility for box 1
-  };
-
-  const handleToggleBox2 = () => {
-    setIsBoxVisible2(!isBoxVisible2); // Toggle visibility for box 2
-  };
-
-  const handleToggleBox3 = () => {
-    setIsBoxVisible3(!isBoxVisible3); // Toggle visibility for box 3
-  };
-
-  const handleClickPlusIcon = (model, variant) => {
-    // Perform another function when the plus icon is clicked for a specific model/variant
-    console.log(`Plus icon clicked for model: ${model} and variant: ${variant}`);
-  };
 
   // Fetch Turbine Models and Temperature Variants on component mount
   useEffect(() => {
@@ -119,42 +91,36 @@ const CreateDynamicGuide002 = () => {
             </div>
 
             {/* Taxonomy - Turbine Model and Temperature Variant */}
-            {/* Box 1 */}
             <div className="form-group-002">
               <label htmlFor="turbine-model-002">Turbine Model</label>
-              <div className="box" onClick={handleToggleBox1}>
-                <span>Select Turbine Model</span>
-                <FontAwesomeIcon icon={faPlus} />
-              </div>
-              {isBoxVisible1 && (
-                <div className="dropdown">
-                  {models.map((model, index) => (
-                    <div key={index} className="dropdown-item" onClick={() => handleClickPlusIcon(model, turbineModel1)}>
-                      <span>{model}</span>
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  ))}
-                </div>
-              )}
+              <select
+                id="turbine-model-002"
+                value={turbineModel}
+                onChange={(e) => setTurbineModel(e.target.value)} // Update turbineModel state on change
+              >
+                <option value="">Select Turbine Model</option>
+                {models.map((model, index) => (
+                  <option key={index} value={model}>
+                    {model}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Box 2 */}
             <div className="form-group-002">
               <label htmlFor="temperature-variant-002">Temperature Variant</label>
-              <div className="box" onClick={handleToggleBox2}>
-                <span>Select Temperature Variant</span>
-                <FontAwesomeIcon icon={faPlus} />
-              </div>
-              {isBoxVisible2 && (
-                <div className="dropdown">
-                  {variants.map((variant, index) => (
-                    <div key={index} className="dropdown-item" onClick={() => handleClickPlusIcon(turbineModel2, variant)}>
-                      <span>{variant}</span>
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  ))}
-                </div>
-              )}
+              <select
+                id="temperature-variant-002"
+                value={temperatureVariant}
+                onChange={(e) => setTemperatureVariant(e.target.value)} // Update temperatureVariant state on change
+              >
+                <option value="">Select Temperature Variant</option>
+                {variants.map((variant, index) => (
+                  <option key={index} value={variant}>
+                    {variant}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>

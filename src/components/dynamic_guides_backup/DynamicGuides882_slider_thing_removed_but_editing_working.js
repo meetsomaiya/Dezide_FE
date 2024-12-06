@@ -62,30 +62,17 @@ const [modalName, setModalName] = useState("");
 
     const [editingField886, setEditingField886] = useState(null); // New state to track the currently edited field
 
-    const [isEditMode, setIsEditMode] = useState(false); // Tracks if the table is in edit mode
-
-    const [isProbabilityVisible, setIsProbabilityVisible] = useState(false); // Tracks if sliders are permanently visible
-
-    // const handleEditField = (index, field) => {
-    //   setEditingField886({ index, field }); // Set the field to edit
-    // };
-
-  const handleEditField = (index, field) => {
-    setEditingField886({ index, field });
-    setIsProbabilityVisible(true); // Make sliders permanently visible
-  };
-
-    const exitEditMode = () => {
-      setIsEditMode(false); // Exit edit mode
-      setEditingField886(null);
+    const handleEditField = (index, field) => {
+      setEditingField886({ index, field }); // Set the field to edit
     };
-
+  
     const handleSaveField = (index, field, value) => {
       const updatedCauses = [...causesData];
       updatedCauses[index][field] = value;
-      setCausesData(updatedCauses);
-      setEditingField886(null);
+      setCausesData(updatedCauses); // Update the data
+      setEditingField886(null); // Reset the editing state
     };
+  
 
 
       // New state to track the currently editable row
@@ -845,27 +832,26 @@ const handleNewCauseChange = (e) => {
                 )}
               </td>
               <td>
-                <div className="slider-container">
-                  {isProbabilityVisible ? ( // Always show sliders once they are enabled
-                    <>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={cause.probability}
-                        className="slider"
-                        onChange={(e) =>
-                          handleSliderChange(index, Number(e.target.value))
-                        }
-                      />
-                      <span className="probability">{cause.probability}%</span>
-                    </>
-                  ) : (
-                    <span onClick={() => handleEditField(index, "probability")}>
-                      {cause.probability}%
-                    </span>
-                  )}
-                </div>
+                {editingField886?.index === index && editingField886?.field === "probability" ? (
+                  <div className="slider-container">
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={cause.probability}
+                      className="slider"
+                      onChange={(e) =>
+                        handleSaveField(index, "probability", e.target.value)
+                      }
+                      onBlur={() => setEditingField886(null)} // Exit edit mode on blur
+                    />
+                    <span className="probability">{cause.probability}%</span>
+                  </div>
+                ) : (
+                  <span onClick={() => handleEditField(index, "probability")}>
+                    {cause.probability}%
+                  </span>
+                )}
               </td>
             </tr>
 
@@ -913,7 +899,7 @@ const handleNewCauseChange = (e) => {
         ))}
       </tbody>
     </table>
-    
+
 {/* Save Button Below Table */}
 <div className="save-button-container-882">
   <button

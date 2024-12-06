@@ -58,98 +58,9 @@ const [modalName, setModalName] = useState("");
     const [loading884, setLoading884] = useState(true);
     const [error884, setError884] = useState(null);
 
-    const [questionAnswers885, setQuestionAnswers885] = useState([]);
-
-    const [editingField886, setEditingField886] = useState(null); // New state to track the currently edited field
-
-    const [isEditMode, setIsEditMode] = useState(false); // Tracks if the table is in edit mode
-
-    const [isProbabilityVisible, setIsProbabilityVisible] = useState(false); // Tracks if sliders are permanently visible
-
-    // const handleEditField = (index, field) => {
-    //   setEditingField886({ index, field }); // Set the field to edit
-    // };
-
-  const handleEditField = (index, field) => {
-    setEditingField886({ index, field });
-    setIsProbabilityVisible(true); // Make sliders permanently visible
-  };
-
-    const exitEditMode = () => {
-      setIsEditMode(false); // Exit edit mode
-      setEditingField886(null);
-    };
-
-    const handleSaveField = (index, field, value) => {
-      const updatedCauses = [...causesData];
-      updatedCauses[index][field] = value;
-      setCausesData(updatedCauses);
-      setEditingField886(null);
-    };
-
-
-      // New state to track the currently editable row
-  const [editableRow886, setEditableRow886] = useState(null);
-
-  const [isEditMode886, setIsEditMode886] = useState(null); // Tracks the id of the cell in edit mode
-
-  // const handleRowClick = (index) => {
-  //   setEditableRow886(index); // Set the row index to editable mode
-  // };
-
-  const handleOutsideClick886 = () => {
-    setEditableRow886(null); // Exit edit mode when clicking outside
-  };
-
-  const handleInputChange886 = (e, field, index) => {
-    const updatedData = [...causesData];
-    updatedData[index][field] = field === 'probability' ? Number(e.target.value) : e.target.value;
-    setCausesData(updatedData);
-  };
-
-  // To handle outside clicks
-  useEffect(() => {
-    const handleDocumentClick = (e) => {
-      if (!e.target.closest('.editable-row')) {
-        handleOutsideClick886();
-      }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, []);
-
-    
-
-  // const toggleRow883 = (rowIndex) => {
-  //   setExpandedRow883((prev) => (prev === rowIndex ? null : rowIndex));
-  // };
-
-  const toggleRow883 = (rowIndex, questionName) => {
+  const toggleRow883 = (rowIndex) => {
     setExpandedRow883((prev) => (prev === rowIndex ? null : rowIndex));
-  
-    if (expandedRow883 !== rowIndex) {
-      console.log("Sending data to API:", { questionName });
-  
-      // Use Fetch API to send the request to the backend
-      fetch(`http://localhost:226/api/fetch_subquestion_for_event?questionName=${encodeURIComponent(questionName)}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Received data from API:", data);
-  
-          // Set the questionAnswers into the state
-          if (data?.data?.questionAnswers) {
-            setQuestionAnswers885(data.data.questionAnswers);
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching subquestions:', error);
-        });
-    }
   };
-  
 
   
   useEffect(() => {
@@ -196,25 +107,6 @@ const [modalName, setModalName] = useState("");
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-    // Handles clicking on the cell to switch to input mode
-    const handleCellClick = (id) => {
-      setIsEditMode886(id);
-    };
-  
-    // Handles input changes when in edit mode
-    const handleCellChange886 = (id, field, value) => {
-      setCausesData((prevData) =>
-        prevData.map((item) =>
-          item.id === id ? { ...item, [field]: value } : item
-        )
-      );
-    };
-  
-    // Handles switching back to table mode on blur
-    const handleBlur886 = () => {
-      setIsEditMode886(null);
-    };
   
 
   const handleSliderChange = (index, value) => {
@@ -562,7 +454,6 @@ const handleNewCauseChange = (e) => {
 
 
     const handleRowClick = async (name) => {
-       //   setEditableRow886(index); // Set the row index to editable mode
       console.log(`Navigating to modal with name: ${name}`);
       
       try {
@@ -766,32 +657,26 @@ const handleNewCauseChange = (e) => {
         <h2>{modalName || "Untitled"}</h2> // Fallback text for empty title
       )}
     </div>
-    <div className="modal-controls">
+          <div className="modal-controls">
 
-  <button className="modal-button best-performing-btn">
-    Cause 2 is performing best
-  </button>
-
-
-  <select className="hierarchy-dropdown">
-    <option value="Hierarchy1">Hierarchy 1</option>
-    <option value="Hierarchy2">Hierarchy 2</option>
-  </select>
-  <button className="modal-button">
-    <i className="fa fa-chart-bar"></i> Summary
-  </button>
-  <button className="modal-button">
-    <i className="fa fa-exclamation-triangle"></i> Constraints
-  </button>
-  <select className="tools-dropdown">
-    <option value="Tool1">Tool 1</option>
-    <option value="Tool2">Tool 2</option>
-  </select>
-  <button className="modal-button preview-btn">
-    <i className="fa fa-eye"></i> Preview
-  </button>
-</div>
-
+            <select className="hierarchy-dropdown">
+              <option value="Hierarchy1">Hierarchy 1</option>
+              <option value="Hierarchy2">Hierarchy 2</option>
+            </select>
+            <button className="modal-button">
+              <i className="fa fa-chart-bar"></i> Summary
+            </button>
+            <button className="modal-button">
+              <i className="fa fa-exclamation-triangle"></i> Constraints
+            </button>
+            <select className="tools-dropdown">
+              <option value="Tool1">Tool 1</option>
+              <option value="Tool2">Tool 2</option>
+            </select>
+            <button className="modal-button preview-btn">
+              <i className="fa fa-eye"></i> Preview
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -807,113 +692,128 @@ const handleNewCauseChange = (e) => {
 </h3>
 
 <table className="modal-table">
-      <thead>
+  <thead>
+    <tr>
+      <th></th> {/* For the plus/minus icon */}
+      <th>Cause</th>
+      <th>Probability</th>
+    </tr>
+  </thead>
+  <tbody>
+    {isCreateTopCauseInputVisible && (
+      <tr>
+        <td>
+          <button
+            className="remove-top-cause"
+            onClick={() => setIsCreateTopCauseInputVisible(false)}
+          >
+            ×
+          </button>
+        </td>
+        <td>
+          <input
+            type="text"
+            placeholder="Top Cause Name"
+            value={newCause.name}
+            onChange={(e) => handleNewCauseChange(e)} // Handle new cause creation directly
+          />
+        </td>
+        <td>
+          <div className="slider-container">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={newCause.probability}
+              className="slider"
+              onChange={(e) => handleSliderChange(causesData.length, Number(e.target.value))}
+            />
+            <span className="probability">{newCause.probability}%</span>
+          </div>
+        </td>
+      </tr>
+    )}
+
+    {causesData.map((cause, index) => (
+      <React.Fragment key={index}>
+        {/* Main Cause Row */}
         <tr>
-          <th></th> {/* For the plus/minus icon */}
-          <th>Cause</th>
-          <th>Probability</th>
+          <td>
+            <button
+              className="toggle-button"
+              onClick={() => handleFetchCause(cause.name)}
+            >
+              {expandedCauseName === cause.name ? '-' : '+'}
+            </button>
+          </td>
+          <td>
+            <input
+              type="text"
+              value={cause.name}
+              onChange={(e) => {
+                const updatedCauses = [...causesData];
+                updatedCauses[index].name = e.target.value;
+                setCausesData(updatedCauses);
+              }}
+            />
+          </td>
+          <td>
+            <div className="slider-container">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={cause.probability}
+                className="slider"
+                onChange={(e) => handleSliderChange(index, Number(e.target.value))}
+              />
+              <span className="probability">{cause.probability}%</span>
+            </div>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        {causesData.map((cause, index) => (
-          <React.Fragment key={index}>
-            {/* Main Cause Row */}
-            <tr>
-              <td>
-                <button
-                  className="toggle-button"
-                  onClick={() => handleFetchCause(cause.name)}
-                >
-                  {expandedCauseName === cause.name ? "-" : "+"}
-                </button>
-              </td>
-              <td>
-                {editingField886?.index === index && editingField886?.field === "name" ? (
-                  <input
-                    type="text"
-                    value={cause.name}
-                    onChange={(e) =>
-                      handleSaveField(index, "name", e.target.value)
-                    }
-                    onBlur={() => setEditingField886(null)} // Exit edit mode on blur
-                    autoFocus
-                  />
-                ) : (
-                  <span onClick={() => handleEditField(index, "name")}>
-                    {cause.name}
-                  </span>
-                )}
-              </td>
-              <td>
-                <div className="slider-container">
-                  {isProbabilityVisible ? ( // Always show sliders once they are enabled
-                    <>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={cause.probability}
-                        className="slider"
-                        onChange={(e) =>
-                          handleSliderChange(index, Number(e.target.value))
-                        }
-                      />
-                      <span className="probability">{cause.probability}%</span>
-                    </>
-                  ) : (
-                    <span onClick={() => handleEditField(index, "probability")}>
-                      {cause.probability}%
-                    </span>
-                  )}
-                </div>
-              </td>
-            </tr>
 
-            {/* Render expanded sub-cause rows */}
-            {expandedCauseName === cause.name &&
-              expandedCauseData.map((causeDetail, subIndex) => (
-                <React.Fragment key={`${index}-${subIndex}`}>
-                  <tr className="sub-cause-row">
-                    <td>
-                      <button
-                        className="toggle-button"
-                        onClick={() =>
-                          handleSubCauseToggleAndFetch(
-                            `${cause.name}-${causeDetail.CauseName}`,
-                            causeDetail.CauseName
-                          )
-                        }
-                      >
-                        {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`]
-                          ? "-"
-                          : "+"}
-                      </button>
-                    </td>
-                    <td>{causeDetail.CauseName}</td>
-                    <td>{causeDetail.ProbabilityPercentage}%</td>
-                  </tr>
-
-                  {/* Nested sub-cause rows */}
-                  {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] &&
-                    nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`]?.map(
-                      (subCause, nestedIndex) => (
-                        <tr
-                          key={`${index}-${subIndex}-${nestedIndex}`}
-                          className="nested-sub-cause-row"
-                        >
-                          <td></td>
-                          <td>{subCause.name}</td>
-                          <td>{subCause.probability}%</td>
-                        </tr>
+        {/* Render expanded sub-cause rows */}
+        {expandedCauseName === cause.name && expandedCauseData &&
+          expandedCauseData.map((causeDetail, subIndex) => (
+            <React.Fragment key={`${index}-${subIndex}`}>
+              <tr className="sub-cause-row">
+                <td>
+                  <button
+                    className="toggle-button"
+                    onClick={() =>
+                      handleSubCauseToggleAndFetch(
+                        `${cause.name}-${causeDetail.CauseName}`,
+                        causeDetail.CauseName
                       )
-                    )}
-                </React.Fragment>
-              ))}
-          </React.Fragment>
-        ))}
-      </tbody>
-    </table>
-    
+                    }
+                  >
+                    {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] ? '-' : '+'}
+                  </button>
+                </td>
+                <td>{causeDetail.CauseName}</td>
+                <td>{causeDetail.ProbabilityPercentage}%</td>
+              </tr>
+
+              {/* Nested sub-cause rows */}
+              {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] &&
+                nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`] &&
+                nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`].map((subCause, nestedIndex) => (
+                  <tr
+                    key={`${index}-${subIndex}-${nestedIndex}`}
+                    className="nested-sub-cause-row"
+                  >
+                    <td></td>
+                    <td>{subCause.name}</td>
+                    <td>{subCause.probability}%</td>
+                  </tr>
+                ))}
+            </React.Fragment>
+          ))}
+      </React.Fragment>
+    ))}
+  </tbody>
+</table>
+
 {/* Save Button Below Table */}
 <div className="save-button-container-882">
   <button
@@ -993,47 +893,83 @@ const handleNewCauseChange = (e) => {
       {/* Questions Section */}
       <h3>Questions</h3>
       <table className="modal-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th><FiClock /></th>
-      <th><FiTrendingUp /></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {data884 && data884.questions.map((question, index) => (
-      <tr key={index}>
-        <td>
-          <div>
-            {question.questionName}
-            <span
-              style={{ marginLeft: "10px", cursor: "pointer" }}
-              onClick={() => toggleRow883(index, question.questionName)}
-            >
-              {expandedRow883 === index ? "➖" : "➕"}
-            </span>
-          </div>
-          {expandedRow883 === index && (
-            <div style={{ marginLeft: "20px" }}>
-              {questionAnswers885.length > 0 ? (
-                questionAnswers885.map((answer, idx) => (
-                  <div key={idx}>{answer}</div>
-                ))
-              ) : (
-                <div>No answers available</div>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>
+              <FiClock /> {/* Clock Icon as Header */}
+            </th>
+            <th>
+              <FiTrendingUp /> {/* Level-Up Icon as Header */}
+            </th>
+            <th></th> {/* Empty Column */}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div>
+                Dummy Question 1
+                {expandedRow883 === 0 ? (
+                  <span
+                    style={{ marginLeft: "10px", cursor: "pointer" }}
+                    onClick={() => toggleRow883(0)}
+                  >
+                    ➖
+                  </span>
+                ) : (
+                  <span
+                    style={{ marginLeft: "10px", cursor: "pointer" }}
+                    onClick={() => toggleRow883(0)}
+                  >
+                    ➕
+                  </span>
+                )}
+              </div>
+              {expandedRow883 === 0 && (
+                <div style={{ marginLeft: "20px" }}>
+                  <div>Yes</div>
+                  <div>No</div>
+                </div>
               )}
-            </div>
-          )}
-        </td>
-        <td>{question.questionTime}</td>
-        <td>{question.questionCost}</td>
-        <td></td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+            </td>
+            <td>00:01:00</td>
+            <td>0 0</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                Dummy Question 2
+                {expandedRow883 === 1 ? (
+                  <span
+                    style={{ marginLeft: "10px", cursor: "pointer" }}
+                    onClick={() => toggleRow883(1)}
+                  >
+                    ➖
+                  </span>
+                ) : (
+                  <span
+                    style={{ marginLeft: "10px", cursor: "pointer" }}
+                    onClick={() => toggleRow883(1)}
+                  >
+                    ➕
+                  </span>
+                )}
+              </div>
+              {expandedRow883 === 1 && (
+                <div style={{ marginLeft: "20px" }}>
+                  <div>Yes</div>
+                  <div>No</div>
+                </div>
+              )}
+            </td>
+            <td>00:01:00</td>
+            <td>0 0</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
 
 
           </div>

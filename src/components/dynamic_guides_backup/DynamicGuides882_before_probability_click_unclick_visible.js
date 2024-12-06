@@ -806,7 +806,7 @@ const handleNewCauseChange = (e) => {
   </span>
 </h3>
 
-<table className="modal-table">
+    <table className="modal-table">
       <thead>
         <tr>
           <th></th> {/* For the plus/minus icon */}
@@ -835,7 +835,7 @@ const handleNewCauseChange = (e) => {
                     onChange={(e) =>
                       handleSaveField(index, "name", e.target.value)
                     }
-                    onBlur={() => setEditingField886(null)} // Exit edit mode on blur
+                    onBlur={exitEditMode} // Exit edit mode on blur
                     autoFocus
                   />
                 ) : (
@@ -846,7 +846,7 @@ const handleNewCauseChange = (e) => {
               </td>
               <td>
                 <div className="slider-container">
-                  {isProbabilityVisible ? ( // Always show sliders once they are enabled
+                  {isEditMode ? ( // Show slider for all rows when in edit mode
                     <>
                       <input
                         type="range"
@@ -913,7 +913,7 @@ const handleNewCauseChange = (e) => {
         ))}
       </tbody>
     </table>
-    
+
 {/* Save Button Below Table */}
 <div className="save-button-container-882">
   <button

@@ -1,25 +1,15 @@
 /* Reset and general styles */
-/*  */
-
-/* body {
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: #fff;
-} */
-
-/* TurbineDashboard004.module.css */
-/* .dashboard-container004 * {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.dashboard-container004 body {
+body {
   font-family: "Poppins", sans-serif;
   background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
   color: #fff;
-} */
-
+}
 
 /* Dashboard Container */
 .dashboard-container004 {
@@ -80,14 +70,6 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: #fff;
-
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 .button-section004 {

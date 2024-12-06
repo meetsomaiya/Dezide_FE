@@ -1,0 +1,183 @@
+/* General container for the entire page */
+.container006 {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+}
+
+/* Left Section: Takes 60% of the width */
+.left-section006 {
+  width: 60%;
+  height: 100%;
+  padding: 2vh 3vw;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Make sure elements start from top */
+}
+
+/* Right Section: Takes 40% of the width */
+.right-section006 {
+  width: 40%;
+  height: 100%;
+  padding: 2vh 3vw;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Question Box */
+.question-box006 {
+  margin-bottom: 3vh;
+}
+
+.question-box006 h2 {
+  font-size: 2.5vh;
+  color: #000;
+}
+
+.question-box006 p {
+  font-size: 2.5vh;
+  margin-top: 1vh;
+}
+
+/* Options text (Yes, No, I don't know) */
+.options-text006 {
+  margin-top: 2vh;
+  font-size: 2vh;
+}
+
+.options-text006 button {
+  background: none;
+  border: none;
+  font-size: 2vh;
+  color: black; /* Normal text color */
+  cursor: pointer;
+  margin: 0.5vh 0;
+  text-decoration: none; /* No underline */
+  display: block; /* Ensures each button is on a separate line */
+}
+
+.options-text006 button:hover {
+  color: darkgray; /* Slight change on hover */
+}
+
+/* Explanation Box */
+.explanation-box006 {
+  height: 30%;
+  margin-top: 3vh; /* Moved up */
+  padding: 2vh;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.explanation-box006 h3 {
+  font-size: 2.5vh;
+}
+
+.explanation-box006 p {
+  font-size: 2vh;
+  margin-top: 1vh;
+}
+
+/* Feedback Buttons */
+.feedback-buttons006 {
+  margin-top: 2vh; /* Moved up */
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.feedback-btn006 {
+  padding: 0.5vh 1.5vw;
+  font-size: 2vh;
+  cursor: pointer;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.feedback-btn006:hover {
+  background-color: #4CAF50;
+}
+
+/* Performed Steps Box (Right Section) */
+.performed-steps-box006 {
+  height: 66%; /* Adjust height as per layout */
+  margin-bottom: 2vh;
+  padding: 2vh;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+
+.performed-steps-box006 h3 {
+  font-size: 2.5vh;
+}
+
+.performed-steps-box006 p {
+  font-size: 2vh;
+  margin-top: 1vh;
+}
+
+/* Info Box */
+.info-box006 {
+  height: 33%;
+  padding: 2vh;
+  border: 1px solid #f00;
+  border-radius: 5px;
+  background-color: #fff0f0;
+  margin-top: 2vh;
+}
+
+.exclamation-mark006 {
+  color: red;
+  display: inline-block;
+  margin-right: 1vw;
+}
+
+.info-box006 p {
+  font-size: 2vh;
+  margin-top: 1vh;
+  color: #f00;
+}
+
+/* Style the event name text */
+.event-name {
+  font-size: 0.7em;  /* Small font size */
+  color: orange;     /* Orange color */
+  margin-left: 70px; /* Space between the question and the event name */
+}
+
+/* Add these styles to the CSS file */
+.action-image-container {
+  max-width: 100%; /* Prevents image from overflowing beyond the container */
+  max-height: 400px; /* Limit the height of the image */
+  overflow: hidden; /* Hide any overflow content */
+  display: flex; /* To center the image if necessary */
+  justify-content: center; /* Centers the image horizontally */
+  align-items: center; /* Centers the image vertically */
+  margin: 10px 0; /* Optional: Add margin if needed */
+}
+
+/* .action-image {
+  width: 100%; 
+  height: auto;
+  object-fit: contain; 
+} */
+
+.action-image {
+  width: 100%; /* Ensures the image doesn't exceed container width */
+  height: auto; /* Maintains aspect ratio */
+  max-height: 350px; /* Sets a maximum height for the image */
+  object-fit: contain; /* Ensures the image scales proportionally within the container */
+}

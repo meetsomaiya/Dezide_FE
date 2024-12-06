@@ -177,7 +177,6 @@ const TurbineDashboard004 = () => {
     if (!selectedSection || listItems.length === 0) return null;
 
     return (
-      
       <div className="list-container004">
         <h3 className="list-title004">Guides for {selectedSection}</h3>
         <div className="list-items004">

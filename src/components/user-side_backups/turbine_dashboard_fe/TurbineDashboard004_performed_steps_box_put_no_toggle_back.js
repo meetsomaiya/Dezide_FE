@@ -58,56 +58,9 @@ const TurbineDashboard004 = () => {
     }
   };
 
-  // const handleOptionClick = async (option) => {
-  //   setPerformedSteps((prev) => [...prev, `${questionData.question}: ${option}`]); // Add step to tracker
-
-  //   if (option === "Yes") {
-  //     setQuestionData({
-  //       question: "Success",
-  //       options: [],
-  //       explanation: "",
-  //       imageUrl: "",
-  //     });
-  //   } else if (option === "No" || option === "I don't know") {
-  //     setTrackerCount((prevCount) => prevCount + 1);
-
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${
-  //           trackerCount + 1
-  //         }&selectedItem=${encodeURIComponent(selectedItem)}`
-  //       );
-  //       const data = await response.json();
-  //       console.log("Fetched updated ActionName:", data);
-
-  //       if (!data.actionName) {
-  //         setQuestionData({
-  //           question: "Consult With OMS Engineering",
-  //           options: [],
-  //           explanation: "",
-  //           imageUrl: "",
-  //         });
-  //       } else {
-  //         setQuestionData({
-  //           question: data.actionName,
-  //           options: ["Yes", "No", "I don't know"],
-  //           explanation: data.explanation || "",
-  //           imageUrl: data.imageUrl || "https://via.placeholder.com/300",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching updated ActionName:", error);
-  //     }
-  //   }
-  // };
-
   const handleOptionClick = async (option) => {
-    setPerformedSteps((prev) => {
-      // Ensure prev is always an array
-      const currentSteps = Array.isArray(prev) ? prev : [];
-      return [...currentSteps, `${questionData.question}: ${option}`]; // Add step to tracker
-    });
-  
+    setPerformedSteps((prev) => [...prev, `${questionData.question}: ${option}`]); // Add step to tracker
+
     if (option === "Yes") {
       setQuestionData({
         question: "Success",
@@ -117,7 +70,7 @@ const TurbineDashboard004 = () => {
       });
     } else if (option === "No" || option === "I don't know") {
       setTrackerCount((prevCount) => prevCount + 1);
-  
+
       try {
         const response = await fetch(
           `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${
@@ -126,7 +79,7 @@ const TurbineDashboard004 = () => {
         );
         const data = await response.json();
         console.log("Fetched updated ActionName:", data);
-  
+
         if (!data.actionName) {
           setQuestionData({
             question: "Consult With OMS Engineering",
@@ -147,7 +100,6 @@ const TurbineDashboard004 = () => {
       }
     }
   };
-  
 
   const sendTrackerDataToAPI = () => {
     const dataToSend = { trackerCount, selectedItem };
@@ -177,7 +129,6 @@ const TurbineDashboard004 = () => {
     if (!selectedSection || listItems.length === 0) return null;
 
     return (
-      
       <div className="list-container004">
         <h3 className="list-title004">Guides for {selectedSection}</h3>
         <div className="list-items004">
@@ -201,65 +152,37 @@ const TurbineDashboard004 = () => {
 
     return (
       <div className="modal-overlay004">
-    {/* Performed Steps Tracker */}
-<div
-  className={`performed-steps-container004 ${isStepsBoxOpen ? "" : "collapsed"}`}
-  onClick={() => setIsStepsBoxOpen(true)} // Clicking anywhere in the container will expand the box
->
-  <div className="performed-steps-header004">
-    <h3 className="performed-steps-title004">Performed Steps</h3>
-    <button
-      className="performed-steps-toggle-button004"
-      onClick={(e) => {
-        e.stopPropagation(); // Prevents clicking the button from triggering the container's onClick
-        setIsStepsBoxOpen(!isStepsBoxOpen); // Toggle the box state when the button is clicked
-      }}
-    >
-      {isStepsBoxOpen ? "▼" : "▲"}
-    </button>
-  </div>
-  {/* {isStepsBoxOpen && (
-    <ul className="performed-steps-list004">
-      {performedSteps.map((step, index) => (
-        <li key={index} className="performed-steps-item004">
-          {step}
-        </li>
-      ))}
-    </ul>
-  )} */}
-
-{isStepsBoxOpen && performedSteps && Array.isArray(performedSteps) && (
-  <ul className="performed-steps-list004">
-    {performedSteps.map((step, index) => (
-      <li key={index} className="performed-steps-item004">
-        {step}
-      </li>
-    ))}
-  </ul>
-)}
-
-</div>
-
+        {/* Performed Steps Tracker */}
+        <div className={`performed-steps-container004 ${isStepsBoxOpen ? "" : "collapsed"}`}>
+          
+          <div className="performed-steps-header004">
+            <h3 className="performed-steps-title004">Performed Steps</h3>
+            <button
+              className="performed-steps-toggle-button004"
+              onClick={() => setIsStepsBoxOpen(!isStepsBoxOpen)}
+            >
+              {isStepsBoxOpen ? "▼" : "▲"}
+            </button>
+          </div>
+          {isStepsBoxOpen && (
+            <ul className="performed-steps-list004">
+              {performedSteps.map((step, index) => (
+                <li key={index} className="performed-steps-item004">
+                  {step}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {/* Modal Content */}
         <div className="modal-content004">
           <div className="modal-header004">
             <h2 className="modal-title004">{selectedSection}</h2>
             <h4 className="modal-subtitle004">{selectedItem}</h4>
-            {/* <button className="modal-close004" onClick={() => setIsModalOpen(false)}>
+            <button className="modal-close004" onClick={() => setIsModalOpen(false)}>
               &#10006;
-            </button> */}
-            <button
-  className="modal-close004"
-  onClick={() => {
-    setIsModalOpen(false);  // Close the modal
-    setPerformedSteps(null); // Reset performed steps to null
-    setTrackerCount(null);   // Reset tracker count to null
-  }}
->
-  &#10006; {/* Close icon */}
-</button>
-
+            </button>
           </div>
           <div className="modal-body004">
             <h3 className="question004">{questionData.question}</h3>

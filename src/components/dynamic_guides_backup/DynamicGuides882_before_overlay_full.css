@@ -133,10 +133,10 @@
 
 .modal-container {
   background: #ffffff;
-  /* width: 85%;
-  height: 85%; */
-  width: 95vw;
-  height: 95vh;
+  width: 85%;
+  height: 85%;
+  /* width: 95vw;
+  height: 95vh; */
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -353,11 +353,9 @@ input {
 }
 
 .slider {
-  /* -webkit-appearance: none; */
-  /* width: 60%;
-  height: 0.8vh; */
-  /* width: 10%; */
-  height: 0.2vh;
+  -webkit-appearance: none;
+  width: 60%;
+  height: 0.8vh;
   background: #ddd;
   border-radius: 5px;
   outline: none;
@@ -365,11 +363,9 @@ input {
 }
 
 .slider::-webkit-slider-thumb {
-  /* -webkit-appearance: none; */
-  /* width: 1.4vw;
-  height: 1.4vw; */
-  width: 1.1vw;
-  height: 1.1vw;
+  -webkit-appearance: none;
+  width: 2vw;
+  height: 2vw;
   border-radius: 50%;
   background: #4caf50;
   cursor: pointer;
@@ -417,24 +413,4 @@ input {
 .save-button-882:focus {
   outline: none; /* Removes the default focus outline */
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5); /* Green glow effect when focused */
-}
-
-.modal-button.best-performing-btn {
-  background-color: #4CAF50; /* Green */
-  color: white;
-  padding: 6px 20px; /* Modest padding for height control */
-  font-size: 14px; /* Modest font size */
-  width: 100%; /* Take full width of its container */
-  max-width: 500px; /* Optional: Set a max-width for the button */
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: block; /* Ensures the button behaves as a block element */
-  margin-bottom: 10px; /* Adds space between this button and the next element */
-  text-align: center; /* Centers the text */
-  box-sizing: border-box; /* Ensures padding is included in the width */
-}
-
-.modal-button.best-performing-btn:hover {
-  background-color: #45a049; /* Darker green on hover */
 }
