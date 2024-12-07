@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-// import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar from '../components/Sidebar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset } from '@fortawesome/free-solid-svg-icons';
@@ -71,47 +70,6 @@ const [modalName, setModalName] = useState("");
     //   setEditingField886({ index, field }); // Set the field to edit
     // };
 
-    const [rowsPerPage990, setRowsPerPage990] = useState(5); // Number of rows per page
-    const [currentPage990, setCurrentPage990] = useState(1); // Current page number
-  
-    const totalRows990 = actionsData.length; // Total number of rows
-    const totalPages990 = Math.ceil(totalRows990 / rowsPerPage990); // Total number of pages
-  
-    // Calculate the range of rows to display
-    const startRow990 = (currentPage990 - 1) * rowsPerPage990;
-    const endRow990 = Math.min(startRow990 + rowsPerPage990, totalRows990);
-    const paginatedData990 = actionsData.slice(startRow990, endRow990);
-
-    const [hoveredCause993, setHoveredCause993] = useState(null);
-
-    const [hoverItems894, setHoverItems894] = useState({
-      actions: [],
-      questions: [],       // Store questions and answers together
-      questionAnswers: [], // Store answers related to questions
-    });
-    
-
-    const [hoveredActionIndex, setHoveredActionIndex] = useState(null);
-
-    
-
-
-  
-    // Handlers for changing rows per page
-    const handleRowsChange990 = (e) => {
-      setRowsPerPage990(Number(e.target.value));
-      setCurrentPage990(1); // Reset to first page
-    };
-  
-    // Handlers for navigation
-    const handlePreviousPage990 = () => {
-      if (currentPage990 > 1) setCurrentPage990(currentPage990 - 1);
-    };
-  
-    const handleNextPage990 = () => {
-      if (currentPage990 < totalPages990) setCurrentPage990(currentPage990 + 1);
-    };
-
     const handleEditSubField886 = (index, field) => {
       setEditingField886({ index, field }); // Activate edit mode for sub-cause
     };
@@ -124,39 +82,6 @@ const [modalName, setModalName] = useState("");
       setExpandedCauseData(updatedSubCauses); // Update the state
       setEditingField886(null); // Exit edit mode
     };
-
-    const fetchHoveringItemsForCause993 = async (causeName) => {
-      try {
-        console.log("Sending request for cause:", causeName);
-        const encodedCauseName = encodeURIComponent(causeName).replace(/\+/g, '%2B');
-        const response = await fetch(`http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodedCauseName}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-        
-        const data = await response.json();
-        console.log("Received data:", data); // Log the data fetched from the API
-    
-        setHoverItems894({
-          actions: data.data.actions || [],
-          questions: data.data.questions || [],
-          questionAnswers: data.data.questionAnswers || [],
-        });
-    
-        // Log the state after setting it
-        console.log("State after setting hover items:", {
-          actions: data.data.actions || [],
-          questions: data.data.questions || [],
-          questionAnswers: data.data.questionAnswers || [],
-        });
-      } catch (error) {
-        console.error("Error fetching items for hovering cause:", error);
-      }
-    };
-    
-  
-    
             
 
   const handleEditField = (index, field) => {
@@ -807,7 +732,7 @@ const handleNewCauseChange = (e) => {
   return (
     <div className="layout-container-882">
 
-<Sidebar991 />
+<Sidebar />
 
       {/* Main Content */}
       <div className="content-882">
@@ -942,7 +867,7 @@ const handleNewCauseChange = (e) => {
   </span>
 </h3>
 
-<table className="modal-table" id="cause-table">
+<table className="modal-table">
   <thead>
     <tr>
       <th></th> {/* For the plus/minus icon */}
@@ -954,14 +879,7 @@ const handleNewCauseChange = (e) => {
     {causesData.map((cause, index) => (
       <React.Fragment key={index}>
         {/* Main Cause Row */}
-        <tr
-        onMouseEnter={() => {
-          setHoveredCause993(cause.name); // Set the hovered cause name
-          fetchHoveringItemsForCause993(cause.name); // Fetch items when hovering
-        }}
-        onMouseLeave={() => setHoveredCause993(null)} // Clear hovered cause when mouse leaves
-      >
-          
+        <tr>
           <td>
             {/* Only render the button if internalCause is true */}
             {cause.internalCause && (
@@ -1140,56 +1058,7 @@ const handleNewCauseChange = (e) => {
           {/* Right Panel */}
           <div className="modal-right-panel">
           <h3>Actions</h3>
-{/* Pagination Wrapper */}
-{/* Pagination Wrapper */}
-<div className="pagination-wrapper">
-  {/* Left Section: Rows Dropdown and Pagination Info */}
-  <div style={{ display: "flex", alignItems: "center" }}>
-    <select
-      value={rowsPerPage990}
-      onChange={handleRowsChange990}
-      className="rows-dropdown"
-    >
-      <option value={5}>5</option>
-      <option value={10}>10</option>
-      <option value={25}>25</option>
-      <option value={50}>50</option>
-      <option value={100}>100</option>
-    </select>
-    <span className="pagination-info">
-      {startRow990 + 1}-{endRow990} of {totalRows990}
-    </span>
-  </div>
-
-  {/* Right Section: Pagination Controls */}
-  <div className="pagination-controls">
-    <button
-      onClick={handlePreviousPage990}
-      disabled={currentPage990 === 1}
-      className="page-button"
-    >
-      &lt;
-    </button>
-    {Array.from({ length: totalPages990 }, (_, index) => (
-      <button
-        key={index + 1}
-        onClick={() => setCurrentPage990(index + 1)}
-        className={`page-button ${currentPage990 === index + 1 ? "active-page" : ""}`}
-      >
-        {index + 1}
-      </button>
-    ))}
-    <button
-      onClick={handleNextPage990}
-      disabled={currentPage990 === totalPages990}
-      className="page-button"
-    >
-      &gt;
-    </button>
-  </div>
-</div>
-{/* Table */}
-<table className="modal-table" id="action-table">
+<table className="modal-table">
   <thead>
     <tr>
       <th>Name</th>
@@ -1200,19 +1069,13 @@ const handleNewCauseChange = (e) => {
     </tr>
   </thead>
   <tbody>
-    {paginatedData990.length > 0 ? (
-      paginatedData990.map((action, index) => (
-        <tr
-          key={index}
-          style={{
-            // Apply the hover effect if the action is found in hoverItems894.actions
-            backgroundColor: hoverItems894.actions.includes(action.name) ? 'brown' : 'transparent',
-          }}
-        >
-          <td>{action.name}</td>
-          <td>{action.time || "N/A"}</td>
-          <td>{action.money || "N/A"}</td>
-          <td>{action.level || "N/A"}</td>
+    {actionsData && actionsData.length > 0 ? (
+      actionsData.map((action, index) => (
+        <tr key={index}>
+          <td>{action.name}</td> {/* Dynamic Action Name */}
+          <td>{action.time || "N/A"}</td> {/* Assuming "time" is part of the action object */}
+          <td>{action.money || "N/A"}</td> {/* Assuming "money" is part of the action object */}
+          <td>{action.level || "N/A"}</td> {/* Assuming "level" is part of the action object */}
           <td>
             <input type="checkbox" />
           </td>
@@ -1220,83 +1083,55 @@ const handleNewCauseChange = (e) => {
       ))
     ) : (
       <tr>
-        <td colSpan="5">No actions available</td>
+        <td colSpan="5">No actions available</td> {/* Fallback when no data */}
       </tr>
     )}
   </tbody>
 </table>
 
-
-
-    
       {/* Questions Section */}
       <h3>Questions</h3>
-      <table className="modal-table" id="question-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th><FiClock /></th>
-          <th><FiTrendingUp /></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {data884 && data884.questions.map((question, index) => {
-          // Check if the question name is in hoverItems894.questions
-          const isHoveredQuestion = hoverItems894.questions.includes(question.questionName);
-
-          // Check if any of the question answers are in hoverItems894.questionAnswers
-          const isHoveredAnswer = questionAnswers885.some(answer => hoverItems894.questionAnswers.includes(answer));
-
-          return (
-            <tr
-              key={index}
-              style={{
-                // Apply brown background color if the question or any answer is found in hoverItems894
-                backgroundColor: isHoveredQuestion || isHoveredAnswer ? 'brown' : 'transparent',
-              }}
+      <table className="modal-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th><FiClock /></th>
+      <th><FiTrendingUp /></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {data884 && data884.questions.map((question, index) => (
+      <tr key={index}>
+        <td>
+          <div>
+            {question.questionName}
+            <span
+              style={{ marginLeft: "10px", cursor: "pointer" }}
+              onClick={() => toggleRow883(index, question.questionName)}
             >
-              <td>
-                <div>
-                  {question.questionName}
-                  <span
-                    style={{ marginLeft: "10px", cursor: "pointer" }}
-                    onClick={() => toggleRow883(index, question.questionName)}
-                  >
-                    {expandedRow883 === index ? "➖" : "➕"}
-                  </span>
-                </div>
-                {expandedRow883 === index && (
-                  <div style={{ marginLeft: "20px" }}>
-                    {questionAnswers885.length > 0 ? (
-                      questionAnswers885.map((answer, idx) => {
-                        // Check if the answer is in hoverItems894.questionAnswers
-                        const isHoveredAnswer = hoverItems894.questionAnswers.includes(answer);
-                        return (
-                          <div
-                            key={idx}
-                            style={{
-                              backgroundColor: isHoveredAnswer ? 'brown' : 'transparent',
-                            }}
-                          >
-                            {answer}
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div>No answers available</div>
-                    )}
-                  </div>
-                )}
-              </td>
-              <td>{question.questionTime}</td>
-              <td>{question.questionCost}</td>
-              <td></td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+              {expandedRow883 === index ? "➖" : "➕"}
+            </span>
+          </div>
+          {expandedRow883 === index && (
+            <div style={{ marginLeft: "20px" }}>
+              {questionAnswers885.length > 0 ? (
+                questionAnswers885.map((answer, idx) => (
+                  <div key={idx}>{answer}</div>
+                ))
+              ) : (
+                <div>No answers available</div>
+              )}
+            </div>
+          )}
+        </td>
+        <td>{question.questionTime}</td>
+        <td>{question.questionCost}</td>
+        <td></td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
 
 

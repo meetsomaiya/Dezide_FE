@@ -131,10 +131,11 @@
   align-items: center;
 }
 
-.modal-container {
-  background: #ffffff;
   /* width: 85%;
   height: 85%; */
+/* .modal-container {
+  background: #ffffff;
+
   width: 95vw;
   height: 95vh;
   border-radius: 12px;
@@ -144,7 +145,26 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   font-family: 'Roboto', sans-serif;
   overflow: auto;
+} */
+.modal-container {
+  background: #ffffff;
+  width: 90vw; /* 95% of the viewport width */
+  height: 95vh; /* 95% of the viewport height */
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  font-family: 'Roboto', sans-serif;
+  overflow: auto;
+  
+  position: fixed; /* Fix position to avoid scrolling */
+  top: 0; /* You can adjust top margin */
+  left: 10; /* Align to the left side */
+  right: 0; /* Ensure no space on the right side */
+  margin-left: 0; /* Optional if you want no left margin */
 }
+
 
 .modal-header {
   display: flex;
@@ -225,6 +245,10 @@
   font-size: 12px; /* Set a decent font size */
 }
 
+.modal-table td {
+  cursor: pointer;
+}
+
 .modal-table th {
   background: #f8f9fa;
 }
@@ -246,6 +270,18 @@
 .sub-cause-row {
   background-color: #f9f9f9; /* A light gray shade */
 }
+
+.sub-cause-row input {
+  margin-left: 2rem;
+}
+
+.sub-cause-row span {
+  display: inline-block; /* Ensures consistent alignment */
+  margin-left: 2rem; /* Add spacing to the left */
+  text-indent: 0; /* Prevents additional indentation for wrapped lines */
+}
+
+
 
 /* Optional: Add hover effect to sub-cause rows */
 .sub-cause-row:hover {
@@ -437,4 +473,101 @@ input {
 
 .modal-button.best-performing-btn:hover {
   background-color: #45a049; /* Darker green on hover */
+}
+
+
+/* pagination for actions */
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5vh 2.5vw; /* Slightly increased padding */
+  margin-bottom: 2vh;
+  background-color: #ffffff; /* Clean white background */
+  border: 1px solid #ddd;
+  border-radius: 0.5vw;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
+  font-family: Arial, sans-serif;
+  font-size: 1.5vh; /* Increased font size */
+}
+
+.rows-dropdown {
+  width: 7vw; /* Slightly wider */
+  height: 4vh; /* Slightly taller */
+  font-size: 1.5vh; /* Larger font */
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 0.3vw;
+  padding: 0.4vh 0.7vw; /* Adjusted padding */
+  background-color: #f9f9f9;
+  margin-right: 1vw;
+  appearance: none; /* Removes default styles */
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rows-dropdown:hover {
+  border-color: #007bff;
+  box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.4);
+}
+
+.pagination-info {
+  font-size: 1.6vh; /* Slightly increased font size */
+  color: #333;
+  margin-right: 1vw;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw; /* Increased spacing between buttons */
+}
+
+.page-button {
+  background-color: #ffffff;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 0.3vw;
+  padding: 0.6vh 1.2vw; /* Increased padding */
+  font-size: 1.5vh; /* Larger font size */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.page-button:hover {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+.page-button:disabled {
+  background-color: #f1f1f1;
+  color: #aaa;
+  border-color: #eee;
+  cursor: not-allowed;
+}
+
+.active-page {
+  background-color: #ff6347; /* Tomato red for the active page */
+  color: white;
+  border: none;
+}
+
+.page-dropdown {
+  width: 6vw; /* Adjusted for consistency */
+  height: 4vh; /* Taller */
+  font-size: 1.5vh; /* Increased font size */
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 0.3vw;
+  padding: 0.4vh 0.7vw; /* Adjusted padding */
+  background-color: #f9f9f9;
+  appearance: none; /* Removes default styles */
+  cursor: pointer;
+}
+
+.page-dropdown:hover {
+  border-color: #007bff;
+  box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.4);
 }

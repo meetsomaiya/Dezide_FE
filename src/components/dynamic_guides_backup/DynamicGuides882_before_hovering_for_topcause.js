@@ -84,18 +84,6 @@ const [modalName, setModalName] = useState("");
 
     const [hoveredCause993, setHoveredCause993] = useState(null);
 
-    const [hoverItems894, setHoverItems894] = useState({
-      actions: [],
-      questions: [],       // Store questions and answers together
-      questionAnswers: [], // Store answers related to questions
-    });
-    
-
-    const [hoveredActionIndex, setHoveredActionIndex] = useState(null);
-
-    
-
-
   
     // Handlers for changing rows per page
     const handleRowsChange990 = (e) => {
@@ -127,34 +115,29 @@ const [modalName, setModalName] = useState("");
 
     const fetchHoveringItemsForCause993 = async (causeName) => {
       try {
-        console.log("Sending request for cause:", causeName);
-        const encodedCauseName = encodeURIComponent(causeName).replace(/\+/g, '%2B');
-        const response = await fetch(`http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodedCauseName}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-        
-        const data = await response.json();
-        console.log("Received data:", data); // Log the data fetched from the API
-    
-        setHoverItems894({
-          actions: data.data.actions || [],
-          questions: data.data.questions || [],
-          questionAnswers: data.data.questionAnswers || [],
-        });
-    
-        // Log the state after setting it
-        console.log("State after setting hover items:", {
-          actions: data.data.actions || [],
-          questions: data.data.questions || [],
-          questionAnswers: data.data.questionAnswers || [],
-        });
+          // Log the original causeName being sent
+          console.log("Sending request for cause:", causeName);
+  
+          // Encode the causeName but manually replace '+' with '%2B'
+          const encodedCauseName = encodeURIComponent(causeName).replace(/\+/g, '%2B');
+  
+          // Make the fetch request with the encoded causeName
+          const response = await fetch(`http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodedCauseName}`);
+          
+          // Checking the response status before parsing it
+          if (!response.ok) {
+              throw new Error('Failed to fetch');
+          }
+          
+          const data = await response.json();
+          
+          console.log("Received data:", data); // Log the response data received from the server
+          
+          // You can update any state based on the data you receive, if necessary
       } catch (error) {
-        console.error("Error fetching items for hovering cause:", error);
+          console.error("Error fetching items for hovering cause:", error);
       }
-    };
-    
+  };
   
     
             
@@ -1189,7 +1172,7 @@ const handleNewCauseChange = (e) => {
   </div>
 </div>
 {/* Table */}
-<table className="modal-table" id="action-table">
+<table className="modal-table">
   <thead>
     <tr>
       <th>Name</th>
@@ -1202,13 +1185,7 @@ const handleNewCauseChange = (e) => {
   <tbody>
     {paginatedData990.length > 0 ? (
       paginatedData990.map((action, index) => (
-        <tr
-          key={index}
-          style={{
-            // Apply the hover effect if the action is found in hoverItems894.actions
-            backgroundColor: hoverItems894.actions.includes(action.name) ? 'brown' : 'transparent',
-          }}
-        >
+        <tr key={index}>
           <td>{action.name}</td>
           <td>{action.time || "N/A"}</td>
           <td>{action.money || "N/A"}</td>
@@ -1227,76 +1204,50 @@ const handleNewCauseChange = (e) => {
 </table>
 
 
-
     
       {/* Questions Section */}
       <h3>Questions</h3>
-      <table className="modal-table" id="question-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th><FiClock /></th>
-          <th><FiTrendingUp /></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {data884 && data884.questions.map((question, index) => {
-          // Check if the question name is in hoverItems894.questions
-          const isHoveredQuestion = hoverItems894.questions.includes(question.questionName);
-
-          // Check if any of the question answers are in hoverItems894.questionAnswers
-          const isHoveredAnswer = questionAnswers885.some(answer => hoverItems894.questionAnswers.includes(answer));
-
-          return (
-            <tr
-              key={index}
-              style={{
-                // Apply brown background color if the question or any answer is found in hoverItems894
-                backgroundColor: isHoveredQuestion || isHoveredAnswer ? 'brown' : 'transparent',
-              }}
+      <table className="modal-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th><FiClock /></th>
+      <th><FiTrendingUp /></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {data884 && data884.questions.map((question, index) => (
+      <tr key={index}>
+        <td>
+          <div>
+            {question.questionName}
+            <span
+              style={{ marginLeft: "10px", cursor: "pointer" }}
+              onClick={() => toggleRow883(index, question.questionName)}
             >
-              <td>
-                <div>
-                  {question.questionName}
-                  <span
-                    style={{ marginLeft: "10px", cursor: "pointer" }}
-                    onClick={() => toggleRow883(index, question.questionName)}
-                  >
-                    {expandedRow883 === index ? "➖" : "➕"}
-                  </span>
-                </div>
-                {expandedRow883 === index && (
-                  <div style={{ marginLeft: "20px" }}>
-                    {questionAnswers885.length > 0 ? (
-                      questionAnswers885.map((answer, idx) => {
-                        // Check if the answer is in hoverItems894.questionAnswers
-                        const isHoveredAnswer = hoverItems894.questionAnswers.includes(answer);
-                        return (
-                          <div
-                            key={idx}
-                            style={{
-                              backgroundColor: isHoveredAnswer ? 'brown' : 'transparent',
-                            }}
-                          >
-                            {answer}
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div>No answers available</div>
-                    )}
-                  </div>
-                )}
-              </td>
-              <td>{question.questionTime}</td>
-              <td>{question.questionCost}</td>
-              <td></td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+              {expandedRow883 === index ? "➖" : "➕"}
+            </span>
+          </div>
+          {expandedRow883 === index && (
+            <div style={{ marginLeft: "20px" }}>
+              {questionAnswers885.length > 0 ? (
+                questionAnswers885.map((answer, idx) => (
+                  <div key={idx}>{answer}</div>
+                ))
+              ) : (
+                <div>No answers available</div>
+              )}
+            </div>
+          )}
+        </td>
+        <td>{question.questionTime}</td>
+        <td>{question.questionCost}</td>
+        <td></td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
 
 

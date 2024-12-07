@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import "./Dashboard001.css"; // Ensure the CSS file matches the updated component name
 
-import Sidebar from '../components/Sidebar';
+// import Sidebar from '../components/Sidebar';
+
+import Sidebar991 from '../components/Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset } from '@fortawesome/free-solid-svg-icons';
@@ -49,7 +51,8 @@ const Dashboard001 = () => {
     </ul>
 </div> */}
 
-<Sidebar />
+{/* <Sidebar /> */}
+<Sidebar991 />
 
       {/* Main Content */}
       <div className="dashboard-content-001">

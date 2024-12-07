@@ -9,13 +9,14 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState(location.pathname);
 
+  // Sync activeItem with the current location pathname
   useEffect(() => {
     setActiveItem(location.pathname);
   }, [location.pathname]);
 
   const handleClick = (path) => {
     setActiveItem(path);
-    navigate(path);
+    navigate(path); // Ensure navigation happens programmatically
   };
 
   return (
