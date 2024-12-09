@@ -148,7 +148,7 @@
 } */
 .modal-container {
   background: #ffffff;
-  width: 90vw; /* 95% of the viewport width */
+  width: 92vw; /* 95% of the viewport width */
   height: 95vh; /* 95% of the viewport height */
   border-radius: 12px;
   padding: 20px;
@@ -229,7 +229,7 @@
 /* added new */
 
 .modal-table input {
-  width: 100px; /* Set a standard width */
+  width: 150px; /* Set a standard width */
   font-size: 12px; /* Set a decent font size */
   padding: 8px; /* Add some padding for better spacing inside the input */
   border: 1px solid #ddd; /* Optional: To ensure consistency with table borders */
@@ -387,8 +387,6 @@ input {
   display: flex;
   align-items: center;
 }
-
-
 
 .slider {
   /* -webkit-appearance: none; */
@@ -572,40 +570,4 @@ input {
 .page-dropdown:hover {
   border-color: #007bff;
   box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.4);
-}
-
-
-/* config icon box */
-
-/* Config icon styling */
-.config-icon901 {
-  cursor: pointer;
-  font-size: 2vh;
-  color: #333;
-  transition: color 0.2s;
-}
-
-.config-icon901:hover {
-  color: #007bff;
-}
-
-/* Options menu styling */
-.options-menu901 {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  padding: 1vh;
-  z-index: 10;
-  width: 20vw; /* Modest size */
-  font-size: 1.5vh;
-}
-
-.options-menu901 div {
-  padding: 1vh 1vw;
-  cursor: pointer;
-}
-
-.options-menu901 div:hover {
-  background-color: #f0f0f0;
 }

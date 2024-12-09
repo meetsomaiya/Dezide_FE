@@ -146,21 +146,11 @@ const [modalName, setModalName] = useState("");
       const tableRect = tableRef.current.getBoundingClientRect();
   
       setMenuPosition901({
-        top: rect.bottom - tableRect.top + window.scrollY -40, // Position below the icon
-        left: rect.left - tableRect.left + 5 -40,
+        top: rect.bottom - tableRect.top + window.scrollY, // Position below the icon
+        left: rect.left - tableRect.left + 5,
       });
       setClickedCell901(index); // Open for the clicked cell
     }
-  };
-
-  const handleEditExplanation = (actionName) => {
-    const dataToSend = {
-      actionName,
-      modalName,
-    };
-  
-    console.log("Data being sent:", dataToSend); // Log the data
-    navigate("/edit-explanation", { state: dataToSend }); // Navigate with data
   };
 
   useEffect(() => {
@@ -1386,12 +1376,7 @@ const handleNewCauseChange = (e) => {
         left: `${menuPosition901.left}px`,
       }}
     >
-   <div
-  onClick={() => handleEditExplanation(paginatedData990[clickedCell901].name)}
->
-  Edit Explanation
-</div>
-
+      <div>Edit Explanation</div>
       <div>Properties</div>
       <div>Delete</div>
     </div>

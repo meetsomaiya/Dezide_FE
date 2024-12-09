@@ -1,0 +1,356 @@
+/* BlogEditor.css */
+
+/* Overall Layout */
+.blog-editor-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Modal Name */
+  .modal-name {
+    font-size: 12px;
+    color: gray;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  
+  /* Action Name */
+  .action-name-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .action-name-container input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 90vw;
+  }
+  
+  .action-name-container p {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+  
+  .action-input {
+    width: 300px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Toolbar */
+  .toolbar-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .toolbar-button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f4f4f4;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .toolbar-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Editor Box */
+  .editor-box {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 300px;
+    margin-bottom: 20px;
+    background-color: #fff;
+  }
+  
+  .ql-container {
+    min-height: 280px; /* React Quill editor height */
+  }
+  
+  /* Footer Section */
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+  }
+  
+  /* Language Indicator */
+  .language-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .flag-icon {
+    width: 20px;
+    height: 14px;
+    border: 1px solid #ccc;
+  }
+  
+  .language-indicator p {
+    font-size: 12px;
+    color: gray;
+    margin: 0;
+  }
+  
+  /* Change Input */
+  .change-input {
+    flex: 1;
+    max-width: 400px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Button Group */
+  .button-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .save-close-button,
+  .save-button,
+  .cancel-button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .save-close-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .save-button {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .cancel-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .save-close-button:hover {
+    background-color: #218838;
+  }
+  
+  .save-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333;
+  }
+  
+
+  /* Modal Base Styles */
+.image-modal {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%; /* Adjusted width for proper sizing */
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Modal Header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  /* Modal Content Layout */
+  .modal-content {
+    display: flex;
+    height: 100%;
+  }
+  
+  /* Sidebar Styles */
+  .modal-sidebar {
+    width: 20%;
+    background-color: #f9f9f9;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+  }
+  
+  .media-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .media-tab {
+    width: 100%;
+    padding: 8px;
+    background-color: #eaeaea;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .media-tab.active-tab {
+    background-color: #d9534f; /* Highlighted Red Tab */
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  /* Main Content Styles */
+  .modal-main {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .search-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .select-media-btn {
+    background-color: #d9534f; /* Red */
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .filter-section {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .search-btn {
+    background-color: #d9534f; /* Red */
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  /* Image Grid */
+  .image-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for layout */
+    gap: 10px;
+    margin-top: 10px;
+    overflow-y: auto;
+    height: calc(100% - 60px); /* Adjusted for consistent layout */
+  }
+  
+  .image-container {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .thumbnail-image {
+    max-width: 100%;
+    max-height: 100px;
+    object-fit: contain;
+    margin-bottom: 5px;
+  }
+  
+  .image-label {
+    font-size: 0.8rem;
+    color: #333;
+  }
+  
+  /* Footer Styles */
+  .modal-footer {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+  }
+  
+  .insert-button {
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  .insert-button:hover {
+    background-color: #c9302c;
+  }
+  
+  .cancel-button {
+    background-color: #fff;
+    color: #d9534f;
+    border: 1px solid #d9534f;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  .cancel-button:hover {
+    background-color: #f2dede;
+    border-color: #c9302c;
+  }
+  

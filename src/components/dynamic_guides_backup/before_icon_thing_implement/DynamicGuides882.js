@@ -9,7 +9,6 @@ import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faH
 
 import { FiTrendingUp } from "react-icons/fi"; // Slant upward icon
 import { FiClock } from "react-icons/fi"; // Import clock icon
-import { FaCog } from "react-icons/fa";
 
 
 
@@ -72,7 +71,7 @@ const [modalName, setModalName] = useState("");
     //   setEditingField886({ index, field }); // Set the field to edit
     // };
 
-    const [rowsPerPage990, setRowsPerPage990] = useState(25); // Number of rows per page
+    const [rowsPerPage990, setRowsPerPage990] = useState(5); // Number of rows per page
     const [currentPage990, setCurrentPage990] = useState(1); // Current page number
   
     const totalRows990 = actionsData.length; // Total number of rows
@@ -109,75 +108,8 @@ const [modalName, setModalName] = useState("");
   const handleProgressCheckboxChange = (index, isChecked) => {
     setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
   };
-
-  const [solveCheckboxes900, setSolveCheckboxes900] = useState({});
-  const [showBreakIcon900, setShowBreakIcon900] = useState(
-    Array(causesData.length).fill(true)
-  ); // Initially show all break icons
-
-  const handleSolveCheckboxToggle900 = (index) => {
-    setSolveCheckboxes900((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-
-    // Hide the break icon when the "Solve" checkbox is checked
-    setShowBreakIcon900((prev) => {
-      const newShowBreakIcon = [...prev];
-      newShowBreakIcon[index] = !newShowBreakIcon[index];
-      return newShowBreakIcon;
-    });
-  };
     
 
-  const [hoveredCell901, setHoveredCell901] = useState(null); // Track hovered cell
-  const [clickedCell901, setClickedCell901] = useState(null); // Track clicked cell
-  const [menuPosition901, setMenuPosition901] = useState({ top: 0, left: 0 }); // Menu position
-  const tableRef = useRef(null);
-
-  const handleMouseEnter901 = (index) => setHoveredCell901(index);
-  const handleMouseLeave901 = () => setHoveredCell901(null);
-
-  const handleIconClick901 = (index, event) => {
-    if (clickedCell901 === index) {
-      setClickedCell901(null); // Close if already open
-    } else {
-      const rect = event.target.getBoundingClientRect();
-      const tableRect = tableRef.current.getBoundingClientRect();
-  
-      setMenuPosition901({
-        top: rect.bottom - tableRect.top + window.scrollY -40, // Position below the icon
-        left: rect.left - tableRect.left + 5 -40,
-      });
-      setClickedCell901(index); // Open for the clicked cell
-    }
-  };
-
-  const handleEditExplanation = (actionName) => {
-    const dataToSend = {
-      actionName,
-      modalName,
-    };
-  
-    console.log("Data being sent:", dataToSend); // Log the data
-    navigate("/edit-explanation", { state: dataToSend }); // Navigate with data
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        clickedCell901 !== null &&
-        !event.target.closest(".options-menu901") &&
-        !event.target.closest(".config-icon901")
-      ) {
-        setClickedCell901(null); // Close the menu
-      }
-    };
-  
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [clickedCell901]);
-  
     
 
 
@@ -1067,157 +999,169 @@ const handleNewCauseChange = (e) => {
 <table className="modal-table" id="cause-table">
   <thead>
     <tr>
-      <th>{/* Tick mark icon header */}✓</th>
       <th></th> {/* For the plus/minus icon */}
       <th>Cause</th>
       <th>Probability</th>
       {isAnyProgressChecked && <th>Solve</th>}
+
     </tr>
   </thead>
   <tbody>
-  {causesData.map((cause, index) => (
-    <React.Fragment key={index}>
-      {/* Main Cause Row */}
-      <tr
+    {causesData.map((cause, index) => (
+      <React.Fragment key={index}>
+        {/* Main Cause Row */}
+        <tr
         onMouseEnter={() => {
           setHoveredCause993(cause.name); // Set the hovered cause name
           fetchHoveringItemsForCause993(cause.name); // Fetch items when hovering
         }}
         onMouseLeave={() => setHoveredCause993(null)} // Clear hovered cause when mouse leaves
       >
-        <td>{!solveCheckboxes900[index] && <span>✓</span>}</td>
-        <td>
-          {cause.internalCause && (
-            <button
-              className="toggle-button"
-              onClick={() => handleFetchCause(cause.name)}
-            >
-              {expandedCauseName === cause.name ? "-" : "+"}
-            </button>
-          )}
-        </td>
-        <td>
-          {editingField886?.index === index && editingField886?.field === "name" ? (
-            <input
-              type="text"
-              value={cause.name}
-              onChange={(e) => handleSaveField(index, "name", e.target.value)}
-              onBlur={() => setEditingField886(null)} // Exit edit mode on blur
-              autoFocus
-            />
-          ) : (
-            <span onClick={() => handleEditField(index, "name")}>{cause.name}</span>
-          )}
-        </td>
-        <td>
-          <div className="slider-container">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={cause.probability}
-              className="slider"
-              onChange={(e) =>
-                handleSliderChange(index, Number(e.target.value))
-              }
-            />
-            <span className="probability">{cause.probability}%</span>
-          </div>
-        </td>
-        <td>
-          {isAnyProgressChecked && (
-            <input
-              type="checkbox"
-              checked={solveCheckboxes900[index] || false}
-              onChange={() =>
-                setSolveCheckboxes900((prev) => ({
-                  ...prev,
-                  [index]: !prev[index],
-                }))
-              }
-            />
-          )}
-        </td>
-      </tr>
-
-      {/* Expanded Sub-Cause Rows */}
-      {expandedCauseName === cause.name &&
-        expandedCauseData.map((causeDetail, subIndex) => (
-          <tr className="sub-cause-row" key={subIndex}>
-            <td></td>
-            <td>
-              {causeDetail.internalSubCause && (
-                <button
-                  className="toggle-button"
-                  onClick={() =>
-                    handleSubCauseToggleAndFetch(
-                      `${cause.name}-${causeDetail.CauseName}`,
-                      causeDetail.CauseName
-                    )
-                  }
-                >
-                  {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] ? "-" : "+"}
-                </button>
-              )}
-            </td>
-            <td>
-              {editingField886?.index === subIndex && editingField886?.field === "CauseName" ? (
-                <input
-                  type="text"
-                  value={causeDetail.CauseName || ""}
-                  onChange={(e) =>
-                    handleSaveSubField886(subIndex, "CauseName", e.target.value)
-                  }
-                  onBlur={() => exitSubEditMode886()}
-                  autoFocus
-                />
+          
+          <td>
+            {/* Only render the button if internalCause is true */}
+            {cause.internalCause && (
+              <button
+                className="toggle-button"
+                onClick={() => handleFetchCause(cause.name)}
+              >
+                {expandedCauseName === cause.name ? "-" : "+"}
+              </button>
+            )}
+          </td>
+          <td>
+            {editingField886?.index === index && editingField886?.field === "name" ? (
+              <input
+                type="text"
+                value={cause.name}
+                onChange={(e) =>
+                  handleSaveField(index, "name", e.target.value)
+                }
+                onBlur={() => setEditingField886(null)} // Exit edit mode on blur
+                autoFocus
+              />
+            ) : (
+              <span onClick={() => handleEditField(index, "name")}>
+                {cause.name}
+              </span>
+            )}
+          </td>
+          <td>
+            <div className="slider-container">
+              {isProbabilityVisible ? ( // Always show sliders once they are enabled
+                <>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={cause.probability}
+                    className="slider"
+                    onChange={(e) =>
+                      handleSliderChange(index, Number(e.target.value))
+                    }
+                  />
+                  <span className="probability">{cause.probability}%</span>
+                </>
               ) : (
-                <span onClick={() => handleEditSubField886(subIndex, "CauseName")}>
-                  {causeDetail.CauseName}
+                <span onClick={() => handleEditField(index, "probability")}>
+                  {cause.probability}%
                 </span>
               )}
-            </td>
-            <td>
-              <div className="slider-container">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={causeDetail.ProbabilityPercentage || 0}
-                  className="slider"
-                  onChange={(e) =>
-                    handleSubCauseSliderChange(subIndex, Number(e.target.value))
-                  }
-                />
-                <span className="probability">
-                  {causeDetail.ProbabilityPercentage || 0}%
-                </span>
-              </div>
-            </td>
-            <td>
-              {isAnyProgressChecked && (
-                <input
-                  type="checkbox"
-                  checked={
-                    solveCheckboxes900[`${index}-${subIndex}`] || false
-                  }
-                  onChange={() =>
-                    setSolveCheckboxes900((prev) => ({
-                      ...prev,
-                      [`${index}-${subIndex}`]: !prev[`${index}-${subIndex}`],
-                    }))
-                  }
-                />
-              )}
-            </td>
-          </tr>
-        ))}
-    </React.Fragment>
-  ))}
-</tbody>
+            </div>
+          </td>
+          <td>
+                  {/* Render checkboxes only if any progress checkbox is checked */}
+                  {isAnyProgressChecked && <input type="checkbox" />}
+                </td>
+        </tr>
 
+        {/* Render expanded sub-cause rows */}
+        {expandedCauseName === cause.name &&
+          expandedCauseData.map((causeDetail, subIndex) => (
+            <React.Fragment key={`${index}-${subIndex}`}>
+<tr className="sub-cause-row" key={subIndex}>
+<td
+              onMouseEnter={() => handleMouseEnter(causeDetail.CauseName)}
+              onMouseLeave={handleMouseLeave}
+            >
+    {causeDetail.internalSubCause && (
+      <button
+        className="toggle-button"
+        onClick={() =>
+          handleSubCauseToggleAndFetch(
+            `${cause.name}-${causeDetail.CauseName}`,
+            causeDetail.CauseName
+          )
+        }
+      >
+        {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] ? "-" : "+"}
+      </button>
+    )}
+  </td>
+  <td
+              onMouseEnter={() => handleMouseEnter(causeDetail.CauseName)}
+              onMouseLeave={handleMouseLeave}
+            >
+    {editingField886?.index === subIndex && editingField886?.field === "CauseName" ? (
+      <input
+        type="text"
+        value={causeDetail.CauseName || ""}
+        onChange={(e) =>
+          handleSaveSubField886(subIndex, "CauseName", e.target.value)
+        }
+        onBlur={() => exitSubEditMode886()}
+        autoFocus
+      />
+    ) : (
+      <span onClick={() => handleEditSubField886(subIndex, "CauseName")}>
+        {causeDetail.CauseName}
+      </span>
+    )}
+  </td>
+  <td
+              onMouseEnter={() => handleMouseEnter(causeDetail.CauseName)}
+              onMouseLeave={handleMouseLeave}
+            >
+    <div className="slider-container">
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={causeDetail.ProbabilityPercentage || 0}
+        className="slider"
+        onChange={(e) =>
+          handleSubCauseSliderChange(subIndex, Number(e.target.value))
+        }
+      />
+      <span className="probability">
+        {causeDetail.ProbabilityPercentage || 0}%
+      </span>
+    </div>
+  </td>
+</tr>
+
+
+
+              {/* Nested sub-cause rows */}
+              {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] &&
+                nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`]?.map(
+                  (subCause, nestedIndex) => (
+                    <tr
+                      key={`${index}-${subIndex}-${nestedIndex}`}
+                      className="nested-sub-cause-row"
+                    >
+                      <td></td>
+                      <td>{subCause.name}</td>
+                      <td>{subCause.probability}%</td>
+                    </tr>
+                  )
+                )}
+            </React.Fragment>
+          ))}
+      </React.Fragment>
+    ))}
+  </tbody>
 </table>
-
 
     
 {/* Save Button Below Table */}
@@ -1315,90 +1259,51 @@ const handleNewCauseChange = (e) => {
 </div>
 {/* Table */}
       {/* Action Table */}
-      <div style={{ position: "relative" }}>
-  <table className="modal-table" id="action-table" ref={tableRef}>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Time</th>
-        <th>Money</th>
-        <th>Level</th>
-        <th>Progress</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {paginatedData990.length > 0 ? (
-        paginatedData990.map((action, index) => (
-          <tr
-            key={index}
-            style={{
-              backgroundColor:
-                hoverItems894.actions.includes(action.name) ||
-                hoverItems895.actions.includes(action.name)
-                  ? "brown"
-                  : "transparent",
-            }}
-          >
-            <td>{action.name}</td>
-            {/* <td>{action.time || "N/A"}</td>
-            <td>{action.money || "N/A"}</td>
-            <td>{action.level || "N/A"}</td> */}
-
-            <td>{action.time || "0"}</td>
-            <td>{action.money || "0"}</td>
-            <td>{action.level || "0"}</td>
-            <td>
-              <input
-                type="checkbox"
-                onChange={(e) =>
-                  handleProgressCheckboxChange(index, e.target.checked)
-                }
-              />
-            </td>
-            <td
-              onMouseEnter={() => handleMouseEnter901(index)}
-              onMouseLeave={handleMouseLeave901}
-            >
-              {hoveredCell901 === index && (
-                <FaCog
-                  className="config-icon901"
-                  onClick={(e) => handleIconClick901(index, e)}
-                />
-              )}
-            </td>
+      <table className="modal-table" id="action-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Money</th>
+            <th>Level</th>
+            <th>Progress</th>
           </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan="6">No actions available</td>
-        </tr>
-      )}
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+          {paginatedData990.length > 0 ? (
+            paginatedData990.map((action, index) => (
+              <tr
+                key={index}
+                style={{
+                  backgroundColor:
+                    hoverItems894.actions.includes(action.name) ||
+                    hoverItems895.actions.includes(action.name)
+                      ? "brown"
+                      : "transparent",
+                }}
+              >
+                <td>{action.name}</td>
+                <td>{action.time || "N/A"}</td>
+                <td>{action.money || "N/A"}</td>
+                <td>{action.level || "N/A"}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={(e) =>
+                      handleProgressCheckboxChange(index, e.target.checked)
+                    }
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">No actions available</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-  {clickedCell901 !== null && (
-    <div
-      className="options-menu901"
-      style={{
-        position: "absolute",
-        top: `${menuPosition901.top}px`,
-        left: `${menuPosition901.left}px`,
-      }}
-    >
-   <div
-  onClick={() => handleEditExplanation(paginatedData990[clickedCell901].name)}
->
-  Edit Explanation
-</div>
-
-      <div>Properties</div>
-      <div>Delete</div>
-    </div>
-  )}
-</div>
-
-  
 
 
     

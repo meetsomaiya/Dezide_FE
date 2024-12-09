@@ -9,6 +9,9 @@ import ImportDynamicGuide003 from "./components/ImportDynamicGuide003";
 import TurbineDashboard004 from "./components/TurbineDashboard004";
 import GuideDashboard005 from "./components/GuideDashboard005";
 import GuideQuestionItem from "./components/GuideQuestionItem006";
+
+import EditExplanation from "./components/EditExplanation";
+
 import './styles.css';
 
 function App() {
@@ -42,6 +45,7 @@ function MainApp() {
             <Route path="/dashboard" element={<Dashboard001 />} />
             <Route path="/create-dynamic-guide" element={<CreateDynamicGuide002 />} />
             <Route path="/import-dynamic-guide" element={<ImportDynamicGuide003 />} />
+            <Route path="/edit-explanation" element={<EditExplanation />} />
 
             <Route path="/analytics-dashboard" element={<TurbineDashboard004 />} />
 

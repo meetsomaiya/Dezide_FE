@@ -72,7 +72,7 @@ const [modalName, setModalName] = useState("");
     //   setEditingField886({ index, field }); // Set the field to edit
     // };
 
-    const [rowsPerPage990, setRowsPerPage990] = useState(25); // Number of rows per page
+    const [rowsPerPage990, setRowsPerPage990] = useState(5); // Number of rows per page
     const [currentPage990, setCurrentPage990] = useState(1); // Current page number
   
     const totalRows990 = actionsData.length; // Total number of rows
@@ -144,40 +144,14 @@ const [modalName, setModalName] = useState("");
     } else {
       const rect = event.target.getBoundingClientRect();
       const tableRect = tableRef.current.getBoundingClientRect();
-  
+
       setMenuPosition901({
-        top: rect.bottom - tableRect.top + window.scrollY -40, // Position below the icon
-        left: rect.left - tableRect.left + 5 -40,
+        top: rect.top - tableRect.top - 50, // Adjust to position above the row
+        left: rect.left - tableRect.left + 5,
       });
       setClickedCell901(index); // Open for the clicked cell
     }
   };
-
-  const handleEditExplanation = (actionName) => {
-    const dataToSend = {
-      actionName,
-      modalName,
-    };
-  
-    console.log("Data being sent:", dataToSend); // Log the data
-    navigate("/edit-explanation", { state: dataToSend }); // Navigate with data
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        clickedCell901 !== null &&
-        !event.target.closest(".options-menu901") &&
-        !event.target.closest(".config-icon901")
-      ) {
-        setClickedCell901(null); // Close the menu
-      }
-    };
-  
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [clickedCell901]);
-  
     
 
 
@@ -1316,88 +1290,78 @@ const handleNewCauseChange = (e) => {
 {/* Table */}
       {/* Action Table */}
       <div style={{ position: "relative" }}>
-  <table className="modal-table" id="action-table" ref={tableRef}>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Time</th>
-        <th>Money</th>
-        <th>Level</th>
-        <th>Progress</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {paginatedData990.length > 0 ? (
-        paginatedData990.map((action, index) => (
-          <tr
-            key={index}
-            style={{
-              backgroundColor:
-                hoverItems894.actions.includes(action.name) ||
-                hoverItems895.actions.includes(action.name)
-                  ? "brown"
-                  : "transparent",
-            }}
-          >
-            <td>{action.name}</td>
-            {/* <td>{action.time || "N/A"}</td>
-            <td>{action.money || "N/A"}</td>
-            <td>{action.level || "N/A"}</td> */}
-
-            <td>{action.time || "0"}</td>
-            <td>{action.money || "0"}</td>
-            <td>{action.level || "0"}</td>
-            <td>
-              <input
-                type="checkbox"
-                onChange={(e) =>
-                  handleProgressCheckboxChange(index, e.target.checked)
-                }
-              />
-            </td>
-            <td
-              onMouseEnter={() => handleMouseEnter901(index)}
-              onMouseLeave={handleMouseLeave901}
-            >
-              {hoveredCell901 === index && (
-                <FaCog
-                  className="config-icon901"
-                  onClick={(e) => handleIconClick901(index, e)}
-                />
-              )}
-            </td>
+      <table className="modal-table" id="action-table" ref={tableRef}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Money</th>
+            <th>Level</th>
+            <th>Progress</th>
+            <th></th> {/* Additional nameless column */}
           </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan="6">No actions available</td>
-        </tr>
+        </thead>
+        <tbody>
+          {paginatedData990.length > 0 ? (
+            paginatedData990.map((action, index) => (
+              <tr
+                key={index}
+                style={{
+                  backgroundColor:
+                    hoverItems894.actions.includes(action.name) ||
+                    hoverItems895.actions.includes(action.name)
+                      ? "brown"
+                      : "transparent",
+                }}
+              >
+                <td>{action.name}</td>
+                <td>{action.time || "N/A"}</td>
+                <td>{action.money || "N/A"}</td>
+                <td>{action.level || "N/A"}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={(e) =>
+                      handleProgressCheckboxChange(index, e.target.checked)
+                    }
+                  />
+                </td>
+                <td
+                  onMouseEnter={() => handleMouseEnter901(index)}
+                  onMouseLeave={handleMouseLeave901}
+                >
+                  {hoveredCell901 === index && (
+                    <FaCog
+                      className="config-icon901"
+                      onClick={(e) => handleIconClick901(index, e)}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6">No actions available</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {clickedCell901 !== null && (
+        <div
+          className="options-menu901"
+          style={{
+            position: "absolute",
+            top: `${menuPosition901.top}px`,
+            left: `${menuPosition901.left}px`,
+          }}
+        >
+          <div>Edit Explanation</div>
+          <div>Properties</div>
+          <div>Delete</div>
+        </div>
       )}
-    </tbody>
-  </table>
-
-  {clickedCell901 !== null && (
-    <div
-      className="options-menu901"
-      style={{
-        position: "absolute",
-        top: `${menuPosition901.top}px`,
-        left: `${menuPosition901.left}px`,
-      }}
-    >
-   <div
-  onClick={() => handleEditExplanation(paginatedData990[clickedCell901].name)}
->
-  Edit Explanation
-</div>
-
-      <div>Properties</div>
-      <div>Delete</div>
     </div>
-  )}
-</div>
-
   
 
 
