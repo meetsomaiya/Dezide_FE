@@ -15,8 +15,6 @@ const GuideQuestionItem = () => {
   const [actionExplanation, setActionExplanation] = useState(""); // State to hold action explanation
   const [actionImage, setActionImage] = useState(""); // State to hold action image (base64)
 
-  
-
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
   try {

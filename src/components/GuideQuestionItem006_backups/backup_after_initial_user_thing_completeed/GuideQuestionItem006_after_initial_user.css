@@ -1,7 +1,7 @@
 /* General container for the entire page */
 .container006 {
   display: flex;
-  height: 90vh;
+  height: 100vh;
   width: 100vw;
   font-family: Arial, sans-serif;
 }
@@ -68,87 +68,22 @@
 
 /* Explanation Box */
 .explanation-box006 {
-  position: relative;
-  width: 100%;
-  max-height: 100vh;
-  overflow-y: auto; /* Enable scrollbar if content exceeds the viewport */
-  background: #f9f9f9;
+  height: 30%;
+  margin-top: 3vh; /* Moved up */
+  padding: 2vh;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1vw;
-  margin: 2vh auto;
+  background-color: #f9f9f9;
 }
 
-/* Button Container */
-.explanation-buttons-container {
-  position: sticky;
-  bottom: -2.1px; /* Adjust the value to control downward movement */
-  background: #f9f9f9; /* Matches the box background */
-  padding: 1vh 0;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect for separation */
-  z-index: 10; /* Ensures it stays above the content */
-  transform: translateY(10px); /* Moves the element visually downwards */
+.explanation-box006 h3 {
+  font-size: 2.5vh;
 }
 
-
-/* Buttons */
-.explanation-buttons {
-  display: flex;
-  justify-content: space-evenly;
-  gap: 1vw; /* Space between buttons */
+.explanation-box006 p {
+  font-size: 2vh;
+  margin-top: 1vh;
 }
-
-.explanation-buttons button {
-  padding: 0.5vh 1vw;
-  font-size: 1.2vh;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.explanation-buttons button:hover {
-  background: #0056b3;
-}
-
-
-.action-image-container {
-  margin-top: 2vh;
-  text-align: center;
-}
-
-.action-image {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-}
-
-.explanation-buttons {
-  display: flex;
-  justify-content: flex-end;
-  /* margin-top: 2vh; */
-}
-
-.explanation-buttons button {
-  background: #007bff; /* Button color */
-  color: white;
-  border: none;
-  padding: 0.5vh 1vw;
-  margin-left: 1vw;
-  border-radius: 3px;
-  font-size: 1.2vh;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.explanation-buttons button:hover {
-  background: #0056b3;
-}
-
 
 /* Feedback Buttons */
 .feedback-buttons006 {
@@ -217,29 +152,11 @@
 }
 
 /* Style the event name text */
-/* .event-name {
-  font-size: 0.7em; 
-  color: orange;    
-  position: absolute;
-  left: 52%;    
-  transform: translateX(-50%); 
-} */
 .event-name {
-  font-size: 0.7em; /* Small font size */
-  position: absolute; /* Positioning relative to the nearest positioned ancestor */
-  left: 52%; /* Adjust position */
-  transform: translateX(-50%); /* Center horizontally */
+  font-size: 0.7em;  /* Small font size */
+  color: orange;     /* Orange color */
+  margin-left: 70px; /* Space between the question and the event name */
 }
-
-.event-part-black {
-  color: black; /* Black for the part before "|" */
-}
-
-.event-part-orange {
-  color: orange; /* Orange for the part after "|" */
-}
-
-
 
 /* Add these styles to the CSS file */
 .action-image-container {

@@ -5,7 +5,7 @@ import "./GuideQuestionItem006.css"; // Link the CSS file for styling
 
 const GuideQuestionItem = () => {
   const location = useLocation();
-  const { actionId, actionName, eventData, infoname } = location.state || {}; // Access passed data including eventData
+  const { actionId, actionName, eventData } = location.state || {}; // Access passed data including eventData
 
   const [selectedOption, setSelectedOption] = useState("");
   const [trackerCount, setTrackerCount] = useState(0); // Initialize trackerCount
@@ -14,8 +14,6 @@ const GuideQuestionItem = () => {
   const [performedSteps, setPerformedSteps] = useState([]); // Track performed steps
   const [actionExplanation, setActionExplanation] = useState(""); // State to hold action explanation
   const [actionImage, setActionImage] = useState(""); // State to hold action image (base64)
-
-  
 
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
@@ -180,7 +178,7 @@ const getFormattedEventName = (eventName) => {
 
       {actionImage && (
         <div className="action-image-container">
-          <img src={actionImage} alt="" className="action-image" />
+          <img src={actionImage} alt="Action Explanation" className="action-image" />
         </div>
       )}
 
@@ -232,29 +230,7 @@ const getFormattedEventName = (eventName) => {
           <div className="exclamation-mark006">
             <FaExclamationCircle size={30} color="red" />
           </div>
-          {/* <ul>
-  <li>Safety chain activated. If DI08 *DI_SafetyChain_Activated*.</li>
-  <li>Troubleshooting guide built on the basis of the below-mentioned drawing version and software version:
-    <ul>
-      <li>Bottom Cabinet Drawing Version: E.05.1.1.2.101A Rev.001</li>
-      <li>Top Cabinet Drawing Version: E.05.1.2.2.101A Rev.000</li>
-      <li>Hub Cabinet Drawing Version: E.05.1.3.2.101A Rev.001_Improved</li>
-      <li>Software Version: CSM6321X5SX1XXR007</li>
-    </ul>
-  </li>
-</ul> */}
-
-
-{infoname && infoname.length > 0 ? (
-                    <ul>
-                        {infoname.map((name, index) => (
-                            <li key={index}>{name}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No info available</p>
-                )}
-
+          <p>Dummy info data. This section will display some important information or warnings.</p>
         </div>
       </div>
     </div>

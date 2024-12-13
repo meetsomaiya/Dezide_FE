@@ -5,7 +5,7 @@ import "./GuideQuestionItem006.css"; // Link the CSS file for styling
 
 const GuideQuestionItem = () => {
   const location = useLocation();
-  const { actionId, actionName, eventData, infoname } = location.state || {}; // Access passed data including eventData
+  const { actionId, actionName, eventData } = location.state || {}; // Access passed data including eventData
 
   const [selectedOption, setSelectedOption] = useState("");
   const [trackerCount, setTrackerCount] = useState(0); // Initialize trackerCount
@@ -14,8 +14,6 @@ const GuideQuestionItem = () => {
   const [performedSteps, setPerformedSteps] = useState([]); // Track performed steps
   const [actionExplanation, setActionExplanation] = useState(""); // State to hold action explanation
   const [actionImage, setActionImage] = useState(""); // State to hold action image (base64)
-
-  
 
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
@@ -232,7 +230,7 @@ const getFormattedEventName = (eventName) => {
           <div className="exclamation-mark006">
             <FaExclamationCircle size={30} color="red" />
           </div>
-          {/* <ul>
+          <ul>
   <li>Safety chain activated. If DI08 *DI_SafetyChain_Activated*.</li>
   <li>Troubleshooting guide built on the basis of the below-mentioned drawing version and software version:
     <ul>
@@ -242,18 +240,7 @@ const getFormattedEventName = (eventName) => {
       <li>Software Version: CSM6321X5SX1XXR007</li>
     </ul>
   </li>
-</ul> */}
-
-
-{infoname && infoname.length > 0 ? (
-                    <ul>
-                        {infoname.map((name, index) => (
-                            <li key={index}>{name}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No info available</p>
-                )}
+</ul>
 
         </div>
       </div>

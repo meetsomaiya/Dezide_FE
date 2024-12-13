@@ -107,9 +107,6 @@ const [modalName, setModalName] = useState("");
 
   const [tableData902, setTableData902] = useState([]);
 
-  
-  const [tableData, setTableData] = useState([]);
-
   useEffect(() => {
     // Fetch data from the API
     fetch('http://localhost:226/api/fetch_main_table_data')
@@ -119,25 +116,9 @@ const [modalName, setModalName] = useState("");
         }
         return response.json();
       })
-      .then((data) => {
-        // Prepare the data to match the table structure
-        const formattedData = data.eventModelMap.map((item) => ({
-          name: item.EventName,
-          taxonomy: item.ModelNames, // Assuming taxonomy is ModelNames
-          language: item.language.join(', '), // Join language array
-          lastChange: item.lastChange,
-          lastChangeBy: item.lastChangeBy,
-          published: item.published,
-          createdBy: item.createdBy,
-          version: item.version,
-          select: false, // Default value for select checkbox
-        }));
-
-        // Set the fetched and formatted data to state
-        setTableData(formattedData);
-      })
+      .then((data) => setTableData902(data))
       .catch((error) => console.error('Error fetching data:', error));
-  }, []); // Empty dependency array to run only once after initial render
+  }, []);
 
   const handleRowClick902 = (name) => {
     console.log(`Row clicked: ${name}`);
@@ -589,15 +570,7 @@ const handleNewCauseChange = (e) => {
     setIsCreateTopCauseInputVisible(true);
   }
 };
-const handlePreviewClick = () => {
-  // Navigate to the preview page with modalName passed in state
-  navigate('/preview', { state: { modalName } });
-};
-
-const handleConstraintClick = () => {
-  // Navigate to the preview page with modalName passed in state
-  navigate('/constraints', { state: { modalName } });
-};
+    
   
   
     
@@ -715,87 +688,87 @@ const handleConstraintClick = () => {
     const removeTopCause = () => {
       setTopCause(null);  // Remove the top cause from state
     };
-  // const tableData = [
-  //   // Sample Data for the table
-  //   {
-  //     select: false,
-  //     name: "FM283 Pitch_EmergencyRun",
-  //     taxonomy: ["S9x Emerson V1", "S9x Woodward V2", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Nov 18, 2024 12:07",
-  //     lastChangeBy: "Ruchika K",
-  //     published: "Aug 12, 2021 15:02",
-  //     createdBy: "Jignesh Limbani",
-  //     version: 637,
-  //   },
-  //   {
-  //     select: false,
-  //     name: "FM103 Elec_SafetyChainStop",
-  //     taxonomy: ["S9x Emerson V1", "S9x Woodward V2", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Nov 18, 2024 11:41",
-  //     lastChangeBy: "Ruchika K",
-  //     published: "Oct 09, 2018 16:48",
-  //     createdBy: "Makarand Nandrekar",
-  //     version: 488,
-  //   },
-  //   {
-  //     select: false,
-  //     name: "FM297 Rep_Pitch_EmergencyRun",
-  //     taxonomy: ["S88 (SFS)", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Nov 05, 2024 10:12",
-  //     lastChangeBy: "Ruchika K",
-  //     published: "Nov 26, 2018 12:46",
-  //     createdBy: "Kalpesh Sutariya",
-  //     version: 14,
-  //   },
-  //   {
-  //     select: false,
-  //     name: "Dynamic Create Test",
-  //     taxonomy: ["S88 (SFS)", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Oct 27, 2024 20:31",
-  //     lastChangeBy: "Uttam Uttam",
-  //     published: "Aug 27, 2018 15:56",
-  //     createdBy: "Uttam Uttam",
-  //     version: 48,
-  //   },
-  //   {
-  //     select: false,
-  //     name: "FM135 Pitch_FreqConvPitch1_ErrStop",
-  //     taxonomy: ["S88 (SFS)", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Apr 04, 2024 15:42",
-  //     lastChangeBy: "Ashish Ambodiya",
-  //     published: "May 26, 2021 09:29",
-  //     createdBy: "Aniruddha Bokil",
-  //     version: 279,
-  //   },
-  //   {
-  //     select: false,
-  //     name: "FM135 Pitch_FreqConvPitch1_ErrStop",
-  //     taxonomy: ["S88 (SFS)", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Apr 04, 2024 15:42",
-  //     lastChangeBy: "Ashish Ambodiya",
-  //     published: "May 26, 2021 09:29",
-  //     createdBy: "Aniruddha Bokil",
-  //     version: 279,
-  //   },
-  //   {
-  //     select: false,
-  //     name: "FM135 Pitch_FreqConvPitch1_ErrStop",
-  //     taxonomy: ["S88 (SFS)", "India"],
-  //     language: "🇺🇸",
-  //     lastChange: "Apr 04, 2024 15:42",
-  //     lastChangeBy: "Ashish Ambodiya",
-  //     published: "May 26, 2021 09:29",
-  //     createdBy: "Aniruddha Bokil",
-  //     version: 279,
-  //   },
-  //   // Add more rows as needed for scrolling effect
-  // ];
+  const tableData = [
+    // Sample Data for the table
+    {
+      select: false,
+      name: "FM283 Pitch_EmergencyRun",
+      taxonomy: ["S9x Emerson V1", "S9x Woodward V2", "India"],
+      language: "🇺🇸",
+      lastChange: "Nov 18, 2024 12:07",
+      lastChangeBy: "Ruchika K",
+      published: "Aug 12, 2021 15:02",
+      createdBy: "Jignesh Limbani",
+      version: 637,
+    },
+    {
+      select: false,
+      name: "FM103 Elec_SafetyChainStop",
+      taxonomy: ["S9x Emerson V1", "S9x Woodward V2", "India"],
+      language: "🇺🇸",
+      lastChange: "Nov 18, 2024 11:41",
+      lastChangeBy: "Ruchika K",
+      published: "Oct 09, 2018 16:48",
+      createdBy: "Makarand Nandrekar",
+      version: 488,
+    },
+    {
+      select: false,
+      name: "FM297 Rep_Pitch_EmergencyRun",
+      taxonomy: ["S88 (SFS)", "India"],
+      language: "🇺🇸",
+      lastChange: "Nov 05, 2024 10:12",
+      lastChangeBy: "Ruchika K",
+      published: "Nov 26, 2018 12:46",
+      createdBy: "Kalpesh Sutariya",
+      version: 14,
+    },
+    {
+      select: false,
+      name: "Dynamic Create Test",
+      taxonomy: ["S88 (SFS)", "India"],
+      language: "🇺🇸",
+      lastChange: "Oct 27, 2024 20:31",
+      lastChangeBy: "Uttam Uttam",
+      published: "Aug 27, 2018 15:56",
+      createdBy: "Uttam Uttam",
+      version: 48,
+    },
+    {
+      select: false,
+      name: "FM135 Pitch_FreqConvPitch1_ErrStop",
+      taxonomy: ["S88 (SFS)", "India"],
+      language: "🇺🇸",
+      lastChange: "Apr 04, 2024 15:42",
+      lastChangeBy: "Ashish Ambodiya",
+      published: "May 26, 2021 09:29",
+      createdBy: "Aniruddha Bokil",
+      version: 279,
+    },
+    {
+      select: false,
+      name: "FM135 Pitch_FreqConvPitch1_ErrStop",
+      taxonomy: ["S88 (SFS)", "India"],
+      language: "🇺🇸",
+      lastChange: "Apr 04, 2024 15:42",
+      lastChangeBy: "Ashish Ambodiya",
+      published: "May 26, 2021 09:29",
+      createdBy: "Aniruddha Bokil",
+      version: 279,
+    },
+    {
+      select: false,
+      name: "FM135 Pitch_FreqConvPitch1_ErrStop",
+      taxonomy: ["S88 (SFS)", "India"],
+      language: "🇺🇸",
+      lastChange: "Apr 04, 2024 15:42",
+      lastChangeBy: "Ashish Ambodiya",
+      published: "May 26, 2021 09:29",
+      createdBy: "Aniruddha Bokil",
+      version: 279,
+    },
+    // Add more rows as needed for scrolling effect
+  ];
 
   // const handleSubCauseToggle = (key) => {
   //   setExpandedSubCause((prevState) => ({
@@ -994,51 +967,51 @@ const handleConstraintClick = () => {
       </div>
 
       <div className="dynamic-guides-container-882">
-      <table className="dynamic-guides-table-882">
-      <thead>
-        <tr>
-          <th>Select</th>
-          <th>Name</th>
-          <th>Taxonomy</th>
-          <th>Language</th>
-          <th>Last Change</th>
-          <th>Last Change By</th>
-          <th>Published</th>
-          <th>Created By</th>
-          <th>Version</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tableData.map((row, index) => (
-          <tr key={index}>
-            <td>
-              <input type="checkbox" checked={row.select} readOnly />
-            </td>
-            <td>
-              <button
-                className="name-link-button"
-                onClick={() => handleRowClick(row.name)}
-              >
-                {row.name}
-              </button>
-            </td>
-            <td>
-              {row.taxonomy.map((tag, i) => (
-                <span key={i} className="taxonomy-tag-882">
-                  {tag}
-                </span>
+          <table className="dynamic-guides-table-882">
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Taxonomy</th>
+                <th>Language</th>
+                <th>Last Change</th>
+                <th>Last Change By</th>
+                <th>Published</th>
+                <th>Created By</th>
+                <th>Version</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((row, index) => (
+                <tr key={index}>
+                  <td>
+                    <input type="checkbox" checked={row.select} readOnly />
+                  </td>
+                  <td>
+                    <button
+                      className="name-link-button"
+                      onClick={() => handleRowClick(row.name)}
+                    >
+                      {row.name}
+                    </button>
+                  </td>
+                  <td>
+                    {row.taxonomy.map((tag, i) => (
+                      <span key={i} className="taxonomy-tag-882">
+                        {tag}
+                      </span>
+                    ))}
+                  </td>
+                  <td>{row.language}</td>
+                  <td>{row.lastChange}</td>
+                  <td>{row.lastChangeBy}</td>
+                  <td>{row.published}</td>
+                  <td>{row.createdBy}</td>
+                  <td>{row.version}</td>
+                </tr>
               ))}
-            </td>
-            <td>{row.language}</td>
-            <td>{row.lastChange}</td>
-            <td>{row.lastChangeBy}</td>
-            <td>{row.published}</td>
-            <td>{row.createdBy}</td>
-            <td>{row.version}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            </tbody>
+          </table>
         </div>
 
       </div>
@@ -1084,15 +1057,14 @@ const handleConstraintClick = () => {
   <button className="modal-button">
     <i className="fa fa-chart-bar"></i> Summary
   </button>
-  <button className="modal-button"onClick={handleConstraintClick}>
+  <button className="modal-button">
     <i className="fa fa-exclamation-triangle"></i> Constraints
   </button>
   <select className="tools-dropdown">
     <option value="Tool1">Tool 1</option>
     <option value="Tool2">Tool 2</option>
   </select>
-  {/* <button className="modal-button preview-btn"> */}
-  <button className="modal-button preview-btn" onClick={handlePreviewClick}>
+  <button className="modal-button preview-btn">
     <i className="fa fa-eye"></i> Preview
   </button>
 </div>

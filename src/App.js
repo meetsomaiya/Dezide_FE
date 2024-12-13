@@ -12,6 +12,10 @@ import GuideQuestionItem from "./components/GuideQuestionItem006";
 
 import EditExplanation from "./components/EditExplanation";
 
+import PreviewComponent920 from "./components/PreviewComponent920";
+
+import ConstraintsPage921 from "./components/Constraints921";
+
 import './styles.css';
 
 function App() {
@@ -52,6 +56,10 @@ function MainApp() {
             <Route path="/guide-dashboard" element={<GuideDashboard005 />} />
 
             <Route path="/guide-question-item" element={<GuideQuestionItem />} />
+
+            <Route path="/preview" element={<PreviewComponent920 />} />
+
+            <Route path="/constraints" element={<ConstraintsPage921 />} />
 
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<Navigate to="/login" replace />} />

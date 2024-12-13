@@ -137,8 +137,7 @@ const handleAlarmItemClick = async (eventName) => {
       state: { 
         actionId: data.actionId, 
         actionName: data.actionName, 
-        eventData: eventName, // Pass the event data as 'eventData'
-        infoname: data.infoName, // Pass infoDetails as a separate field
+        eventData: eventName // Pass the event data as 'eventData'
       }
     });
   } catch (error) {
@@ -218,7 +217,7 @@ const handleAlarmItemClick = async (eventName) => {
   </div>
   <div className="search-input-group005">
     <button className="btn005">History</button>
-    <input type="text" className="input-box006" />
+    <input type="text" className="input-box005" />
   </div>
   <div className="search-buttons005">
     <button className="btn005">Resume</button>

@@ -5,7 +5,7 @@ import "./GuideQuestionItem006.css"; // Link the CSS file for styling
 
 const GuideQuestionItem = () => {
   const location = useLocation();
-  const { actionId, actionName, eventData, infoname } = location.state || {}; // Access passed data including eventData
+  const { actionId, actionName, eventData } = location.state || {}; // Access passed data including eventData
 
   const [selectedOption, setSelectedOption] = useState("");
   const [trackerCount, setTrackerCount] = useState(0); // Initialize trackerCount
@@ -14,8 +14,6 @@ const GuideQuestionItem = () => {
   const [performedSteps, setPerformedSteps] = useState([]); // Track performed steps
   const [actionExplanation, setActionExplanation] = useState(""); // State to hold action explanation
   const [actionImage, setActionImage] = useState(""); // State to hold action image (base64)
-
-  
 
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
@@ -39,19 +37,6 @@ const sendActionNameToApi = async (actionNameToSend) => {
   } catch (error) {
     console.error("Error sending action name to API:", error);
   }
-};
-
-const getFormattedEventName = (eventName) => {
-  if (!eventName) return ""; // Handle empty or undefined input
-
-  const match = eventName.match(/FM(\d+)/); // Extract the number after 'FM'
-  if (!match) return eventName; // Return original if no match is found
-
-  const fmNumber = parseInt(match[1], 10); // Parse the number
-  let rangeStart = Math.floor((fmNumber - 1) / 50) * 50 + 1; // Calculate range start
-  let rangeEnd = rangeStart + 49; // Calculate range end
-
-  return `FM${rangeStart}-${rangeEnd} | ${eventName}`; // Format the event name
 };
 
   // Send action name on initial load
@@ -129,35 +114,12 @@ const getFormattedEventName = (eventName) => {
   return (
     <div className="container006">
       <div className="left-section006">
-      {/* {eventData && <span className="event-name">{eventData}</span>}  */}
-      {eventData && (
-  <span className="event-name">
-    <span className="event-part-black">
-      {getFormattedEventName(eventData).split('|')[0].trim()}
-    </span>
-    {" | "}
-    <span className="event-part-orange">
-      {getFormattedEventName(eventData).split('|')[1].trim()}
-    </span>
-  </span>
-)}
-
         <div className="question-box006">
-          {/* <h2>
+          <h2>
             <FaExclamationCircle size={20} color="blue" style={{ marginRight: '10px' }} />
-
-            {showSuccessMessage ? "" : currentActionName} 
-          
-          </h2> */}
-
-<h2>
-  {!showSuccessMessage && currentActionName && (
-    <FaExclamationCircle size={20} color="blue" style={{ marginRight: '10px' }} />
-  )}
-  {showSuccessMessage ? "" : currentActionName}
-</h2>
-
-
+            {showSuccessMessage ? "Success" : currentActionName} {/* Show success message or question */}
+            {eventData && <span className="event-name">{eventData}</span>} {/* Display event name */}
+          </h2>
           {!showSuccessMessage && <p>Does this solve the problem?</p>}
 
           {!showSuccessMessage && (
@@ -170,34 +132,24 @@ const getFormattedEventName = (eventName) => {
         </div>
 
 
-        <h7 className="explanation-header006">Explanation</h7>
-<div className="explanation-box006">
-  {showSuccessMessage ? (
-    <p>Success!</p> // Display success message
-  ) : (
-    <>
-      <p>{actionExplanation || "Explanation not available."}</p>
+        <h3 className="explanation-header006">Explanation</h3>
+        <div className="explanation-box006">
+  {/* <h3>Explanation</h3> */}
+  <p>{actionExplanation || "Explanation not available."}</p>
 
-      {actionImage && (
-        <div className="action-image-container">
-          <img src={actionImage} alt="" className="action-image" />
-        </div>
-      )}
-
-      {/* Buttons Section */}
-      <div className="explanation-buttons-container">
-        <div className="explanation-buttons">
-          <button>Feedback</button>
-          <button>Start Over</button>
-          <button>Pause</button>
-          <button>View Session</button>
-        </div>
-      </div>
-    </>
+  {actionImage && (
+    <div className="action-image-container">
+      <img src={actionImage} alt="Action Explanation" className="action-image" />
+    </div>
   )}
+
+  <div className="explanation-buttons">
+    <button>Feedback</button>
+    <button>Start Over</button>
+    <button>Pause</button>
+    <button>View Session</button>
+  </div>
 </div>
-
-
 
 
 
@@ -232,29 +184,7 @@ const getFormattedEventName = (eventName) => {
           <div className="exclamation-mark006">
             <FaExclamationCircle size={30} color="red" />
           </div>
-          {/* <ul>
-  <li>Safety chain activated. If DI08 *DI_SafetyChain_Activated*.</li>
-  <li>Troubleshooting guide built on the basis of the below-mentioned drawing version and software version:
-    <ul>
-      <li>Bottom Cabinet Drawing Version: E.05.1.1.2.101A Rev.001</li>
-      <li>Top Cabinet Drawing Version: E.05.1.2.2.101A Rev.000</li>
-      <li>Hub Cabinet Drawing Version: E.05.1.3.2.101A Rev.001_Improved</li>
-      <li>Software Version: CSM6321X5SX1XXR007</li>
-    </ul>
-  </li>
-</ul> */}
-
-
-{infoname && infoname.length > 0 ? (
-                    <ul>
-                        {infoname.map((name, index) => (
-                            <li key={index}>{name}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No info available</p>
-                )}
-
+          <p>Dummy info data. This section will display some important information or warnings.</p>
         </div>
       </div>
     </div>

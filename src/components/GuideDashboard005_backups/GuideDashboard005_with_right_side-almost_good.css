@@ -59,76 +59,61 @@ body {
   
   .search-row005 {
     display: flex;
-    gap: 0.5vw; /* Reduced gap between elements */
+    gap: 1vw;
     align-items: center;
   }
   
   .search-input-group005 {
     display: flex;
     align-items: center;
-    gap: 0.25vw; /* Reduced gap between input group elements */
+    gap: 0.5vw;
   }
   
   .label005 {
-    font-size: 0.8em; /* Slightly smaller font size */
+    font-size: 0.9em;
   }
   
   .input-box005 {
-    padding: 0.3vh 0.8vw; /* Reduced padding */
+    padding: 0.5vh 1vw;
     border: 1px solid #ccc;
-    border-radius: 3px; /* Slightly smaller border radius */
-    width: 50px;
-  }
-
-  .input-box006 {
-    padding: 0.3vh 0.8vw; /* Reduced padding */
-    border: 1px solid #ccc;
-    border-radius: 3px; /* Slightly smaller border radius */
-    width: 100px;
+    border-radius: 4px;
   }
   
   .search-buttons005 .btn005 {
-    padding: 0.3vh 0.8vw; /* Reduced padding */
+    padding: 0.5vh 1vw;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 3px; /* Slightly smaller border radius */
+    border-radius: 4px;
     cursor: pointer;
   }
   
   .extra-buttons-right {
-    position: fixed; /* Fixes the container to the viewport */
-    top: 29; /* Aligns it to the top of the viewport */
-    right: 0; /* Aligns it to the right of the viewport */
+    margin-left: auto; /* Push this section to the right */
     display: flex;
     align-items: center;
-    gap: 0.5vw; /* Spacing between elements */
-    padding: 0.5vw 1vw; /* Add some padding for spacing inside the container */
-    border-radius: 4px; /* Optional: Rounded corners */
-    z-index: 1000; /* Ensures it appears above other elements */
+    gap: 1vw;
   }
   
-  
   .btn-right {
-    padding: 0.3vh 0.8vw; /* Reduced padding */
+    padding: 0.5vh 1vw;
     background-color: #6c757d;
     color: white;
     border: none;
-    border-radius: 3px; /* Slightly smaller border radius */
+    border-radius: 4px;
     cursor: pointer;
   }
   
   .input-right {
-    padding: 0.3vh 0.8vw; /* Reduced padding */
+    padding: 0.5vh 1vw;
     border: 1px solid #ccc;
-    border-radius: 3px; /* Slightly smaller border radius */
-    width: 100px; /* Reduced input box width */
+    border-radius: 4px;
+    width: 15vw; /* Adjust input box size */
   }
   
   .search-btn {
     background-color: #28a745; /* Green color for search button */
   }
-  
   
   /* Main Content */
   .main-content005 {

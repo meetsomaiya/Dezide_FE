@@ -137,8 +137,7 @@ const handleAlarmItemClick = async (eventName) => {
       state: { 
         actionId: data.actionId, 
         actionName: data.actionName, 
-        eventData: eventName, // Pass the event data as 'eventData'
-        infoname: data.infoName, // Pass infoDetails as a separate field
+        eventData: eventName // Pass the event data as 'eventData'
       }
     });
   } catch (error) {
@@ -153,90 +152,76 @@ const handleAlarmItemClick = async (eventName) => {
 
   return (
     <div className="container005">
-{/* Header Section */}
-<header className="header005">
-  {/* Dropdown for Home and Turbine Selection */}
-  <div className="dropdown-container005">
-    <div className="dropdown-trigger005" onClick={toggleDropdown}>
-      {/* Conditionally render Home icon or the selected option */}
-      {selectedOption === "Home" ? (
-        <FontAwesomeIcon icon={faHome} className="home-icon005" />
-      ) : (
-        <span className="selected-option">{selectedOption}</span>
-      )}
-    </div>
-
-    {/* Dropdown menu */}
-    {dropdownVisible && (
-      <div className="dropdown-menu005">
-        {/* Home Option */}
-        <div className="dropdown-option">
-          <input
-            type="radio"
-            id="home-option"
-            name="turbine"
-            value="Home"
-            checked={selectedOption === "Home"}
-            onChange={() => handleOptionChange("Home")} // Handle Home selection
-          />
-          <label htmlFor="home-option">Home</label>
+ {/* Header Section */}
+ <header className="header005">
+        <div className="dropdown-container005">
+          <div className="dropdown-trigger005" onClick={toggleDropdown}>
+            {/* Replace the home icon with the selected option */}
+            {selectedOption === "Home" ? (
+              <FontAwesomeIcon icon={faHome} className="home-icon005" />
+            ) : (
+              <span className="selected-option">{selectedOption}</span>
+            )}
+          </div>
+          {dropdownVisible && (
+            <div className="dropdown-menu005">
+              {/* Home Checkbox */}
+              <div className="dropdown-option">
+                <input
+                  type="radio"
+                  id="home-option"
+                  name="turbine"
+                  value="Home"
+                  checked={selectedOption === "Home"}
+                  onChange={() => handleOptionChange("Home")}
+                />
+                <label htmlFor="home-option">Home</label>
+              </div>
+              {/* Render turbine options */}
+              {turbineData.map((turbine, index) => (
+                <div className="dropdown-option" key={index}>
+                  <input
+                    type="radio"
+                    id={`turbine-${index}`}
+                    name="turbine"
+                    value={turbine.ModelName}
+                    checked={selectedOption === turbine.ModelName}
+                    onChange={() => handleOptionChange(turbine.ModelName)}
+                  />
+                  <label htmlFor={`turbine-${index}`}>{turbine.ModelName}</label>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Render turbine options dynamically */}
-        {turbineData.map((turbine, index) => (
-          <div
-            className="dropdown-option"
-            key={index}
-            onClick={() => handleTurbineSelect(turbine.ModelName)} // Handle turbine selection
-          >
-            <input
-              type="radio"
-              id={`turbine-${index}`}
-              name="turbine"
-              value={turbine.ModelName}
-              checked={selectedOption === turbine.ModelName}
-              onChange={() => handleOptionChange(turbine.ModelName)} // Update the selected turbine
-            />
-            <label htmlFor={`turbine-${index}`}>{turbine.ModelName}</label>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-</header>
-
-
-
-      {/* Search and Buttons Section */}
-      <div className="search-section005">
-<div className="search-row005">
-  <div className="search-input-group005">
-    <label htmlFor="customer" className="label005">
-      Customer
-    </label>
-    <input type="text" id="customer" className="input-box005" />
-  </div>
-  <div className="search-input-group005">
-    <button className="btn005">History</button>
-    <input type="text" className="input-box006" />
-  </div>
-  <div className="search-buttons005">
-    <button className="btn005">Resume</button>
-    <button className="btn005">Feedback</button>
-  </div>
-  <div className="extra-buttons-right">
-    <button className="btn-right">Basic</button>
-    <button className="btn-right">Normal</button>
-    <input type="text" className="input-right" />
-    <button className="btn-right search-btn">Search</button>
-  </div>
-</div>
-
-      </div>
+        <div className="alarm-list-trigger005">▲ Alarm list</div>
+        <button className="signoff-btn005">Sign off</button>
+      </header>
 
   {/* Conditionally Render Content */}
   {!isHomeSelected && (
         <>
+      {/* Search and Buttons Section */}
+      <div className="search-section005">
+        <div className="search-row005">
+          <div className="search-input-group005">
+            <label htmlFor="customer" className="label005">
+              Customer
+            </label>
+            <input type="text" id="customer" className="input-box005" />
+          </div>
+          <div className="search-input-group005">
+            <button className="btn005">History</button>
+            <input type="text" className="input-box005" />
+          </div>
+          <div className="search-buttons005">
+            <button className="btn005">Resume</button>
+            <button className="btn005">Feedback</button>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content Section */}
       <div className="main-content005">
         {/* Left Section */}

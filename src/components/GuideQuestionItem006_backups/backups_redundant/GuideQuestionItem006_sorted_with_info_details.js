@@ -5,7 +5,7 @@ import "./GuideQuestionItem006.css"; // Link the CSS file for styling
 
 const GuideQuestionItem = () => {
   const location = useLocation();
-  const { actionId, actionName, eventData, infoname } = location.state || {}; // Access passed data including eventData
+  const { actionId, actionName, eventData, infoDetails } = location.state || {}; // Access passed data including eventData
 
   const [selectedOption, setSelectedOption] = useState("");
   const [trackerCount, setTrackerCount] = useState(0); // Initialize trackerCount
@@ -14,8 +14,6 @@ const GuideQuestionItem = () => {
   const [performedSteps, setPerformedSteps] = useState([]); // Track performed steps
   const [actionExplanation, setActionExplanation] = useState(""); // State to hold action explanation
   const [actionImage, setActionImage] = useState(""); // State to hold action image (base64)
-
-  
 
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
@@ -243,17 +241,7 @@ const getFormattedEventName = (eventName) => {
     </ul>
   </li>
 </ul> */}
-
-
-{infoname && infoname.length > 0 ? (
-                    <ul>
-                        {infoname.map((name, index) => (
-                            <li key={index}>{name}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No info available</p>
-                )}
+ <p>{infoDetails || "No additional details available."}</p>
 
         </div>
       </div>
