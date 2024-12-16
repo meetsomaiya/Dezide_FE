@@ -17,7 +17,6 @@ const GuideQuestionItem = () => {
 
   const [lastIDontKnowCount, setLastIDontKnowCount] = useState(null); // Track last "I don't know" click count
 
-  const [lastAction, setLastAction] = useState(null); // Track the last action
   
 
 // Function to send currentActionName to the API
@@ -83,8 +82,7 @@ const getFormattedEventName = (eventName) => {
       console.log("Action: Yes selected. Resetting tracker count.");
       setShowSuccessMessage(true);
       setTrackerCount(0);
-      setLastIDontKnowCount(null); // Reset last "I don't know" tracker
-      setLastAction(null); // Clear last action
+      // Keep 'I don't know' tracker intact as per the updated request
       setCurrentActionName("");
       return;
     }
@@ -92,33 +90,26 @@ const getFormattedEventName = (eventName) => {
     if (option === "I don't know") {
       newTrackerCount = trackerCount + 1;
       setTrackerCount(newTrackerCount);
+      setLastIDontKnowCount(newTrackerCount); // Keep track of when "I don't know" was clicked
   
-      // Update the 'lastI don't know' count
-      setLastIDontKnowCount(newTrackerCount);
       console.log(`Action: "I don't know" selected. New Tracker Count: ${newTrackerCount}`);
       console.log(`Last 'I don't know' Count Updated To: ${newTrackerCount}`);
-  
-      // Update last action
-      setLastAction("I don't know");
     }
   
     if (option === "No") {
-      if (lastAction === "I don't know" && lastIDontKnowCount !== null) {
-        // If "No" follows "I don't know", reset the tracker count
+      if (lastIDontKnowCount !== null) {
+        // Reset trackerCount if "No" is clicked after "I don't know"
         newTrackerCount = lastIDontKnowCount - 1;
         setTrackerCount(newTrackerCount);
   
-        // Log tracker count reset for "No" after "I don't know"
+        // Ensure 'I don't know' tracker is not reset to null
         console.log(`Action: "No" selected after "I don't know". Tracker Count Reset To: ${newTrackerCount}`);
       } else {
-        // Normal increment for "No"
+        // Increment trackerCount normally for "No"
         newTrackerCount = trackerCount + 1;
         setTrackerCount(newTrackerCount);
         console.log(`Action: "No" selected. New Tracker Count: ${newTrackerCount}`);
       }
-  
-      // Update last action
-      setLastAction("No");
     }
   
     // Use the updated trackerCount value to send to the API

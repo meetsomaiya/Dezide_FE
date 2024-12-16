@@ -15,9 +15,6 @@ const GuideQuestionItem = () => {
   const [actionExplanation, setActionExplanation] = useState(""); // State to hold action explanation
   const [actionImage, setActionImage] = useState(""); // State to hold action image (base64)
 
-  const [lastIDontKnowCount, setLastIDontKnowCount] = useState(null); // Track last "I don't know" click count
-
-  const [lastAction, setLastAction] = useState(null); // Track the last action
   
 
 // Function to send currentActionName to the API
@@ -68,88 +65,58 @@ const getFormattedEventName = (eventName) => {
   // Function to handle the selection of Yes, No, I don't know
   const handleOptionSelect = async (option) => {
     setSelectedOption(option);
-  
-    console.log(`Selected Option: ${option}`);
-    console.log(`Tracker Count Before Update: ${trackerCount}`);
-  
+
+    // Add the current question and response to performedSteps
     setPerformedSteps((prevSteps) => [
       ...prevSteps,
       { question: currentActionName, response: option },
     ]);
-  
-    let newTrackerCount = trackerCount;
-  
+
     if (option === "Yes") {
-      console.log("Action: Yes selected. Resetting tracker count.");
+      // Show success message and reset tracker count
       setShowSuccessMessage(true);
       setTrackerCount(0);
-      setLastIDontKnowCount(null); // Reset last "I don't know" tracker
-      setLastAction(null); // Clear last action
-      setCurrentActionName("");
-      return;
+      setCurrentActionName(""); // Clear the question
+      return; // Stop further execution
     }
-  
-    if (option === "I don't know") {
-      newTrackerCount = trackerCount + 1;
+
+    if (option === "No" || option === "I don't know") {
+      // Increment trackerCount
+      const newTrackerCount = trackerCount + 1;
       setTrackerCount(newTrackerCount);
-  
-      // Update the 'lastI don't know' count
-      setLastIDontKnowCount(newTrackerCount);
-      console.log(`Action: "I don't know" selected. New Tracker Count: ${newTrackerCount}`);
-      console.log(`Last 'I don't know' Count Updated To: ${newTrackerCount}`);
-  
-      // Update last action
-      setLastAction("I don't know");
-    }
-  
-    if (option === "No") {
-      if (lastAction === "I don't know" && lastIDontKnowCount !== null) {
-        // If "No" follows "I don't know", reset the tracker count
-        newTrackerCount = lastIDontKnowCount - 1;
-        setTrackerCount(newTrackerCount);
-  
-        // Log tracker count reset for "No" after "I don't know"
-        console.log(`Action: "No" selected after "I don't know". Tracker Count Reset To: ${newTrackerCount}`);
-      } else {
-        // Normal increment for "No"
-        newTrackerCount = trackerCount + 1;
-        setTrackerCount(newTrackerCount);
-        console.log(`Action: "No" selected. New Tracker Count: ${newTrackerCount}`);
+
+      // Prepare the data to send to the API
+      const dataToSend = {
+        trackerCount: newTrackerCount,
+        selectedItem: eventData,
+      };
+
+      console.log("Sending data to API:", dataToSend);
+
+      // Send AJAX request to fetch consecutive questions for event
+      try {
+        const response = await fetch(
+          `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch consecutive question data");
+        }
+
+        const data = await response.json();
+        console.log("Consecutive question data:", data);
+
+        // Update the action name with the new one fetched from the API
+        if (data && data.actionName) {
+          setCurrentActionName(data.actionName);
+          console.log("Sending updated action name:", data.actionName);
+          sendActionNameToApi(data.actionName); // Send updated action name
+        }
+      } catch (error) {
+        console.error("Error fetching consecutive question data:", error);
       }
-  
-      // Update last action
-      setLastAction("No");
-    }
-  
-    // Use the updated trackerCount value to send to the API
-    const dataToSend = {
-      trackerCount: newTrackerCount,
-      selectedItem: eventData,
-    };
-  
-    console.log("Sending data to API:", dataToSend);
-  
-    try {
-      const response = await fetch(
-        `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
-      );
-  
-      if (!response.ok) {
-        throw new Error("Failed to fetch consecutive question data");
-      }
-  
-      const data = await response.json();
-      console.log("Consecutive question data:", data);
-  
-      if (data && data.actionName) {
-        setCurrentActionName(data.actionName);
-        sendActionNameToApi(data.actionName);
-      }
-    } catch (error) {
-      console.error("Error fetching consecutive question data:", error);
     }
   };
-  
 
   // Reset state when the component unmounts
   useEffect(() => {

@@ -253,8 +253,24 @@ body {
   transition: background-color 0.3s;
 }
 
-
 .dropdown-trigger005:hover {
+  background-color: #e0e0e0;
+}
+
+.alarm-list-trigger005 {
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  transition: background-color 0.3s;
+}
+
+.alarm-list-trigger005:hover {
   background-color: #e0e0e0;
 }
 
@@ -296,33 +312,14 @@ body {
 .dropdown-option label {
   font-size: 14px;
   color: #333;
-  white-space: nowrap; /* Prevents wrapping of long text */
-  overflow: visible; /* Ensures full text is visible */
-  flex-grow: 1; /* Allows the label to occupy remaining space */
-  text-align: left; /* Aligns the label text to the left */
+  cursor: pointer;
+  user-select: none;
 }
 
 /* Radio button focus effect */
 .dropdown-option input[type="radio"]:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 115, 255, 0.5);
-}
-
-.alarm-list-trigger005 {
-  padding: 10px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  cursor: pointer;
-  border-radius: 4px 4px 0 0;
-  transition: background-color 0.3s;
-}
-
-.alarm-list-trigger005:hover {
-  background-color: #e0e0e0;
 }
 
 /* Example CSS for the new page layout */
