@@ -46,47 +46,13 @@ const sendActionNameToApi = async (actionNameToSend) => {
 
 const handleBack = () => {
   if (performedSteps.length > 0) {
-    // Get the last step and update the current action and response
     const lastStep = performedSteps[performedSteps.length - 1];
-
     setCurrentActionName(lastStep.question);
     setSelectedOption(lastStep.response);
-
-    // Update tracker count to the position of the last step
-    setTrackerCount((prevCount) => Math.max(0, prevCount - 1));
-
-    // Remove the last performed step to "go back"
-    setPerformedSteps((prevSteps) => prevSteps.slice(0, -1));
   } else {
     console.warn("No previous steps to navigate back to.");
   }
 };
-
-const handleQuestionClick = (e, question) => {
-  e.preventDefault(); // Prevent default behavior
-
-  console.log("Clicked question:", question);
-
-  // Find the index of the clicked question in performedSteps
-  const selectedStepIndex = performedSteps.findIndex((step) => step.question === question);
-
-  if (selectedStepIndex !== -1) {
-    const selectedStep = performedSteps[selectedStepIndex];
-
-    // Update state to display the question and its response
-    setCurrentActionName(selectedStep.question);
-    setSelectedOption(selectedStep.response);
-
-    // Reset tracker count to the index of the selected question minus one
-    setTrackerCount(selectedStepIndex); // This will give us the sequence position (0-based)
-
-    // Optionally update other related UI elements if necessary
-    console.log(`Navigated to question: ${selectedStep.question} with response: ${selectedStep.response}`);
-  } else {
-    console.warn("Question not found in performed steps.");
-  }
-};
-
 
 
 const getFormattedEventName = (eventName) => {
@@ -102,7 +68,25 @@ const getFormattedEventName = (eventName) => {
   return `FM${rangeStart}-${rangeEnd} | ${eventName}`; // Format the event name
 };
 
+const handleQuestionClick = (e, question) => {
+  e.preventDefault(); // Prevent default behavior
 
+  console.log("Clicked question:", question);
+
+  // Find the selected question and its response from performedSteps
+  const selectedStep = performedSteps.find((step) => step.question === question);
+
+  if (selectedStep) {
+    // Update state to display the question and its response
+    setCurrentActionName(selectedStep.question);
+    setSelectedOption(selectedStep.response);
+
+    // Optionally update other related UI elements if necessary
+    console.log(`Navigated to question: ${selectedStep.question} with response: ${selectedStep.response}`);
+  } else {
+    console.warn("Question not found in performed steps.");
+  }
+};
 
 
 
@@ -312,10 +296,7 @@ const handleOptionSelect = async (option) => {
       
       </div>
 
-      {/* <button onClick={handleBack}>Back</button> */}
-
-      <button onClick={handleBack} className="back-button-008">Back</button>
-
+      <button onClick={handleBack}>Back</button>
 
 
 

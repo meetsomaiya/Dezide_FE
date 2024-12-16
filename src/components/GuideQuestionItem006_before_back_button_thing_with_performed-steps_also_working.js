@@ -46,47 +46,13 @@ const sendActionNameToApi = async (actionNameToSend) => {
 
 const handleBack = () => {
   if (performedSteps.length > 0) {
-    // Get the last step and update the current action and response
     const lastStep = performedSteps[performedSteps.length - 1];
-
     setCurrentActionName(lastStep.question);
     setSelectedOption(lastStep.response);
-
-    // Update tracker count to the position of the last step
-    setTrackerCount((prevCount) => Math.max(0, prevCount - 1));
-
-    // Remove the last performed step to "go back"
-    setPerformedSteps((prevSteps) => prevSteps.slice(0, -1));
   } else {
     console.warn("No previous steps to navigate back to.");
   }
 };
-
-const handleQuestionClick = (e, question) => {
-  e.preventDefault(); // Prevent default behavior
-
-  console.log("Clicked question:", question);
-
-  // Find the index of the clicked question in performedSteps
-  const selectedStepIndex = performedSteps.findIndex((step) => step.question === question);
-
-  if (selectedStepIndex !== -1) {
-    const selectedStep = performedSteps[selectedStepIndex];
-
-    // Update state to display the question and its response
-    setCurrentActionName(selectedStep.question);
-    setSelectedOption(selectedStep.response);
-
-    // Reset tracker count to the index of the selected question minus one
-    setTrackerCount(selectedStepIndex); // This will give us the sequence position (0-based)
-
-    // Optionally update other related UI elements if necessary
-    console.log(`Navigated to question: ${selectedStep.question} with response: ${selectedStep.response}`);
-  } else {
-    console.warn("Question not found in performed steps.");
-  }
-};
-
 
 
 const getFormattedEventName = (eventName) => {
@@ -102,7 +68,25 @@ const getFormattedEventName = (eventName) => {
   return `FM${rangeStart}-${rangeEnd} | ${eventName}`; // Format the event name
 };
 
+const handleQuestionClick = (e, question) => {
+  e.preventDefault(); // Prevent default behavior
 
+  console.log("Clicked question:", question);
+
+  // Find the selected question and its response from performedSteps
+  const selectedStep = performedSteps.find((step) => step.question === question);
+
+  if (selectedStep) {
+    // Update state to display the question and its response
+    setCurrentActionName(selectedStep.question);
+    setSelectedOption(selectedStep.response);
+
+    // Optionally update other related UI elements if necessary
+    console.log(`Navigated to question: ${selectedStep.question} with response: ${selectedStep.response}`);
+  } else {
+    console.warn("Question not found in performed steps.");
+  }
+};
 
 
 
@@ -115,109 +99,89 @@ const getFormattedEventName = (eventName) => {
   }, [currentActionName]);
 
   // Function to handle the selection of Yes, No, I don't know
-const handleOptionSelect = async (option) => {
-  setSelectedOption(option);
-
-  console.log(`Selected Option: ${option}`);
-  console.log(`Tracker Count Before Update: ${trackerCount}`);
-
-  // Check if the question already exists in performedSteps
-  setPerformedSteps((prevSteps) => {
-    const questionIndex = prevSteps.findIndex(
-      (step) => step.question === currentActionName
-    );
-
-    if (questionIndex !== -1) {
-      // Update the response for the existing question
-      const updatedSteps = [...prevSteps];
-      updatedSteps[questionIndex] = {
-        ...updatedSteps[questionIndex],
-        response: option,
-      };
-      return updatedSteps;
-    } else {
-      // Add a new question-response pair if it doesn't exist
-      return [
-        ...prevSteps,
-        { question: currentActionName, response: option },
-      ];
+  const handleOptionSelect = async (option) => {
+    setSelectedOption(option);
+  
+    console.log(`Selected Option: ${option}`);
+    console.log(`Tracker Count Before Update: ${trackerCount}`);
+  
+    setPerformedSteps((prevSteps) => [
+      ...prevSteps,
+      { question: currentActionName, response: option },
+    ]);
+  
+    let newTrackerCount = trackerCount;
+  
+    if (option === "Yes") {
+      console.log("Action: Yes selected. Resetting tracker count.");
+      setShowSuccessMessage(true);
+      setTrackerCount(0);
+      setLastIDontKnowCount(null); // Reset last "I don't know" tracker
+      setLastAction(null); // Clear last action
+      setCurrentActionName("");
+      return;
     }
-  });
-
-  // The rest of your logic remains unchanged
-  let newTrackerCount = trackerCount;
-
-  if (option === "Yes") {
-    console.log("Action: Yes selected. Resetting tracker count.");
-    setShowSuccessMessage(true);
-    setTrackerCount(0);
-    setLastIDontKnowCount(null); // Reset last "I don't know" tracker
-    setLastAction(null); // Clear last action
-    setCurrentActionName("");
-    return;
-  }
-
-  if (option === "I don't know") {
-    newTrackerCount = trackerCount + 1;
-    setTrackerCount(newTrackerCount);
-
-    // Update the 'lastI don't know' count
-    setLastIDontKnowCount(newTrackerCount);
-    console.log(`Action: "I don't know" selected. New Tracker Count: ${newTrackerCount}`);
-    console.log(`Last 'I don't know' Count Updated To: ${newTrackerCount}`);
-
-    // Update last action
-    setLastAction("I don't know");
-  }
-
-  if (option === "No") {
-    if (lastAction === "I don't know" && lastIDontKnowCount !== null) {
-      // If "No" follows "I don't know", reset the tracker count
-      newTrackerCount = lastIDontKnowCount - 1;
-      setTrackerCount(newTrackerCount);
-
-      // Log tracker count reset for "No" after "I don't know"
-      console.log(`Action: "No" selected after "I don't know". Tracker Count Reset To: ${newTrackerCount}`);
-    } else {
-      // Normal increment for "No"
+  
+    if (option === "I don't know") {
       newTrackerCount = trackerCount + 1;
       setTrackerCount(newTrackerCount);
-      console.log(`Action: "No" selected. New Tracker Count: ${newTrackerCount}`);
+  
+      // Update the 'lastI don't know' count
+      setLastIDontKnowCount(newTrackerCount);
+      console.log(`Action: "I don't know" selected. New Tracker Count: ${newTrackerCount}`);
+      console.log(`Last 'I don't know' Count Updated To: ${newTrackerCount}`);
+  
+      // Update last action
+      setLastAction("I don't know");
     }
-
-    // Update last action
-    setLastAction("No");
-  }
-
-  // Use the updated trackerCount value to send to the API
-  const dataToSend = {
-    trackerCount: newTrackerCount,
-    selectedItem: eventData,
+  
+    if (option === "No") {
+      if (lastAction === "I don't know" && lastIDontKnowCount !== null) {
+        // If "No" follows "I don't know", reset the tracker count
+        newTrackerCount = lastIDontKnowCount - 1;
+        setTrackerCount(newTrackerCount);
+  
+        // Log tracker count reset for "No" after "I don't know"
+        console.log(`Action: "No" selected after "I don't know". Tracker Count Reset To: ${newTrackerCount}`);
+      } else {
+        // Normal increment for "No"
+        newTrackerCount = trackerCount + 1;
+        setTrackerCount(newTrackerCount);
+        console.log(`Action: "No" selected. New Tracker Count: ${newTrackerCount}`);
+      }
+  
+      // Update last action
+      setLastAction("No");
+    }
+  
+    // Use the updated trackerCount value to send to the API
+    const dataToSend = {
+      trackerCount: newTrackerCount,
+      selectedItem: eventData,
+    };
+  
+    console.log("Sending data to API:", dataToSend);
+  
+    try {
+      const response = await fetch(
+        `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch consecutive question data");
+      }
+  
+      const data = await response.json();
+      console.log("Consecutive question data:", data);
+  
+      if (data && data.actionName) {
+        setCurrentActionName(data.actionName);
+        sendActionNameToApi(data.actionName);
+      }
+    } catch (error) {
+      console.error("Error fetching consecutive question data:", error);
+    }
   };
-
-  console.log("Sending data to API:", dataToSend);
-
-  try {
-    const response = await fetch(
-      `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch consecutive question data");
-    }
-
-    const data = await response.json();
-    console.log("Consecutive question data:", data);
-
-    if (data && data.actionName) {
-      setCurrentActionName(data.actionName);
-      sendActionNameToApi(data.actionName);
-    }
-  } catch (error) {
-    console.error("Error fetching consecutive question data:", error);
-  }
-};
-
   
 
   // Reset state when the component unmounts
@@ -312,10 +276,7 @@ const handleOptionSelect = async (option) => {
       
       </div>
 
-      {/* <button onClick={handleBack}>Back</button> */}
-
-      <button onClick={handleBack} className="back-button-008">Back</button>
-
+      <button onClick={handleBack}>Back</button>
 
 
 

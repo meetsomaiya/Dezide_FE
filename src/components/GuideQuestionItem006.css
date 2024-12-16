@@ -173,26 +173,58 @@
   background-color: #4CAF50;
 }
 
-/* Performed Steps Box (Right Section) */
+/* Style for the Performed Steps Box */
 .performed-steps-box006 {
-  height: 66%; /* Adjust height as per layout */
+  height: 66%;
   margin-bottom: 2vh;
   padding: 2vh;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto;
+  font-family: Arial, sans-serif; /* Ensures clean text */
 }
 
-
+/* Header for Performed Steps */
 .performed-steps-box006 h3 {
-  font-size: 2.5vh;
+  font-size: 1.8vh; /* Adjust heading size */
+  font-weight: bold;
+  margin-bottom: 1vh;
 }
 
-.performed-steps-box006 p {
-  font-size: 2vh;
-  margin-top: 1vh;
+/* Unordered List Styles */
+.performed-steps-list {
+  list-style: none; /* Remove bullet points */
+  padding-left: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  font-size: 1.6vh; /* Set font size for steps */
+  line-height: 1.5; /* Adjust line spacing */
 }
+
+/* Style for Each Step */
+.performed-steps-list li {
+  margin-bottom: 1.5vh; /* Space between steps */
+}
+
+/* Style for the Answers (>> Symbol) */
+.performed-answer {
+  font-size: 1.4vh; /* Smaller font size */
+  color: #555; /* Lighter text color for the answer */
+  margin-left: 1vh; /* Indent for better alignment */
+}
+/* Style for clickable links that look like normal text */
+.performed-question-link {
+  color: inherit; /* Inherit the text color from the parent */
+  text-decoration: none; /* Remove underline */
+  cursor: pointer; /* Keep the pointer cursor to indicate interactivity */
+  font-size: 1.6vh; /* Adjust font size to match the surrounding text */
+}
+
+.performed-question-link:hover {
+  text-decoration: underline; /* Add underline on hover for subtle interaction */
+}
+
+
 
 /* Info Box */
 .info-box006 {
@@ -264,4 +296,22 @@
   height: auto; /* Maintains aspect ratio */
   max-height: 350px; /* Sets a maximum height for the image */
   object-fit: contain; /* Ensures the image scales proportionally within the container */
+}
+
+.back-button-008 {
+  position: absolute; /* To position it relative to its container */
+  top: 90px;         /* Adjust the distance from the top */
+  left: 500px;        /* Adjust the distance from the left */
+  padding: 8px 16px; /* Add some padding for a better look */
+  background-color: #007bff; /* Blue background */
+  color: white;      /* White text */
+  border: none;      /* Remove border */
+  border-radius: 4px; /* Add rounded corners */
+  font-size: 14px;   /* Set font size */
+  cursor: pointer;   /* Pointer cursor on hover */
+  z-index: 1000;     /* Ensure it's on top of other elements */
+}
+
+.back-button-008:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
