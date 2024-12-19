@@ -63,6 +63,8 @@ const Login = () => {
                         document.cookie = `id=${adminData.id}; path=/`;
                         document.cookie = `access=${adminData.access}; path=/`;
 
+                        document.cookie = `adminEmail=${adminData.email}; path=/`;
+
                         // setAuth(true);
                         navigate('/dashboard'); // Redirect to admin home if applicable
                     } else {

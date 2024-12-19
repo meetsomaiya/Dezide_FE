@@ -76,67 +76,10 @@ const handleCloseModal333 = () => {
     setSessionId(id); // Set the session ID to state
   }, []);
 
-  // const handlePauseSession = () => {
-  //   // Navigate to the 'pause-session' route and pass sessionId as state
-  //   navigate("/pause-session", { state: { sessionId } }); // Use navigate to pass sessionId
-  // };
-
   const handlePauseSession = () => {
-    // Format the current date-time for the 'time' field
-    const currentDateTime = new Date().toISOString();
-  
-    // Prepare the data to be sent
-    const requestData = {
-      model_name: formattedEventNameParts[1], // Part of the event name
-      session_id: sessionId, // Retrieved from cookies
-      time: currentDateTime,
-      solved: "discontinued",
-      diagnosis: currentActionName,
-      steps: performedSteps.map((step, index) => ({
-        step_type: "action",
-        step_name: step.question,
-        step_operation: step.response,
-        sequence_step_type: step.question,
-        order: index + 1,
-        sequence_step_name: step.question,
-        sequence_step_answer: step.response,
-        sequence_step_operation: "step",
-      })),
-    };
-  
-    // Log all the data being sent for clarity
-    console.log("Data being sent to backend:");
-    console.log(JSON.stringify(requestData, null, 2)); // Pretty-printed JSON in the console
-  
-    // Construct the backend API URL
-    const url = `http://localhost:226/api/pause_session`;
-    // const url = `http://localhost:3001/api/pause_session`;
-  
-    // Send the POST request with the data in the body
-    fetch(url, {
-      method: "POST", // Use POST instead of GET
-      headers: {
-        "Content-Type": "application/json", // Set the content type to JSON
-      },
-      body: JSON.stringify(requestData), // Serialize the data to JSON
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to send pause session data.");
-        }
-        console.log("Pause session data sent successfully.");
-        console.log("Response status:", response.status);
-  
-        // Navigate to the pause-session route
-        navigate("/pause-session", { state: { sessionId } });
-      })
-      .catch((error) => {
-        console.error("Error sending pause session data:", error);
-        alert("An error occurred while sending pause session data.");
-      });
+    // Navigate to the 'pause-session' route and pass sessionId as state
+    navigate("/pause-session", { state: { sessionId } }); // Use navigate to pass sessionId
   };
-  
-  
 
 const handleStartOver187 = () => {
   // Reload the page to start over

@@ -16,6 +16,8 @@ import PreviewComponent920 from "./components/PreviewComponent920";
 
 import ConstraintsPage921 from "./components/Constraints921";
 
+import PauseSession224 from "./components/PauseSession224";
+
 import './styles.css';
 
 function App() {
@@ -60,6 +62,8 @@ function MainApp() {
             <Route path="/preview" element={<PreviewComponent920 />} />
 
             <Route path="/constraints" element={<ConstraintsPage921 />} />
+
+            <Route path="/pause-session" element={<PauseSession224 />} />
 
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<Navigate to="/login" replace />} />

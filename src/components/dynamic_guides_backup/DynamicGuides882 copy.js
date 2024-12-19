@@ -111,8 +111,6 @@ const [modalName, setModalName] = useState("");
 
   const [showOptionsBox1112, setShowOptionsBox1112] = useState(false);
 
-  const [hoveredCell1113, setHoveredCell1113] = useState(null);
-
   
   const [tableData, setTableData] = useState([]);
 
@@ -356,41 +354,22 @@ const [modalName, setModalName] = useState("");
     
             
 
-  // const handleEditField = (index, field) => {
-  //   setEditingField886({ index, field });
-  //   setIsProbabilityVisible(true); // Make sliders permanently visible
-  // };
-
   const handleEditField = (index, field) => {
-    setEditingField886({
-      index,
-      field,
-      value: causesData[index][field] || "", // Default to an empty string if the field is blank
-    });
+    setEditingField886({ index, field });
     setIsProbabilityVisible(true); // Make sliders permanently visible
   };
-  
+
     const exitEditMode = () => {
       setIsEditMode(false); // Exit edit mode
       setEditingField886(null);
     };
 
-    // const handleSaveField = (index, field, value) => {
-    //   const updatedCauses = [...causesData];
-    //   updatedCauses[index][field] = value;
-    //   setCausesData(updatedCauses);
-    //   setEditingField886(null);
-    // };
-
-    const handleSaveField = (index, field, value, event) => {
-      if (event.key === "Enter") {
-        const updatedCauses = [...causesData];
-        updatedCauses[index][field] = value;
-        setCausesData(updatedCauses);
-        setEditingField886(null);
-      }
+    const handleSaveField = (index, field, value) => {
+      const updatedCauses = [...causesData];
+      updatedCauses[index][field] = value;
+      setCausesData(updatedCauses);
+      setEditingField886(null);
     };
-    
 
 
       // New state to track the currently editable row
@@ -627,10 +606,6 @@ const handleCreateTopCauseClick = () => {
 
   setNewCause(newCause); // Update the new cause state
   setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
-
-  setShowOptionsBox1112(!showOptionsBox1112);
-
-
 };
 
 // Handles input changes for the new cause fields (only triggered when creating a new cause)
@@ -1179,7 +1154,7 @@ const handleConstraintClick = () => {
       </h3>
       {showOptionsBox1112 && (
         <div className="options-box-1112">
-          <div className="option-1112" onClick={handleCreateTopCauseClick}>
+          <div className="option-1112" onClick={handleCreateTopCauseClick1112}>
             <FaPlus className="icon-1112" /> Create Top Cause
           </div>
           <div className="option-1112" onClick={handleRearrangeClick1112}>
@@ -1196,7 +1171,6 @@ const handleConstraintClick = () => {
       <th>Cause</th>
       <th>Probability</th>
       {isAnyProgressChecked && <th>Solve</th>}
-      <th>Action</th> {/* New column header for the action icon */}
     </tr>
   </thead>
   <tbody>
@@ -1204,16 +1178,12 @@ const handleConstraintClick = () => {
     <React.Fragment key={index}>
       {/* Main Cause Row */}
       <tr
-  onMouseEnter={() => {
-    setHoveredCause993(cause.name); // Set the hovered cause name
-    fetchHoveringItemsForCause993(cause.name); // Fetch items when hovering
-    setHoveredCell1113(index); // Set hovered cell state for the icon
-  }}
-  onMouseLeave={() => {
-    setHoveredCause993(null); // Clear hovered cause when mouse leaves
-    setHoveredCell1113(null); // Clear hovered cell when mouse leaves
-  }}
->
+        onMouseEnter={() => {
+          setHoveredCause993(cause.name); // Set the hovered cause name
+          fetchHoveringItemsForCause993(cause.name); // Fetch items when hovering
+        }}
+        onMouseLeave={() => setHoveredCause993(null)} // Clear hovered cause when mouse leaves
+      >
         <td>{!solveCheckboxes900[index] && <span>✓</span>}</td>
         <td>
           {cause.internalCause && (
@@ -1226,30 +1196,18 @@ const handleConstraintClick = () => {
           )}
         </td>
         <td>
-  {editingField886?.index === index && editingField886?.field === "name" ? (
-    <input
-      type="text"
-      value={editingField886.value} // Controlled value, updated with typing
-      onChange={(e) => setEditingField886({ ...editingField886, value: e.target.value })} // Update value while typing
-      onBlur={(e) => {
-        // Exiting edit mode without saving
-        // setEditingField886(null);
-        handleSaveField(index, "name", e.target.value, e);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          // Save on "Enter"
-          handleSaveField(index, "name", e.target.value, e);
-        }
-      }}
-      autoFocus
-    />
-  ) : (
-    <span onClick={() => handleEditField(index, "name")}>{cause.name}</span>
-  )}
-</td>
-
-
+          {editingField886?.index === index && editingField886?.field === "name" ? (
+            <input
+              type="text"
+              value={cause.name}
+              onChange={(e) => handleSaveField(index, "name", e.target.value)}
+              onBlur={() => setEditingField886(null)} // Exit edit mode on blur
+              autoFocus
+            />
+          ) : (
+            <span onClick={() => handleEditField(index, "name")}>{cause.name}</span>
+          )}
+        </td>
         <td>
           <div className="slider-container">
             <input
@@ -1279,14 +1237,6 @@ const handleConstraintClick = () => {
             />
           )}
         </td>
-        <td>
-  {hoveredCell1113 === index && (
-    // <FaCog id="icon-hover-1113" className="icon-class-1113" />
-    <FaCog id="icon-hover-1113" className="config-icon901"
-    // onClick={(e) => handleIconClick901(index, e)} />
-    onClick={(e) => handleIconClick901(index, e)} />
-  )}
-</td>
       </tr>
 
       {/* Expanded Sub-Cause Rows */}
@@ -1361,17 +1311,6 @@ const handleConstraintClick = () => {
                 />
               )}
             </td>
-            <td
-        onMouseEnter={() => setHoveredCell1113(`${index}-${subIndex}`)}
-        onMouseLeave={() => setHoveredCell1113(null)}
-      >
-        {hoveredCell1113 === `${index}-${subIndex}` && (
-          <FaCog id="icon-hover-1113" className="icon-class-1113" />
-        )}
-      </td>
-
-
-
           </tr>
         ))}
     </React.Fragment>
@@ -1540,27 +1479,6 @@ const handleConstraintClick = () => {
   </table>
 
   {clickedCell901 !== null && (
-    <div
-      className="options-menu901"
-      style={{
-        position: "absolute",
-        top: `${menuPosition901.top}px`,
-        left: `${menuPosition901.left}px`,
-      }}
-    >
-   <div
-  onClick={() => handleEditExplanation(paginatedData990[clickedCell901].name)}
->
-  Edit Explanation
-</div>
-
-      <div>Properties</div>
-      <div>Delete</div>
-    </div>
-  )}
-
-
-    {clickedCell901 !== null && (
     <div
       className="options-menu901"
       style={{

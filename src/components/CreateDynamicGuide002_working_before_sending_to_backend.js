@@ -6,7 +6,7 @@ import './CreateDynamicGuide002.css'; // Import the CSS file
 import { faDotCircle,faMinus } from '@fortawesome/free-solid-svg-icons'; // Import minus icon
 import { useNavigate } from 'react-router-dom';
 
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 const CreateDynamicGuide002 = () => {
   const navigate = useNavigate();
@@ -156,88 +156,10 @@ const [selectedChildVariant002, setSelectedChildVariant002] = useState(null);
     //   navigate('/dynamic-guides', { state: { openModal: true } });
     // };
 
-    // const handleCreateClick = () => {
-    //   // Navigate to /dynamic-guides with state to open modal and pass guideName
-    //   navigate('/dynamic-guides', { state: { openModal: true, guideName } });
-    // };
-
-    // const handleCreateClick = async () => {
-    //   // Prepare the data to send
-    //   const requestData = {
-    //     guideName, // Name entered in the input field
-    //     selectedParentModel: selectedModel002, // Parent turbine model
-    //     selectedParentVariant: selectedVariant002, // Parent temperature variant
-    //   };
-    
-    //   console.log("Data to be sent to API:", requestData);
-    
-    //   try {
-    //     // Make API call to create_dynamic_guide
-    //     // const response = await fetch('http://localhost:226/api/create_dynamic_guide', {
-    //       const response = await fetch('http://localhost:3001/api/create_dynamic_guide', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(requestData),
-    //     });
-    
-    //     // Parse the response
-    //     const result = await response.json();
-    //     console.log("Response from API:", result);
-    
-    //     if (response.ok) {
-    //       // If API call is successful, navigate to the next page
-    //       navigate('/dynamic-guides', { state: { openModal: true, guideName } });
-    //     } else {
-    //       // Handle API errors
-    //       console.error("Failed to create guide. Server responded with:", result);
-    //       alert("Error: Unable to create the guide. Please try again.");
-    //     }
-    //   } catch (error) {
-    //     // Handle network or other unexpected errors
-    //     console.error("Error while creating the guide:", error);
-    //     alert("An error occurred. Please check your network and try again.");
-    //   }
-    // };
-
-    const handleCreateClick = async () => {
-      // Prepare the data to send as query parameters
-      const params = new URLSearchParams({
-        guideName, // Name entered in the input field
-        selectedParentModel: selectedModel002, // Parent turbine model
-        selectedParentVariant: selectedVariant002, // Parent temperature variant
-      });
-    
-      console.log("Data to be sent to API:", params.toString());
-    
-      try {
-        // Make API call to create_dynamic_guide
-        // const response = await fetch(`http://localhost:3001/api/create_dynamic_guide?${params.toString()}`, {
-          const response = await fetch(`http://localhost:226/api/create_dynamic_guide?${params.toString()}`, {
-          method: 'GET',
-        });
-    
-        // Parse the response
-        const result = await response.json();
-        console.log("Response from API:", result);
-    
-        if (response.ok) {
-          // If API call is successful, navigate to the next page
-          navigate('/dynamic-guides', { state: { openModal: true, guideName } });
-        } else {
-          // Handle API errors
-          console.error("Failed to create guide. Server responded with:", result);
-          alert("Error: Unable to create the guide. Please try again.");
-        }
-      } catch (error) {
-        // Handle network or other unexpected errors
-        console.error("Error while creating the guide:", error);
-        alert("An error occurred. Please check your network and try again.");
-      }
+    const handleCreateClick = () => {
+      // Navigate to /dynamic-guides with state to open modal and pass guideName
+      navigate('/dynamic-guides', { state: { openModal: true, guideName } });
     };
-    
-    
 
   return (
     <div className="page-container-002">

@@ -82,7 +82,7 @@ const handleCloseModal333 = () => {
   // };
 
   const handlePauseSession = () => {
-    // Format the current date-time for the 'time' field
+    // Format the current date-time for 'time' field
     const currentDateTime = new Date().toISOString();
   
     // Prepare the data to be sent
@@ -108,18 +108,33 @@ const handleCloseModal333 = () => {
     console.log("Data being sent to backend:");
     console.log(JSON.stringify(requestData, null, 2)); // Pretty-printed JSON in the console
   
-    // Construct the backend API URL
-    const url = `http://localhost:226/api/pause_session`;
-    // const url = `http://localhost:3001/api/pause_session`;
+    // Prepare query parameters for GET request
+    const params = new URLSearchParams();
   
-    // Send the POST request with the data in the body
-    fetch(url, {
-      method: "POST", // Use POST instead of GET
-      headers: {
-        "Content-Type": "application/json", // Set the content type to JSON
-      },
-      body: JSON.stringify(requestData), // Serialize the data to JSON
-    })
+    // Add main fields
+    params.append("model_name", requestData.model_name);
+    params.append("session_id", requestData.session_id);
+    params.append("time", requestData.time);
+    params.append("solved", requestData.solved);
+    params.append("diagnosis", requestData.diagnosis);
+  
+    // Add steps as query parameters
+    requestData.steps.forEach((step, index) => {
+      params.append(`steps[${index}][step_type]`, step.step_type);
+      params.append(`steps[${index}][step_name]`, step.step_name);
+      params.append(`steps[${index}][step_operation]`, step.step_operation);
+      params.append(`steps[${index}][sequence_step_type]`, step.sequence_step_type);
+      params.append(`steps[${index}][order]`, step.order);
+      params.append(`steps[${index}][sequence_step_name]`, step.sequence_step_name);
+      params.append(`steps[${index}][sequence_step_answer]`, step.sequence_step_answer);
+      params.append(`steps[${index}][sequence_step_operation]`, step.sequence_step_operation);
+    });
+  
+    // Construct the full URL
+    const url = `http://localhost:226/api/pause_session?${params.toString()}`;
+  
+    // Send the GET request
+    fetch(url)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to send pause session data.");
@@ -135,7 +150,6 @@ const handleCloseModal333 = () => {
         alert("An error occurred while sending pause session data.");
       });
   };
-  
   
 
 const handleStartOver187 = () => {

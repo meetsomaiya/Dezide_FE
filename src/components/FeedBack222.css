@@ -1,0 +1,126 @@
+/* Modal Overlay */
+.modal-overlay222 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(99, 62, 62, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content222 {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    width: 600px;
+    font-family: Arial, sans-serif;
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Modal Title */
+.modal-title222 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* Labels and Input Containers */
+.modal-input-container222 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-label222 {
+    font-size: 14px;
+    font-weight: bold;
+    width: 100px;
+    margin-right: 15px;
+    text-align: right;
+}
+
+/* Input Fields */
+.modal-input222,
+.modal-fileinput222 {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+/* Read-only Fields */
+.modal-input-readonly222 {
+    background-color: #f8f8f8;
+    color: #555;
+}
+
+/* ReactQuill Editor */
+/* .modal-quill-editor222 {
+    margin-bottom: 20px;
+    width: 100%;
+    height: 150px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+} */
+
+/* Attachments Section */
+.modal-attachment-container222 {
+    margin-top: 20px;
+    margin-bottom: 20px; /* Adds space between attachments and buttons */
+}
+
+/* Attachment Note */
+.modal-note222 {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* Buttons */
+.modal-button-container222 {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Close and Submit Buttons */
+.modal-close-button222,
+.modal-submit222 {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.modal-close-button222 {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.modal-close-button222:hover {
+    background-color: #c0392b;
+}
+
+.modal-submit222 {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.modal-submit222:hover {
+    background-color: #45a049;
+}

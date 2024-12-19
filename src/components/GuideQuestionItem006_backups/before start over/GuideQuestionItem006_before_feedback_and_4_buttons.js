@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa"; // For the exclamation icons
 import "./GuideQuestionItem006.css"; // Link the CSS file for styling
 
-import FeedBack222 from './FeedBack222';
-
 const GuideQuestionItem = () => {
   const location = useLocation();
-
-
-  const navigate = useNavigate();  // Use the navigate hook
-
   const { actionId, actionName, eventData, infoname } = location.state || {}; // Access passed data including eventData
 
   const [selectedOption, setSelectedOption] = useState("");
@@ -25,9 +19,6 @@ const GuideQuestionItem = () => {
 
   const [lastAction, setLastAction] = useState(null); // Track the last action
   
-  const [showModal333, setShowModal333] = useState(false); // Modal visibility state
-
-  const [sessionId, setSessionId] = useState(""); // Session ID state
 
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
@@ -52,97 +43,6 @@ const sendActionNameToApi = async (actionNameToSend) => {
     console.error("Error sending action name to API:", error);
   }
 };
-
-// Utility function to get a cookie by name
-const getCookie = (name) => {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null; // Return the value of the cookie or null if not found
-};
-
-
-const handleOpenModal333 = () => {
-  setShowModal333(true); // Show the modal
-};
-
-const handleCloseModal333 = () => {
-  setShowModal333(false); // Close the modal
-};
-
-
-
-  // Retrieve the session ID from cookies on component mount
-  useEffect(() => {
-    const id = getCookie("id"); // Get the session ID from cookies
-    setSessionId(id); // Set the session ID to state
-  }, []);
-
-  // const handlePauseSession = () => {
-  //   // Navigate to the 'pause-session' route and pass sessionId as state
-  //   navigate("/pause-session", { state: { sessionId } }); // Use navigate to pass sessionId
-  // };
-
-  const handlePauseSession = () => {
-    // Format the current date-time for the 'time' field
-    const currentDateTime = new Date().toISOString();
-  
-    // Prepare the data to be sent
-    const requestData = {
-      model_name: formattedEventNameParts[1], // Part of the event name
-      session_id: sessionId, // Retrieved from cookies
-      time: currentDateTime,
-      solved: "discontinued",
-      diagnosis: currentActionName,
-      steps: performedSteps.map((step, index) => ({
-        step_type: "action",
-        step_name: step.question,
-        step_operation: step.response,
-        sequence_step_type: step.question,
-        order: index + 1,
-        sequence_step_name: step.question,
-        sequence_step_answer: step.response,
-        sequence_step_operation: "step",
-      })),
-    };
-  
-    // Log all the data being sent for clarity
-    console.log("Data being sent to backend:");
-    console.log(JSON.stringify(requestData, null, 2)); // Pretty-printed JSON in the console
-  
-    // Construct the backend API URL
-    const url = `http://localhost:226/api/pause_session`;
-    // const url = `http://localhost:3001/api/pause_session`;
-  
-    // Send the POST request with the data in the body
-    fetch(url, {
-      method: "POST", // Use POST instead of GET
-      headers: {
-        "Content-Type": "application/json", // Set the content type to JSON
-      },
-      body: JSON.stringify(requestData), // Serialize the data to JSON
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to send pause session data.");
-        }
-        console.log("Pause session data sent successfully.");
-        console.log("Response status:", response.status);
-  
-        // Navigate to the pause-session route
-        navigate("/pause-session", { state: { sessionId } });
-      })
-      .catch((error) => {
-        console.error("Error sending pause session data:", error);
-        alert("An error occurred while sending pause session data.");
-      });
-  };
-  
-  
-
-const handleStartOver187 = () => {
-  // Reload the page to start over
-  window.location.reload();
-};
-
 
 const handleBack = () => {
   if (performedSteps.length > 0) {
@@ -318,10 +218,7 @@ const handleOptionSelect = async (option) => {
   }
 };
 
-    // Extract formatted event parts
-    const formattedEventNameParts = eventData
-    ? getFormattedEventName(eventData).split('|').map((part) => part.trim())
-    : ['', ''];
+  
 
   // Reset state when the component unmounts
   useEffect(() => {
@@ -332,26 +229,20 @@ const handleOptionSelect = async (option) => {
   }, []);
 
   return (
-    
     <div className="container006">
-            {/* Conditional rendering of FeedBack222 */}
-            {showModal333 && (
-        <FeedBack222
-          currentActionName={currentActionName}
-          eventNameOrange={formattedEventNameParts[1]} // Pass the orange part to the modal
-          onCloseModal222={handleCloseModal333}
-        />
-      )}
       <div className="left-section006">
       {/* {eventData && <span className="event-name">{eventData}</span>}  */}
-     {/* Display Event Name */}
-     {eventData && (
-        <span className="event-name">
-          <span className="event-part-black">{formattedEventNameParts[0]}</span>
-          {" | "}
-          <span className="event-part-orange">{formattedEventNameParts[1]}</span>
-        </span>
-      )}
+      {eventData && (
+  <span className="event-name">
+    <span className="event-part-black">
+      {getFormattedEventName(eventData).split('|')[0].trim()}
+    </span>
+    {" | "}
+    <span className="event-part-orange">
+      {getFormattedEventName(eventData).split('|')[1].trim()}
+    </span>
+  </span>
+)}
 
         <div className="question-box006">
           {/* <h2>
@@ -398,18 +289,9 @@ const handleOptionSelect = async (option) => {
       {/* Buttons Section */}
       <div className="explanation-buttons-container">
         <div className="explanation-buttons">
-        <button onClick={handleOpenModal333}>Feedback</button>
-          {/* <button>Start Over</button> */}
-          <button
-  type="button"
-  className="modal-reset-button222"
-  onClick={handleStartOver187} // Call the reload function
->
-  Start Over
-</button>
-
-          {/* <button>Pause</button> */}
-          <button onClick={handlePauseSession}>Pause Session</button>
+          <button>Feedback</button>
+          <button>Start Over</button>
+          <button>Pause</button>
           <button>View Session</button>
         </div>
       </div>
@@ -480,7 +362,6 @@ const handleOptionSelect = async (option) => {
 </ul> */}
 
 
-
 {infoname && infoname.length > 0 ? (
                     <ul>
                         {infoname.map((name, index) => (
@@ -494,7 +375,6 @@ const handleOptionSelect = async (option) => {
         </div>
       </div>
     </div>
-    
   );
 };
 

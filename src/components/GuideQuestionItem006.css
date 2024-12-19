@@ -309,7 +309,7 @@
   border-radius: 4px; /* Add rounded corners */
   font-size: 14px;   /* Set font size */
   cursor: pointer;   /* Pointer cursor on hover */
-  z-index: 1000;     /* Ensure it's on top of other elements */
+  z-index: 999;     /* Ensure it's on top of other elements */
 }
 
 .back-button-008:hover {
