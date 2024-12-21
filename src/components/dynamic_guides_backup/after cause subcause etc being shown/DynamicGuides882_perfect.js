@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -334,115 +334,43 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
   // };
 
     // Define your handleIconClick902 function here
-    // const handleIconClick902 = (identifier, type, event, name) => {
-    //   let causeIndex, subCauseIndex, nestedSubCauseIndex;
+    const handleIconClick902 = (identifier, type, event, name) => {
+      const identifiers = identifier.split('-'); // Splitting to handle cause, sub-cause, nested sub-cause
+      const causeIndex = parseInt(identifiers[0], 10); // Extracting cause index
+      const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined; // Extracting sub-cause index (if present)
+      const nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined; // Extracting nested sub-cause index (if present)
     
-    //   // If the type is not 'cause', split the identifier
-    //   if (type !== "cause") {
-    //     const identifiers = identifier.split('-'); // Splitting to handle cause, sub-cause, nested sub-cause
-    //     causeIndex = parseInt(identifiers[0], 10); // Extracting cause index
-    //     subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined; // Extracting sub-cause index (if present)
-    //     nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined; // Extracting nested sub-cause index (if present)
-    //   } else {
-    //     // If it's 'cause', treat identifier directly as causeIndex
-    //     causeIndex = parseInt(identifier, 10); // Extracting cause index
-    //   }
+      console.log(`Row Clicked: Type - ${type}, Cause Index - ${causeIndex}, Sub-Cause Index - ${subCauseIndex}, Nested Sub-Cause Index - ${nestedSubCauseIndex}`);
+      console.log(`Name: ${name}`); // Log the name (sub-cause or nested sub-cause)
     
-    //   console.log(`Row Clicked: Type - ${type}, Cause Index - ${causeIndex}, Sub-Cause Index - ${subCauseIndex}, Nested Sub-Cause Index - ${nestedSubCauseIndex}`);
-    //   console.log(`Name: ${name}`); // Log the name (sub-cause or nested sub-cause)
+      switch (type) {
+        case "cause":
+          console.log('Clicked on Cause:', name);
+          // Handle logic for cause row here
+          break;
     
-    //   switch (type) {
-    //     case "cause":
-    //       console.log('Clicked on Cause:', name);
-    //       // Handle logic for cause row here
-    //       break;
+        case "subcause":
+          console.log('Clicked on SubCause:', name); // Now you just have the sub-cause name
+          // Handle logic for sub-cause row here
+          break;
     
-    //     case "subcause":
-    //       console.log('Clicked on SubCause:', name); // Now you just have the sub-cause name
-    //       // Handle logic for sub-cause row here
-    //       break;
+        case "nestedSubCause":
+          console.log('Clicked on Nested SubCause:', name); // Now you just have the nested sub-cause name
+          // Handle logic for nested sub-cause row here
+          break;
     
-    //     case "nestedSubCause":
-    //       console.log('Clicked on Nested SubCause:', name); // Now you just have the nested sub-cause name
-    //       // Handle logic for nested sub-cause row here
-    //       break;
-    
-    //     default:
-    //       console.log('Unknown row type clicked.');
-    //       break;
-    //   }
-    // };
-    
-    const handleIconClick902 = (identifier, type, event, rowName) => {  // Changed 'name' to 'rowName'
-      let causeIndex, subCauseIndex, nestedSubCauseIndex;
-    
-      // Check if clicked row is the same as the currently selected one
-      if (clickedCell902 === identifier) {
-        setClickedCell902(null); // Close if already open
-        setClickedRowType(null); // Clear row type when closing
-      } else {
-        // Get position of the clicked icon to position the menu
-        const rect = event.target.getBoundingClientRect();
-        const tableRect = tableRef.current.getBoundingClientRect();
-    
-        // Set the menu position
-        setMenuPosition902({
-          top: rect.bottom - tableRect.top + window.scrollY + 10, // Position below the icon
-          left: rect.left - tableRect.left + 5 - 40, // Adjust horizontal position
-        });
-    
-        // Set the clicked cell and row type
-        setClickedCell902(identifier); // Open for the clicked cell
-        setClickedRowType(type); // Set row type based on the clicked row (cause, sub-cause, or nested sub-cause)
-    
-        // Split the identifier if it's not the cause
-        if (type !== "cause") {
-          const identifiers = identifier.split('-'); // Splitting to handle cause, sub-cause, nested sub-cause
-          causeIndex = parseInt(identifiers[0], 10); // Extracting cause index
-          subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined; // Extracting sub-cause index
-          nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined; // Extracting nested sub-cause index
-        } else {
-          // If it's 'cause', directly use the identifier as causeIndex
-          causeIndex = parseInt(identifier, 10); // Extracting cause index
-        }
-    
-        // Logging to debug
-        console.log(`Row Clicked: Type - ${type}, Cause Index - ${causeIndex}, Sub-Cause Index - ${subCauseIndex}, Nested Sub-Cause Index - ${nestedSubCauseIndex}`);
-        
-        // Log the name (now using rowName instead of name)
-        console.log(`Name: ${rowName}`); // Log the name (sub-cause or nested sub-cause)
-    
-        // Handle different types (cause, sub-cause, nested sub-cause)
-        switch (type) {
-          case "cause":
-            console.log('Clicked on Cause:', rowName);
-            // Handle logic for cause row here
-            break;
-    
-          case "subcause":
-            console.log('Clicked on SubCause:', rowName); // Now you just have the sub-cause name
-            // Handle logic for sub-cause row here
-            break;
-    
-          case "nestedSubCause":
-            console.log('Clicked on Nested SubCause:', rowName); // Now you just have the nested sub-cause name
-            // Handle logic for nested sub-cause row here
-            break;
-    
-          default:
-            console.log('Unknown row type clicked.');
-            break;
-        }
+        default:
+          console.log('Unknown row type clicked.');
+          break;
       }
     };
-    
     
 
 
   
    // Log expandedCauseData whenever it changes
    useEffect(() => {
-    console.log('expandedCauseData updated ,,,,:', expandedCauseData);
+    console.log('expandedCauseData updated:', expandedCauseData);
   }, [expandedCauseData]); // This dependency array makes it log whenever expandedCauseData changes
   
   
@@ -899,8 +827,6 @@ const handleCreateTopCauseClick = () => {
 
 };
 
-// Function to add a new "Untitled Cause"
-// Function to add a new "Untitled Cause"
 const addNewCause = () => {
   setCausesData((prevCauses) => [
     ...prevCauses,
@@ -908,8 +834,6 @@ const addNewCause = () => {
   ]);
 };
 
-
-// Function to add a new "Untitled SubCause" under a specific cause
 const addNewSubCause = (causeName) => {
   setExpandedCauseData((prevState) => {
     const expandedCauseIndex = prevState.findIndex(
@@ -922,8 +846,8 @@ const addNewSubCause = (causeName) => {
         subCauses: [
           ...prevState[expandedCauseIndex].subCauses,
           {
-            CauseName: "Untitled SubCause", // Default name for the sub-cause
-            ProbabilityPercentage: 0, // Default probability
+            CauseName: "Untitled SubCause", 
+            ProbabilityPercentage: 0, 
           },
         ],
       };
@@ -939,112 +863,37 @@ const addNewSubCause = (causeName) => {
   const newSubCauseKey = `${causeName}-Untitled SubCause`;
   setExpandedSubCause((prev) => ({
     ...prev,
-    [newSubCauseKey]: true, // Automatically expand the new sub-cause
+    [newSubCauseKey]: true, // Ensure the new sub-cause expands
   }));
 };
 
-// Function to add a new "Untitled Nested Cause" under a specific sub-cause
+
+
+// Function to add a new nested sub-cause under a sub-cause
 const addNewNestedSubCause = (causeName, subCauseName) => {
+  // Create a unique key based on cause and sub-cause names
   const key = `${causeName}-${subCauseName}`;
 
+  // Update the state for nested sub-causes
   setNestedSubCauseData((prevState) => {
     return {
       ...prevState,
       [key]: [
-        ...(prevState[key] || []), // Use existing nested causes or start with an empty array
+        ...(prevState[key] || []), // Use existing nested sub-causes or initialize with an empty array
         {
-          eventName: "Untitled Nested Cause", // Default name for the nested cause
+          eventName: "Untitled Nested Cause", // Default name for the new nested sub-cause
           probability: 0, // Default probability
         },
       ],
     };
   });
 
-  // Set the expanded state for the nested sub-cause (auto-expand the newly added nested sub-cause)
+  // Update the expanded state for the nested sub-cause (auto-expand)
   setExpandedSubCause((prev) => ({
     ...prev,
-    [key]: true,
+    [key]: true, // Automatically expand the nested sub-cause using the same key
   }));
 };
-
-
-// Function to add a new "Untitled SubCause" under a specific cause
-const addNewUntitledSubCause = (causeIndex) => {
-  setExpandedCauseData((prevState) => {
-    const cause = prevState[causeIndex];
-
-    // Ensure causeObject is an array before attempting to add sub-causes
-    const updatedCauseObject = Array.isArray(cause.causeObject) ? cause.causeObject : [];
-
-    const updatedCause = { 
-      ...cause,
-      causeObject: [
-        ...updatedCauseObject, // Existing sub-causes (if any)
-        {
-          EventID: Date.now(), // Unique identifier (can use Date.now() or any other logic)
-          ModelID: 1, // Assuming this is static, adjust if needed
-          ParentID: cause.EventID, // Assuming the parent is the cause itself
-          IsParent: "0", // Since it's not a parent cause
-          IsActive: "1", // Active by default
-          ProbabilityPercentage: 0, // Default probability
-          CauseName: "Untitled SubCause", // Default name for the sub-cause
-          CreatedBy: "41064", // Static creator ID, adjust if necessary
-          UpdatedBy: "41064", // Static updater ID, adjust if necessary
-          internalSubCause: true, // Default flag for internal sub-causes
-        },
-      ],
-    };
-
-    const updatedCauses = [...prevState];
-    updatedCauses[causeIndex] = updatedCause;
-
-    return updatedCauses;
-  });
-};
-
-
-
-
-// Function to add a new "Untitled Nested SubCause" under a specific sub-cause
-const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
-  setExpandedCauseData((prevState) => {
-    const updatedCause = { 
-      ...prevState[causeIndex],
-      causeObject: prevState[causeIndex].causeObject.map((subCause, index) => {
-        if (index === subCauseIndex) {
-          // Add a new nested sub-cause to the "data" array of the specific sub-cause
-          return {
-            ...subCause,
-            data: [
-              ...(subCause.data || []), // Ensure that data is an array
-              {
-                EventID: Date.now(), // Unique identifier for the nested sub-cause
-                ModelID: 1, // Assuming this is static, adjust if needed
-                ParentID: subCause.EventID, // The parent of the nested sub-cause is the sub-cause itself
-                IsParent: "0", // Not a parent sub-cause
-                IsActive: "1", // Active by default
-                ProbabilityPercentage: 0, // Default probability
-                EventName: "Untitled Nested Cause", // Default name for the nested sub-cause
-                CreatedBy: "41064", // Static creator ID, adjust if necessary
-                UpdatedBy: "41064", // Static updater ID, adjust if necessary
-              },
-            ],
-          };
-        }
-        return subCause;
-      }),
-    };
-
-    const updatedCauses = [...prevState];
-    updatedCauses[causeIndex] = updatedCause;
-
-    return updatedCauses;
-  });
-};
-
-
-
-
 
 
 
@@ -1752,13 +1601,12 @@ const handleConstraintClick = () => {
             )}
           </td>
           <td>
-          {hoveredCell1114 === `cause-${index}` && (
-  <FaCog
-    id="icon-hover-1114"
-    className="config-icon901"
-    onClick={(e) => handleIconClick902(index, "cause", e, causesData[index].name)} // Pass actual cause name
-  />
-
+            {hoveredCell1114 === `cause-${index}` && (
+              <FaCog
+                id="icon-hover-1114"
+                className="config-icon901"
+                onClick={(e) => handleIconClick902(index, "cause", e)} // Pass 'cause'
+              />
             )}
           </td>
         </tr>
@@ -2153,88 +2001,6 @@ const handleConstraintClick = () => {
     </div>
   )}
 
-{/* {clickedCell902 !== null && (
-  <div
-    className="options-menu901"
-    ref={menuRef2}
-    style={{
-      position: "absolute",
-      top: `${menuPosition902.top}px`,
-      left: `${menuPosition902.left}px`,
-    }}
-  >
-  
-    {clickedRowType === 'cause' && (
-      <div
-        onClick={() => {
-          const selectedCause = causesData[clickedCell902]; 
-          console.log('Clicked on Cause:', selectedCause);
-          
-          if (selectedCause && selectedCause.name) {
-            addNewCause(selectedCause.name);
-          } else {
-            console.error('Cause data is missing or invalid:', selectedCause);
-          }
-        }}
-      >
-        Create Cause
-      </div>
-    )}
-
-
-    {clickedRowType === 'subcause' && (
-      <div
-        onClick={() => {
-        
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-
-          const selectedCause = expandedCauseData[causeIndex]; 
-          console.log('Clicked on SubCause:', selectedCause);
-
-          const selectedSubCause = selectedCause && selectedCause.causeObject[subCauseIndex];
-          if (selectedSubCause && selectedSubCause.CauseName) {
-            addNewSubCause(selectedSubCause.CauseName); 
-          } else {
-            console.error('SubCause data is missing or invalid:', selectedSubCause);
-          }
-        }}
-      >
-        Add SubCause
-      </div>
-    )}
-
-
-    {clickedRowType === 'nestedSubCause' && (
-      <div
-        onClick={() => {
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-          const nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined;
-
-          const selectedSubCause = expandedCauseData[causeIndex];
-          console.log('Clicked on Nested SubCause:', selectedSubCause);
-
-          const selectedNestedSubCause = selectedSubCause && selectedSubCause.data[nestedSubCauseIndex];
-          if (selectedNestedSubCause && selectedNestedSubCause.EventName) {
-            addNewNestedSubCause(
-              selectedNestedSubCause.EventName, 
-              "Untitled Nested Cause" 
-            );
-          } else {
-            console.error('NestedSubCause data is missing or invalid:', selectedNestedSubCause);
-          }
-        }}
-      >
-        Add Nested SubCause
-      </div>
-    )}
-  </div>
-)} */}
-
-
 {clickedCell902 !== null && (
   <div
     className="options-menu901"
@@ -2247,61 +2013,68 @@ const handleConstraintClick = () => {
   >
     {/* Handle Cause Row */}
     {clickedRowType === 'cause' && (
-      <div
-        onClick={() => {
-          const selectedCause = causesData[clickedCell902];
-          console.log('Clicked on Cause:', selectedCause);
+      <>
+        <div
+          onClick={() => {
+            const selectedCause = causesData[clickedCell902];
+            console.log('Clicked on Cause:', selectedCause); // Log the full selected cause data
 
-          // No need to use the name; just call the function with index
-          addNewCause(); 
-        }}
-      >
-        Create Cause
-      </div>
+            if (selectedCause && selectedCause.name) {
+              addNewCause(selectedCause.name); // Add new cause
+            } else {
+              console.error('Cause data is missing or invalid:', selectedCause);
+            }
+          }}
+        >
+          Create Cause
+        </div>
+      </>
     )}
 
     {/* Handle SubCause Row */}
     {clickedRowType === 'subcause' && (
-      <div
-        onClick={() => {
-          // Split the identifier into causeIndex and subCauseIndex
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
+      <>
+        <div
+          onClick={() => {
+            const selectedSubCause = expandedCauseData[clickedCell902];
+            console.log('Clicked on SubCause:', selectedSubCause); // Log the full selected sub-cause data
 
-          // Call the function to add a new untitled sub-cause
-          addNewUntitledSubCause(causeIndex);
-        }}
-      >
-        Add SubCause
-      </div>
+            if (selectedSubCause && selectedSubCause.CauseName) {
+              addNewSubCause(selectedSubCause.CauseName); // Add new sub-cause
+            } else {
+              console.error('SubCause data is missing or invalid:', selectedSubCause);
+            }
+          }}
+        >
+          Add SubCause
+        </div>
+      </>
     )}
 
     {/* Handle NestedSubCause Row */}
     {clickedRowType === 'nestedSubCause' && (
-      <div
-        onClick={() => {
-          // Split the identifier into causeIndex, subCauseIndex, and nestedSubCauseIndex
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-          const nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined;
+      <>
+        <div
+          onClick={() => {
+            const selectedNestedSubCause = nestedSubCauseData[clickedCell902];
+            console.log('Clicked on NestedSubCause:', selectedNestedSubCause); // Log the full selected nested sub-cause data
 
-          // Call the function to add a new untitled nested sub-cause
-          addNewUntitledNestedSubCause(causeIndex, subCauseIndex);
-        }}
-      >
-        Add Nested SubCause
-      </div>
+            if (selectedNestedSubCause && selectedNestedSubCause.EventName) {
+              addNewNestedSubCause(
+                selectedNestedSubCause.EventName,  // Use the EventName from the nested sub-cause
+                "Untitled Nested Cause"            // Default name for nested cause
+              );
+            } else {
+              console.error('NestedSubCause data is missing or invalid:', selectedNestedSubCause);
+            }
+          }}
+        >
+          Add Nested SubCause
+        </div>
+      </>
     )}
   </div>
 )}
-
-
-
-
-
-
 
 
 

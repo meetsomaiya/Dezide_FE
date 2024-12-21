@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -26,9 +26,6 @@ const [modalName, setModalName] = useState("");
   const [causesData, setCausesData] = useState([]); // New state for Causes data
 
   const [actionsData, setActionsData] = useState([]); // New state for Causes data
-
-  const [clickedRowType, setClickedRowType] = useState(null); // State to track clicked row type
-
 
     // State to track expanded row by cause.name, and store the fetched data
     const [expandedCauseName, setExpandedCauseName] = useState(null);
@@ -146,19 +143,19 @@ const [modalName, setModalName] = useState("");
       setNestedSubCauseData(updatedData);
     };
   
-     // Handler for slider change in nested sub-causes
-     const handleNestedSubCauseSliderChange7773 = (key, nestedIndex, value) => {
-      console.log("Slider Change Triggered: ", { key, nestedIndex, value });
-    
+    // Handler for slider changes in nested sub-cause
+    const handleNestedSubCauseSliderChange7773 = (nestedIndex, value) => {
       const total = 100;
-      const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
+      let updatedNestedSubCauses = [...nestedSubCauseData]; // Clone the existing nested sub-causes
       let delta = 0;
     
+      // Adjust the probability for the selected nested sub-cause
       if (nestedIndex < updatedNestedSubCauses.length) {
         delta = value - updatedNestedSubCauses[nestedIndex].probability;
         updatedNestedSubCauses[nestedIndex].probability = value;
       }
     
+      // Redistribute the delta proportionally among other nested sub-causes
       let remaining = total - value;
       const otherNestedSubCauses = updatedNestedSubCauses.filter((_, i) => i !== nestedIndex);
     
@@ -173,25 +170,15 @@ const [modalName, setModalName] = useState("");
         remaining -= adjustment;
       });
     
-      const correctedTotal = updatedNestedSubCauses.reduce(
-        (sum, nestedSub) => sum + nestedSub.probability,
-        0
-      );
-    
-      const balancedNestedSubCauses = updatedNestedSubCauses.map((nestedSubCause) => ({
+      // Recalculate the total to ensure the sum is always 100%
+      const correctedTotal = updatedNestedSubCauses.reduce((sum, nestedSub) => sum + nestedSub.probability, 0);
+      updatedNestedSubCauses = updatedNestedSubCauses.map((nestedSubCause) => ({
         ...nestedSubCause,
         probability: Math.round((nestedSubCause.probability / correctedTotal) * total),
       }));
     
-      console.log("Updated Nested Sub-Causes: ", balancedNestedSubCauses);
-    
-      setNestedSubCauseData((prevState) => ({
-        ...prevState,
-        [key]: balancedNestedSubCauses,
-      }));
+      setNestedSubCauseData(updatedNestedSubCauses); // Update nested sub-causes data
     };
-    
-    
     
 
   useEffect(() => {
@@ -300,151 +287,20 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     }
   };
 
-  // const handleIconClick902 = (index, event) => {
-  //   if (clickedCell902 === index) {
-  //     setClickedCell902(null); // Close if already open
-  //   } else {
-  //     const rect = event.target.getBoundingClientRect();
-  //     const tableRect = tableRef.current.getBoundingClientRect();
+  const handleIconClick902 = (index, event) => {
+    if (clickedCell902 === index) {
+      setClickedCell902(null); // Close if already open
+    } else {
+      const rect = event.target.getBoundingClientRect();
+      const tableRect = tableRef.current.getBoundingClientRect();
   
-  //     setMenuPosition902({
-  //       top: rect.bottom - tableRect.top + window.scrollY + 10, // Position below the icon
-  //       left: rect.left - tableRect.left + 5 - 40, // Adjust horizontal position
-  //     });
-  //     setClickedCell902(index); // Open for the clicked cell
-  //   }
-  // };
-  
-  // const handleIconClick902 = (index, type, event) => {
-  //   if (clickedCell902 === index) {
-  //     setClickedCell902(null); // Close if already open
-  //     setClickedRowType(null); // Clear row type when closing
-  //   } else {
-  //     const rect = event.target.getBoundingClientRect();
-  //     const tableRect = tableRef.current.getBoundingClientRect();
-  
-  //     setMenuPosition902({
-  //       top: rect.bottom - tableRect.top + window.scrollY + 10, // Position below the icon
-  //       left: rect.left - tableRect.left + 5 - 40, // Adjust horizontal position
-  //     });
-  
-  //     setClickedCell902(index); // Open for the clicked cell
-  //     setClickedRowType(type); // Set row type based on the clicked row (cause, sub-cause, or nested sub-cause)
-  //   }
-  // };
-
-    // Define your handleIconClick902 function here
-    // const handleIconClick902 = (identifier, type, event, name) => {
-    //   let causeIndex, subCauseIndex, nestedSubCauseIndex;
-    
-    //   // If the type is not 'cause', split the identifier
-    //   if (type !== "cause") {
-    //     const identifiers = identifier.split('-'); // Splitting to handle cause, sub-cause, nested sub-cause
-    //     causeIndex = parseInt(identifiers[0], 10); // Extracting cause index
-    //     subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined; // Extracting sub-cause index (if present)
-    //     nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined; // Extracting nested sub-cause index (if present)
-    //   } else {
-    //     // If it's 'cause', treat identifier directly as causeIndex
-    //     causeIndex = parseInt(identifier, 10); // Extracting cause index
-    //   }
-    
-    //   console.log(`Row Clicked: Type - ${type}, Cause Index - ${causeIndex}, Sub-Cause Index - ${subCauseIndex}, Nested Sub-Cause Index - ${nestedSubCauseIndex}`);
-    //   console.log(`Name: ${name}`); // Log the name (sub-cause or nested sub-cause)
-    
-    //   switch (type) {
-    //     case "cause":
-    //       console.log('Clicked on Cause:', name);
-    //       // Handle logic for cause row here
-    //       break;
-    
-    //     case "subcause":
-    //       console.log('Clicked on SubCause:', name); // Now you just have the sub-cause name
-    //       // Handle logic for sub-cause row here
-    //       break;
-    
-    //     case "nestedSubCause":
-    //       console.log('Clicked on Nested SubCause:', name); // Now you just have the nested sub-cause name
-    //       // Handle logic for nested sub-cause row here
-    //       break;
-    
-    //     default:
-    //       console.log('Unknown row type clicked.');
-    //       break;
-    //   }
-    // };
-    
-    const handleIconClick902 = (identifier, type, event, rowName) => {  // Changed 'name' to 'rowName'
-      let causeIndex, subCauseIndex, nestedSubCauseIndex;
-    
-      // Check if clicked row is the same as the currently selected one
-      if (clickedCell902 === identifier) {
-        setClickedCell902(null); // Close if already open
-        setClickedRowType(null); // Clear row type when closing
-      } else {
-        // Get position of the clicked icon to position the menu
-        const rect = event.target.getBoundingClientRect();
-        const tableRect = tableRef.current.getBoundingClientRect();
-    
-        // Set the menu position
-        setMenuPosition902({
-          top: rect.bottom - tableRect.top + window.scrollY + 10, // Position below the icon
-          left: rect.left - tableRect.left + 5 - 40, // Adjust horizontal position
-        });
-    
-        // Set the clicked cell and row type
-        setClickedCell902(identifier); // Open for the clicked cell
-        setClickedRowType(type); // Set row type based on the clicked row (cause, sub-cause, or nested sub-cause)
-    
-        // Split the identifier if it's not the cause
-        if (type !== "cause") {
-          const identifiers = identifier.split('-'); // Splitting to handle cause, sub-cause, nested sub-cause
-          causeIndex = parseInt(identifiers[0], 10); // Extracting cause index
-          subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined; // Extracting sub-cause index
-          nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined; // Extracting nested sub-cause index
-        } else {
-          // If it's 'cause', directly use the identifier as causeIndex
-          causeIndex = parseInt(identifier, 10); // Extracting cause index
-        }
-    
-        // Logging to debug
-        console.log(`Row Clicked: Type - ${type}, Cause Index - ${causeIndex}, Sub-Cause Index - ${subCauseIndex}, Nested Sub-Cause Index - ${nestedSubCauseIndex}`);
-        
-        // Log the name (now using rowName instead of name)
-        console.log(`Name: ${rowName}`); // Log the name (sub-cause or nested sub-cause)
-    
-        // Handle different types (cause, sub-cause, nested sub-cause)
-        switch (type) {
-          case "cause":
-            console.log('Clicked on Cause:', rowName);
-            // Handle logic for cause row here
-            break;
-    
-          case "subcause":
-            console.log('Clicked on SubCause:', rowName); // Now you just have the sub-cause name
-            // Handle logic for sub-cause row here
-            break;
-    
-          case "nestedSubCause":
-            console.log('Clicked on Nested SubCause:', rowName); // Now you just have the nested sub-cause name
-            // Handle logic for nested sub-cause row here
-            break;
-    
-          default:
-            console.log('Unknown row type clicked.');
-            break;
-        }
-      }
-    };
-    
-    
-
-
-  
-   // Log expandedCauseData whenever it changes
-   useEffect(() => {
-    console.log('expandedCauseData updated ,,,,:', expandedCauseData);
-  }, [expandedCauseData]); // This dependency array makes it log whenever expandedCauseData changes
-  
+      setMenuPosition902({
+        top: rect.bottom - tableRect.top + window.scrollY + 10, // Position below the icon
+        left: rect.left - tableRect.left + 5 - 40,
+      });
+      setClickedCell902(index); // Open for the clicked cell
+    }
+  };
   
 
   const handleEditExplanation = (actionName) => {
@@ -685,12 +541,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     };
   }, []);
 
-
-   // useEffect to print expandedCauseData and nestedSubCauseData
-   useEffect(() => {
-    console.log('Expanded Cause Data:', expandedCauseData); // Log to console
-    console.log('Nested SubCause Data:', nestedSubCauseData); // Log to console
-  }, [expandedCauseData, nestedSubCauseData]); // Dependency array ensures it runs when these states change
     
 
   // const toggleRow883 = (rowIndex) => {
@@ -898,214 +748,6 @@ const handleCreateTopCauseClick = () => {
 
 
 };
-
-// Function to add a new "Untitled Cause"
-// Function to add a new "Untitled Cause"
-const addNewCause = () => {
-  setCausesData((prevCauses) => [
-    ...prevCauses,
-    { name: "Untitled Cause", probability: 0, internalCause: true },
-  ]);
-};
-
-
-// Function to add a new "Untitled SubCause" under a specific cause
-const addNewSubCause = (causeName) => {
-  setExpandedCauseData((prevState) => {
-    const expandedCauseIndex = prevState.findIndex(
-      (cause) => cause.CauseName === causeName
-    );
-
-    if (expandedCauseIndex !== -1) {
-      const updatedCause = { 
-        ...prevState[expandedCauseIndex],
-        subCauses: [
-          ...prevState[expandedCauseIndex].subCauses,
-          {
-            CauseName: "Untitled SubCause", // Default name for the sub-cause
-            ProbabilityPercentage: 0, // Default probability
-          },
-        ],
-      };
-
-      const updatedCauses = [...prevState];
-      updatedCauses[expandedCauseIndex] = updatedCause;
-
-      return updatedCauses;
-    }
-    return prevState;
-  });
-
-  const newSubCauseKey = `${causeName}-Untitled SubCause`;
-  setExpandedSubCause((prev) => ({
-    ...prev,
-    [newSubCauseKey]: true, // Automatically expand the new sub-cause
-  }));
-};
-
-// Function to add a new "Untitled Nested Cause" under a specific sub-cause
-const addNewNestedSubCause = (causeName, subCauseName) => {
-  const key = `${causeName}-${subCauseName}`;
-
-  setNestedSubCauseData((prevState) => {
-    return {
-      ...prevState,
-      [key]: [
-        ...(prevState[key] || []), // Use existing nested causes or start with an empty array
-        {
-          eventName: "Untitled Nested Cause", // Default name for the nested cause
-          probability: 0, // Default probability
-        },
-      ],
-    };
-  });
-
-  // Set the expanded state for the nested sub-cause (auto-expand the newly added nested sub-cause)
-  setExpandedSubCause((prev) => ({
-    ...prev,
-    [key]: true,
-  }));
-};
-
-
-// Function to add a new "Untitled SubCause" under a specific cause
-const addNewUntitledSubCause = (causeIndex) => {
-  setExpandedCauseData((prevState) => {
-    const cause = prevState[causeIndex];
-
-    // Ensure causeObject is an array before attempting to add sub-causes
-    const updatedCauseObject = Array.isArray(cause.causeObject) ? cause.causeObject : [];
-
-    const updatedCause = { 
-      ...cause,
-      causeObject: [
-        ...updatedCauseObject, // Existing sub-causes (if any)
-        {
-          EventID: Date.now(), // Unique identifier (can use Date.now() or any other logic)
-          ModelID: 1, // Assuming this is static, adjust if needed
-          ParentID: cause.EventID, // Assuming the parent is the cause itself
-          IsParent: "0", // Since it's not a parent cause
-          IsActive: "1", // Active by default
-          ProbabilityPercentage: 0, // Default probability
-          CauseName: "Untitled SubCause", // Default name for the sub-cause
-          CreatedBy: "41064", // Static creator ID, adjust if necessary
-          UpdatedBy: "41064", // Static updater ID, adjust if necessary
-          internalSubCause: true, // Default flag for internal sub-causes
-        },
-      ],
-    };
-
-    const updatedCauses = [...prevState];
-    updatedCauses[causeIndex] = updatedCause;
-
-    return updatedCauses;
-  });
-};
-
-
-
-
-// Function to add a new "Untitled Nested SubCause" under a specific sub-cause
-const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
-  setExpandedCauseData((prevState) => {
-    const updatedCause = { 
-      ...prevState[causeIndex],
-      causeObject: prevState[causeIndex].causeObject.map((subCause, index) => {
-        if (index === subCauseIndex) {
-          // Add a new nested sub-cause to the "data" array of the specific sub-cause
-          return {
-            ...subCause,
-            data: [
-              ...(subCause.data || []), // Ensure that data is an array
-              {
-                EventID: Date.now(), // Unique identifier for the nested sub-cause
-                ModelID: 1, // Assuming this is static, adjust if needed
-                ParentID: subCause.EventID, // The parent of the nested sub-cause is the sub-cause itself
-                IsParent: "0", // Not a parent sub-cause
-                IsActive: "1", // Active by default
-                ProbabilityPercentage: 0, // Default probability
-                EventName: "Untitled Nested Cause", // Default name for the nested sub-cause
-                CreatedBy: "41064", // Static creator ID, adjust if necessary
-                UpdatedBy: "41064", // Static updater ID, adjust if necessary
-              },
-            ],
-          };
-        }
-        return subCause;
-      }),
-    };
-
-    const updatedCauses = [...prevState];
-    updatedCauses[causeIndex] = updatedCause;
-
-    return updatedCauses;
-  });
-};
-
-
-
-
-
-
-
-
-
-
-
-const handleCreateSubCauseClick = (causeName) => {
-  // Create a new untitled sub-cause with default values
-  const newSubCause = { CauseName: "Untitled Sub-Cause", ProbabilityPercentage: 0 }; // Default sub-cause data
-  
-  // Update the causesData state to include the new sub-cause at the top
-  setCausesData((prevState) => {
-    const updatedCausesData = prevState.map((cause) =>
-      cause.name === causeName
-        ? {
-            ...cause,
-            subCauses: [{ CauseName: "Untitled Sub-Cause", ProbabilityPercentage: 0 }, ...(cause.subCauses || [])], // Add to the top
-          }
-        : cause
-    );
-
-    // Log the updated state
-    updatedCausesData.forEach((cause) => {
-      cause.subCauses?.forEach((subCause) => {
-        console.log(`Cause: ${cause.name}, Sub-Cause: ${subCause.CauseName}, Probability: ${subCause.ProbabilityPercentage}%`);
-      });
-    });
-
-    return updatedCausesData;
-  });
-};
-
-
-
-
-const handleCreateNestedSubCauseClick = (causeName, subCauseName) => {
-  // Create a new untitled nested sub-cause with default values
-  const newNestedSubCause = { eventName: "Untitled Event", probability: 0 }; // Default nested sub-cause data
-
-  // Update the nestedSubCauseData state to include the new nested sub-cause at the top
-  setNestedSubCauseData((prevState) => {
-    const key = `${causeName}-${subCauseName}`; // Create a key for the nested sub-cause data
-
-    const updatedNestedSubCauseData = {
-      ...prevState,
-      [key]: [{ eventName: "Untitled Event", probability: 0 }, ...(prevState[key] || [])], // Add to the top
-    };
-
-    // Log the updated state with the probability of the nested sub-causes
-    updatedNestedSubCauseData[key]?.forEach((nestedSubCause) => {
-      console.log(`Cause: ${causeName}, Sub-Cause: ${subCauseName}, Nested Event: ${nestedSubCause.eventName}, Probability: ${nestedSubCause.probability}%`);
-    });
-
-    return updatedNestedSubCauseData;
-  });
-};
-
-
-
-
 
 // Handles input changes for the new cause fields (only triggered when creating a new cause)
 const handleNewCauseChange = (e) => {
@@ -1364,18 +1006,13 @@ const handleConstraintClick = () => {
   
         if (data.success && data.data) {
           // Embed the fetched sub-cause data under the current sub-cause
-          setNestedSubCauseData((prevState) => {
-            const updatedState = {
-              ...prevState,
-              [key]: data.data.map((item) => ({
-                eventName: item.EventName, // Store EventName
-                probability: item.ProbabilityPercentage || 0, // Store ProbabilityPercentage with default fallback
-              })),
-            };
-            console.log("Updated Nested Sub-Cause State:", updatedState);
-            return updatedState;
-          });
-          ;
+          setNestedSubCauseData((prevState) => ({
+            ...prevState,
+            [key]: data.data.map((item) => ({
+              eventName: item.EventName, // Store EventName
+              probability: item.ProbabilityPercentage, // Store ProbabilityPercentage
+            })),
+          }));
         }
       } catch (error) {
         console.error('Error fetching sub-cause data:', error);
@@ -1384,15 +1021,15 @@ const handleConstraintClick = () => {
   };
   
   // useEffect to print EventName and ProbabilityPercentage whenever data is updated
-  // useEffect(() => {
-  //   console.log('Current nestedSubCauseData state:', nestedSubCauseData);
-  //   // Print both EventName and ProbabilityPercentage for each key in nestedSubCauseData
-  //   Object.keys(nestedSubCauseData).forEach((key) => {
-  //     nestedSubCauseData[key].forEach((item) => {
-  //       console.log(`Event: ${item.eventName}, Probability: ${item.probability}%`);
-  //     });
-  //   });
-  // }, [nestedSubCauseData]); // This effect runs whenever nestedSubCauseData changes
+  useEffect(() => {
+    console.log('Current nestedSubCauseData state:', nestedSubCauseData);
+    // Print both EventName and ProbabilityPercentage for each key in nestedSubCauseData
+    Object.keys(nestedSubCauseData).forEach((key) => {
+      nestedSubCauseData[key].forEach((item) => {
+        console.log(`Event: ${item.eventName}, Probability: ${item.probability}%`);
+      });
+    });
+  }, [nestedSubCauseData]); // This effect runs whenever nestedSubCauseData changes
   
   
 
@@ -1669,7 +1306,6 @@ const handleConstraintClick = () => {
       {showOptionsBox1112 && (
         <div className="options-box-1112">
           <div className="option-1112" onClick={handleCreateTopCauseClick}>
-          {/* <div className="option-1112" onClick={addNewSubCause}> */}
             <FaPlus className="icon-1112" /> Create Top Cause
           </div>
           <div className="option-1112" onClick={handleRearrangeClick1112}>
@@ -1677,280 +1313,223 @@ const handleConstraintClick = () => {
           </div>
         </div>
       )}
-      
 
-      <table className="modal-table" id="cause-table">
-  <thead>
-    <tr>
-      <th>✓</th>
-      <th></th> {/* For the plus/minus icon */}
-      <th>Cause</th>
-      <th>Probability</th>
-      {isAnyProgressChecked && <th>Solve</th>}
-      <th>Action</th> {/* Action column header */}
-    </tr>
-  </thead>
-  <tbody>
-    {causesData.map((cause, index) => (
-      <React.Fragment key={index}>
-        {/* Main Cause Row */}
-        <tr
-          onMouseEnter={() => setHoveredCell1114(`cause-${index}`)}
-          onMouseLeave={() => setHoveredCell1114(null)}
-        >
-          <td>
-            {!solveCheckboxes900[index] && <span>✓</span>} {/* Show tick mark */}
-          </td>
-          <td>
-            {cause.internalCause && (
-              <button
-                className="toggle-button"
-                onClick={() => handleFetchCause(cause.name)}
-              >
-                {expandedCauseName === cause.name ? "-" : "+"}
-              </button>
-            )}
-          </td>
-          <td>
-            {editingField886?.index === index && editingField886?.field === "name" ? (
-              <input
-                type="text"
-                value={editingField886.value}
-                onChange={(e) => setEditingField886({ ...editingField886, value: e.target.value })}
-                onBlur={(e) => handleSaveField(index, "name", e.target.value, e)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSaveField(index, "name", e.target.value, e);
-                  }
-                }}
-                autoFocus
-              />
-            ) : (
-              <span onClick={() => handleEditField(index, "name")}>{cause.name}</span>
-            )}
-          </td>
-          <td>
-            <div className="slider-container">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={cause.probability}
-                className="slider"
-                onChange={(e) => handleSliderChange(index, Number(e.target.value))}
-              />
-              <span className="probability">{cause.probability}%</span>
-            </div>
-          </td>
-          <td>
-            {isAnyProgressChecked && (
-              <input
-                type="checkbox"
-                checked={solveCheckboxes900[index] || false}
-                onChange={() => setSolveCheckboxes900((prev) => ({ ...prev, [index]: !prev[index] }))}
-              />
-            )}
-          </td>
-          <td>
-          {hoveredCell1114 === `cause-${index}` && (
-  <FaCog
-    id="icon-hover-1114"
-    className="config-icon901"
-    onClick={(e) => handleIconClick902(index, "cause", e, causesData[index].name)} // Pass actual cause name
-  />
-
-            )}
-          </td>
+<table className="modal-table" id="cause-table">
+      <thead>
+        <tr>
+          <th>✓</th>
+          <th></th> {/* For the plus/minus icon */}
+          <th>Cause</th>
+          <th>Probability</th>
+          {isAnyProgressChecked && <th>Solve</th>}
+          <th>Action</th> {/* Action column header */}
         </tr>
-
-        {/* Expanded Sub-Cause Rows */}
-        {expandedCauseName === cause.name &&
-          expandedCauseData.map((causeDetail, subIndex) => (
-            <React.Fragment key={subIndex}>
-              <tr
-                className="sub-cause-row"
-                onMouseEnter={() => setHoveredCell1114(`subcause-${index}-${subIndex}`)}
-                onMouseLeave={() => setHoveredCell1114(null)}
-              >
-                <td>
-                  {!solveCheckboxes900[index] && <span>✓</span>} {/* Show tick mark */}
-                </td>
-                <td>
-                  {causeDetail.internalSubCause && (
-                    <button
-  className="toggle-button"
-  onClick={() =>
-    handleSubCauseToggleAndFetch(`${cause.name}-${causeDetail.CauseName}`, causeDetail.CauseName)
-  }
->
-  {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] ? "-" : "+"}
-</button>
-
-                  )}
-                </td>
-                <td>
-                  {editingField886?.index === subIndex && editingField886?.field === "CauseName" ? (
-                    <input
-                      type="text"
-                      value={editingField886.value || ""}
-                      onChange={(e) => setEditingField886({ ...editingField886, value: e.target.value })}
-                      onBlur={() => handleSaveSubField886(subIndex, "CauseName", editingField886.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleSaveSubField886(subIndex, "CauseName", editingField886.value);
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    <span onClick={() => setEditingField886({ index: subIndex, field: "CauseName", value: causeDetail.CauseName || "" })}>
-                      {causeDetail.CauseName || "Click to edit"}
-                    </span>
-                  )}
-                </td>
-
-                <td>
-                  <div className="slider-container">
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={causeDetail.ProbabilityPercentage || 0}
-                      className="slider"
-                      onChange={(e) => handleSubCauseSliderChange(subIndex, Number(e.target.value))}
-                    />
-                    <span className="probability">{causeDetail.ProbabilityPercentage || 0}%</span>
-                  </div>
-                </td>
-
-                <td>
-                  {isAnyProgressChecked && (
-                    <input
-                      type="checkbox"
-                      checked={solveCheckboxes900[`${index}-${subIndex}`] || false}
-                      onChange={() =>
-                        setSolveCheckboxes900((prev) => ({
-                          ...prev,
-                          [`${index}-${subIndex}`]: !prev[`${index}-${subIndex}`],
-                        }))
+      </thead>
+      <tbody>
+        {causesData.map((cause, index) => (
+          <React.Fragment key={index}>
+            {/* Main Cause Row */}
+            <tr
+              onMouseEnter={() => {
+                setHoveredCause993(cause.name);
+                fetchHoveringItemsForCause993(cause.name);
+                setHoveredCell1114(index);
+              }}
+              onMouseLeave={() => {
+                setHoveredCause993(null);
+                setHoveredCell1114(null);
+              }}
+            >
+              <td>{!solveCheckboxes900[index] && <span>✓</span>}</td>
+              <td>
+                {cause.internalCause && (
+                  <button
+                    className="toggle-button"
+                    onClick={() => handleFetchCause(cause.name)}
+                  >
+                    {expandedCauseName === cause.name ? "-" : "+"}
+                  </button>
+                )}
+              </td>
+              <td>
+                {editingField886?.index === index && editingField886?.field === "name" ? (
+                  <input
+                    type="text"
+                    value={editingField886.value}
+                    onChange={(e) => setEditingField886({ ...editingField886, value: e.target.value })}
+                    onBlur={(e) => handleSaveField(index, "name", e.target.value, e)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSaveField(index, "name", e.target.value, e);
                       }
-                    />
+                    }}
+                    autoFocus
+                  />
+                ) : (
+                  <span onClick={() => handleEditField(index, "name")}>{cause.name}</span>
+                )}
+              </td>
+
+              <td>
+                <div className="slider-container">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={cause.probability}
+                    className="slider"
+                    onChange={(e) => handleSliderChange(index, Number(e.target.value))}
+                  />
+                  <span className="probability">{cause.probability}%</span>
+                </div>
+              </td>
+              <td>
+                {isAnyProgressChecked && (
+                  <input
+                    type="checkbox"
+                    checked={solveCheckboxes900[index] || false}
+                    onChange={() => setSolveCheckboxes900((prev) => ({ ...prev, [index]: !prev[index] }))}
+                  />
+                )}
+              </td>
+              <td>
+                {hoveredCell1114 === index && (
+                  <FaCog id="icon-hover-1114" className="config-icon901" onClick={(e) => handleIconClick902(index, e)} />
+                )}
+              </td>
+            </tr>
+
+            {/* Expanded Sub-Cause Rows */}
+            {expandedCauseName === cause.name &&
+              expandedCauseData.map((causeDetail, subIndex) => (
+                <React.Fragment key={subIndex}>
+                  <tr className="sub-cause-row">
+                    <td></td>
+                    <td>
+                      {causeDetail.internalSubCause && (
+                        <button
+                          className="toggle-button"
+                          onClick={() =>
+                            handleSubCauseToggleAndFetch(`${cause.name}-${causeDetail.CauseName}`, causeDetail.CauseName)
+                          }
+                        >
+                          {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] ? "-" : "+"}
+                        </button>
+                      )}
+                    </td>
+                    <td>
+                      {editingField886?.index === subIndex && editingField886?.field === "CauseName" ? (
+                        <input
+                          type="text"
+                          value={editingField886.value || ""}
+                          onChange={(e) => setEditingField886({ ...editingField886, value: e.target.value })}
+                          onBlur={() => handleSaveSubField886(subIndex, "CauseName", editingField886.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleSaveSubField886(subIndex, "CauseName", editingField886.value);
+                            }
+                          }}
+                          autoFocus
+                        />
+                      ) : (
+                        <span onClick={() => setEditingField886({ index: subIndex, field: "CauseName", value: causeDetail.CauseName || "" })}>
+                          {causeDetail.CauseName || "Click to edit"}
+                        </span>
+                      )}
+                    </td>
+
+                    <td>
+                      <div className="slider-container">
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={causeDetail.ProbabilityPercentage || 0}
+                          className="slider"
+                          onChange={(e) => handleSubCauseSliderChange(subIndex, Number(e.target.value))}
+                        />
+                        <span className="probability">{causeDetail.ProbabilityPercentage || 0}%</span>
+                      </div>
+                    </td>
+
+                    <td>
+                      {isAnyProgressChecked && (
+                        <input
+                          type="checkbox"
+                          checked={solveCheckboxes900[`${index}-${subIndex}`] || false}
+                          onChange={() =>
+                            setSolveCheckboxes900((prev) => ({
+                              ...prev,
+                              [`${index}-${subIndex}`]: !prev[`${index}-${subIndex}`],
+                            }))
+                          }
+                        />
+                      )}
+                    </td>
+
+                    <td>
+                      {hoveredCell1114 === `${index}-${subIndex}` && (
+                        <FaCog id="icon-hover-1114" className="icon-class-1114" />
+                      )}
+                    </td>
+                  </tr>
+
+                  {/* Nested Sub-Cause Rows with Slider and Editing (7773) */}
+                  {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] && (
+                    <tr className="nested-sub-cause-row">
+                      <td colSpan={6}>
+                        <table className="nested-sub-cause-table">
+                          <tbody>
+                            {nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`]?.map((nestedSubCause, nestedIndex) => (
+                              <tr key={nestedIndex}>
+                                <td></td>
+                                <td>
+                                  {editingField7773?.index === nestedIndex && editingField7773?.field === "eventName" ? (
+                                    <input
+                                      type="text"
+                                      value={editingField7773.value || ""}
+                                      onChange={(e) => setEditingField7773({ ...editingField7773, value: e.target.value })}
+                                      onBlur={() => handleSaveNestedSubCauseField7773(nestedIndex, "eventName", editingField7773.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                          handleSaveNestedSubCauseField7773(nestedIndex, "eventName", editingField7773.value);
+                                        }
+                                      }}
+                                      autoFocus
+                                    />
+                                  ) : (
+                                    <span onClick={() => setEditingField7773({ index: nestedIndex, field: "eventName", value: nestedSubCause.eventName || "" })}>
+                                      {nestedSubCause.eventName || "Click to edit"}
+                                    </span>
+                                  )}
+                                </td>
+
+                                <td>
+                                  <div className="slider-container">
+                                    <input
+                                      type="range"
+                                      min="0"
+                                      max="100"
+                                      value={nestedSubCause.probability || 0}
+                                      className="slider"
+                                      onChange={(e) => handleNestedSubCauseSliderChange7773(nestedIndex, Number(e.target.value))}
+                                    />
+                                    <span className="probability">{nestedSubCause.probability || 0}%</span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
                   )}
-                </td>
-                <td>
-  {hoveredCell1114 === `subcause-${index}-${subIndex}` && (
-    <FaCog
-      id="icon-hover-1114"
-      className="config-icon901"
-      onClick={(e) => handleIconClick902(`${index}-${subIndex}`, "subcause", e, causeDetail.CauseName)} // Pass only the sub-cause name
-    />
-  )}
-</td>
-
-              </tr>
-
-              {/* Nested Sub-Cause Rows with Slider and Editing */}
-              {expandedSubCause[`${cause.name}-${causeDetail.CauseName}`] && (
-                <tr
-                  className="nested-sub-cause-row"
-                  onMouseEnter={() => setHoveredCell1114(`nested-subcause-${index}-${subIndex}`)} // Unique ID for nested sub-cause
-                  onMouseLeave={() => setHoveredCell1114(null)}
-                >
-                  <td colSpan={5}> {/* Adjust the column span to remove the first column */}
-                    <table className="nested-sub-cause-table">
-                      <tbody>
-                      {nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`]?.map((nestedSubCause, nestedIndex) => (
-  <tr
-    key={nestedIndex}
-    className="nested-sub-cause-row"
-    onMouseEnter={() => setHoveredCell1114(`nested-subcause-${index}-${subIndex}-${nestedIndex}`)}
-    onMouseLeave={() => setHoveredCell1114(null)}
-  >
-                            <td>
-                              {!solveCheckboxes900[index] && <span>✓</span>} {/* Show tick mark */}
-                            </td>
-                            <td></td>
-                            <td>
-                              {editingField7773?.index === nestedIndex && editingField7773?.field === "eventName" ? (
-                                <input
-                                  type="text"
-                                  value={editingField7773.value || ""}
-                                  onChange={(e) => setEditingField7773({ ...editingField7773, value: e.target.value })}
-                                  onBlur={() => handleSaveNestedSubCauseField7773(nestedIndex, "eventName", editingField7773.value)}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      handleSaveNestedSubCauseField7773(nestedIndex, "eventName", editingField7773.value);
-                                    }
-                                  }}
-                                  autoFocus
-                                />
-                              ) : (
-                                <span onClick={() => setEditingField7773({ index: nestedIndex, field: "eventName", value: nestedSubCause.eventName || "" })}>
-                                  {nestedSubCause.eventName || "Click to edit"}
-                                </span>
-                              )}
-                            </td>
-
-                            <td>
-                              <div className="slider-container">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="100"
-                                  value={nestedSubCause.probability || 0}
-                                  className="slider"
-                                  onChange={(e) =>
-                                    handleNestedSubCauseSliderChange7773(
-                                      `${cause.name}-${causeDetail.CauseName}`,
-                                      nestedIndex,
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                />
-                                <span className="probability">{nestedSubCause.probability || 0}%</span>
-                              </div>
-                            </td>
-
-                            <td>
-                              {isAnyProgressChecked && (
-                                <input
-                                  type="checkbox"
-                                  checked={solveCheckboxes900[`${index}-${subIndex}-${nestedIndex}`] || false}
-                                  onChange={() =>
-                                    setSolveCheckboxes900((prev) => ({
-                                      ...prev,
-                                      [`${index}-${subIndex}-${nestedIndex}`]: !prev[`${index}-${subIndex}-${nestedIndex}`],
-                                    }))
-                                  }
-                                />
-                              )}
-                            </td>
-
-                            <td>
-  {hoveredCell1114 === `nested-subcause-${index}-${subIndex}-${nestedIndex}` && (
-    <FaCog
-      id="icon-hover-1114"
-      className="config-icon901"
-      onClick={(e) => handleIconClick902(`${index}-${subIndex}-${nestedIndex}`, "nestedSubCause", e, nestedSubCause.eventName)} // Pass only the event name of the nested sub-cause
-    />
-  )}
-</td>
-
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-      </React.Fragment>
-    ))}
-  </tbody>
-</table>
-
-
+                </React.Fragment>
+              ))}
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
 
 
 
@@ -2153,88 +1732,6 @@ const handleConstraintClick = () => {
     </div>
   )}
 
-{/* {clickedCell902 !== null && (
-  <div
-    className="options-menu901"
-    ref={menuRef2}
-    style={{
-      position: "absolute",
-      top: `${menuPosition902.top}px`,
-      left: `${menuPosition902.left}px`,
-    }}
-  >
-  
-    {clickedRowType === 'cause' && (
-      <div
-        onClick={() => {
-          const selectedCause = causesData[clickedCell902]; 
-          console.log('Clicked on Cause:', selectedCause);
-          
-          if (selectedCause && selectedCause.name) {
-            addNewCause(selectedCause.name);
-          } else {
-            console.error('Cause data is missing or invalid:', selectedCause);
-          }
-        }}
-      >
-        Create Cause
-      </div>
-    )}
-
-
-    {clickedRowType === 'subcause' && (
-      <div
-        onClick={() => {
-        
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-
-          const selectedCause = expandedCauseData[causeIndex]; 
-          console.log('Clicked on SubCause:', selectedCause);
-
-          const selectedSubCause = selectedCause && selectedCause.causeObject[subCauseIndex];
-          if (selectedSubCause && selectedSubCause.CauseName) {
-            addNewSubCause(selectedSubCause.CauseName); 
-          } else {
-            console.error('SubCause data is missing or invalid:', selectedSubCause);
-          }
-        }}
-      >
-        Add SubCause
-      </div>
-    )}
-
-
-    {clickedRowType === 'nestedSubCause' && (
-      <div
-        onClick={() => {
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-          const nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined;
-
-          const selectedSubCause = expandedCauseData[causeIndex];
-          console.log('Clicked on Nested SubCause:', selectedSubCause);
-
-          const selectedNestedSubCause = selectedSubCause && selectedSubCause.data[nestedSubCauseIndex];
-          if (selectedNestedSubCause && selectedNestedSubCause.EventName) {
-            addNewNestedSubCause(
-              selectedNestedSubCause.EventName, 
-              "Untitled Nested Cause" 
-            );
-          } else {
-            console.error('NestedSubCause data is missing or invalid:', selectedNestedSubCause);
-          }
-        }}
-      >
-        Add Nested SubCause
-      </div>
-    )}
-  </div>
-)} */}
-
-
 {clickedCell902 !== null && (
   <div
     className="options-menu901"
@@ -2245,68 +1742,28 @@ const handleConstraintClick = () => {
       left: `${menuPosition902.left}px`,
     }}
   >
-    {/* Handle Cause Row */}
-    {clickedRowType === 'cause' && (
-      <div
-        onClick={() => {
-          const selectedCause = causesData[clickedCell902];
-          console.log('Clicked on Cause:', selectedCause);
-
-          // No need to use the name; just call the function with index
-          addNewCause(); 
-        }}
-      >
-        Create Cause
-      </div>
-    )}
-
-    {/* Handle SubCause Row */}
-    {clickedRowType === 'subcause' && (
-      <div
-        onClick={() => {
-          // Split the identifier into causeIndex and subCauseIndex
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-
-          // Call the function to add a new untitled sub-cause
-          addNewUntitledSubCause(causeIndex);
-        }}
-      >
-        Add SubCause
-      </div>
-    )}
-
-    {/* Handle NestedSubCause Row */}
-    {clickedRowType === 'nestedSubCause' && (
-      <div
-        onClick={() => {
-          // Split the identifier into causeIndex, subCauseIndex, and nestedSubCauseIndex
-          const identifiers = clickedCell902.split('-');
-          const causeIndex = parseInt(identifiers[0], 10);
-          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
-          const nestedSubCauseIndex = identifiers[2] ? parseInt(identifiers[2], 10) : undefined;
-
-          // Call the function to add a new untitled nested sub-cause
-          addNewUntitledNestedSubCause(causeIndex, subCauseIndex);
-        }}
-      >
-        Add Nested SubCause
-      </div>
-    )}
+    <div
+      // onClick={() => handleCreateCause(paginatedData990[clickedCell902].name)}
+    >
+      Create Cause
+    </div>
+    <div
+      // onClick={() => handleLock(paginatedData990[clickedCell902].name)}
+    >
+      Lock
+    </div>
+    <div
+      // onClick={() => handleAdvanced(paginatedData990[clickedCell902].name)}
+    >
+      Advanced
+    </div>
+    <div
+      // onClick={() => handleDelete(paginatedData990[clickedCell902].name)}
+    >
+      Delete
+    </div>
   </div>
 )}
-
-
-
-
-
-
-
-
-
-
-
 
 </div>
 
