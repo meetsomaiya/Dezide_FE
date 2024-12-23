@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -153,27 +153,6 @@ const [modalName, setModalName] = useState("");
       handleSave1115(rowIndex, field);
     }
   };
-
-    // Function to handle creating a new action
-    const addNewAction1115 = () => {
-      const newAction = {
-        EventID: null, // Placeholder values
-        RootID: null,
-        EventName: "New Event",
-        ProbabilityPercentage: null,
-        IsParent: "0",
-        ParentID: null,
-        ActionID: actionsData.length + 1, // Generate a unique ID
-        ActionName: "Untitled Action",
-        ActionTime: "00:00:00",
-        ActionCost: 0,
-        Level: 1,
-      };
-    
-      // Prepend the new action to the existing data
-      setActionsData((prevActions) => [newAction, ...prevActions]);
-    };
-    
   
   const [tableData, setTableData] = useState([]);
 
@@ -301,25 +280,9 @@ const [modalName, setModalName] = useState("");
   }, [location.state]);
 
   // Handler for "Progress" checkboxes in the action table
-  // const handleProgressCheckboxChange = (index, isChecked) => {
-  //   setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
-  // };
-
   const handleProgressCheckboxChange = (index, isChecked) => {
-    // Make a copy of the actionsData
-    const updatedActionsData = [...actionsData];
-    
-    // Update the progress of the specific action
-    updatedActionsData[index].progress = isChecked;
-    
-    // Update the state with the modified actionsData
-    setActionsData(updatedActionsData);
-    
-    // Optionally, if you want to track if any progress is checked globally
-    const anyProgressChecked = updatedActionsData.some(action => action.progress === true);
-    setIsAnyProgressChecked(anyProgressChecked);
+    setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
   };
-  
 
   const [solveCheckboxes900, setSolveCheckboxes900] = useState({});
   const [showBreakIcon900, setShowBreakIcon900] = useState(
@@ -2158,10 +2121,10 @@ const handleConstraintClick = () => {
           </h3>
           {showOptionsBox1113 && (
         <div className="options-box-1113">
-      {/* Create Action Button */}
-      <div className="option-1113" onClick={addNewAction1115}>
-        <FaPlus className="icon-1112" /> Create Action
-      </div>
+          <div className="option-1113">
+          {/* <div className="option-1112" onClick={addNewSubCause}> */}
+            <FaPlus className="icon-1112" /> Action
+          </div>
         </div>
       )}
 {/* Pagination Wrapper */}
@@ -2215,7 +2178,7 @@ const handleConstraintClick = () => {
 {/* Table */}
       {/* Action Table */}
       <div style={{ position: "relative" }}>
-      <table className="modal-table" id="action-table" ref={tableRef}>
+      <table className="modal-table" id="action-table">
       <thead>
         <tr>
           <th>Name</th>
@@ -2229,17 +2192,11 @@ const handleConstraintClick = () => {
       <tbody>
         {paginatedData990.length > 0 ? (
           paginatedData990.map((action, rowIndex) => (
-            <tr
-              key={rowIndex}
-              onMouseEnter={() => handleMouseEnter901(rowIndex)}
-              onMouseLeave={handleMouseLeave901}
-              style={{
-                backgroundColor:
-                  hoveredCell901 === rowIndex ? "rgba(200, 200, 255, 0.5)" : "transparent",
-              }}
-            >
+            <tr key={rowIndex}>
               {/* Editable Name */}
-              <td onClick={() => handleCellClick1115(rowIndex, "name", action.name)}>
+              <td
+                onClick={() => handleCellClick1115(rowIndex, "name", action.name)}
+              >
                 {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "name" ? (
                   <input
                     type="text"
@@ -2255,7 +2212,9 @@ const handleConstraintClick = () => {
               </td>
 
               {/* Editable Time */}
-              <td onClick={() => handleCellClick1115(rowIndex, "time", action.time)}>
+              <td
+                onClick={() => handleCellClick1115(rowIndex, "time", action.time)}
+              >
                 {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "time" ? (
                   <input
                     type="text"
@@ -2271,7 +2230,9 @@ const handleConstraintClick = () => {
               </td>
 
               {/* Editable Money */}
-              <td onClick={() => handleCellClick1115(rowIndex, "money", action.money)}>
+              <td
+                onClick={() => handleCellClick1115(rowIndex, "money", action.money)}
+              >
                 {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "money" ? (
                   <input
                     type="text"
@@ -2287,7 +2248,9 @@ const handleConstraintClick = () => {
               </td>
 
               {/* Editable Level */}
-              <td onClick={() => handleCellClick1115(rowIndex, "level", action.level)}>
+              <td
+                onClick={() => handleCellClick1115(rowIndex, "level", action.level)}
+              >
                 {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "level" ? (
                   <input
                     type="text"
@@ -2302,23 +2265,15 @@ const handleConstraintClick = () => {
                 )}
               </td>
 
-           {/* Progress Checkbox */}
-           <td>
-                  <input
-                    type="checkbox"
-                    checked={action.progress || false}
-                    onChange={(e) => handleProgressCheckboxChange(rowIndex, e.target.checked)}
-                  />
-                </td>
-
-              {/* Hover Configuration Icon */}
+              {/* Progress Checkbox */}
               <td>
-                {hoveredCell901 === rowIndex && (
-                  <FaCog
-                    className="config-icon901"
-                    onClick={(e) => handleIconClick901(rowIndex, e)}
-                  />
-                )}
+                <input
+                  type="checkbox"
+                  checked={action.progress || false}
+                  onChange={(e) => {
+                    paginatedData990[rowIndex].progress = e.target.checked;
+                  }}
+                />
               </td>
             </tr>
           ))

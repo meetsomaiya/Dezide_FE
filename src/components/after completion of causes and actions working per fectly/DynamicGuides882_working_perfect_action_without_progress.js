@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -301,25 +301,9 @@ const [modalName, setModalName] = useState("");
   }, [location.state]);
 
   // Handler for "Progress" checkboxes in the action table
-  // const handleProgressCheckboxChange = (index, isChecked) => {
-  //   setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
-  // };
-
   const handleProgressCheckboxChange = (index, isChecked) => {
-    // Make a copy of the actionsData
-    const updatedActionsData = [...actionsData];
-    
-    // Update the progress of the specific action
-    updatedActionsData[index].progress = isChecked;
-    
-    // Update the state with the modified actionsData
-    setActionsData(updatedActionsData);
-    
-    // Optionally, if you want to track if any progress is checked globally
-    const anyProgressChecked = updatedActionsData.some(action => action.progress === true);
-    setIsAnyProgressChecked(anyProgressChecked);
+    setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
   };
-  
 
   const [solveCheckboxes900, setSolveCheckboxes900] = useState({});
   const [showBreakIcon900, setShowBreakIcon900] = useState(
@@ -2302,14 +2286,16 @@ const handleConstraintClick = () => {
                 )}
               </td>
 
-           {/* Progress Checkbox */}
-           <td>
-                  <input
-                    type="checkbox"
-                    checked={action.progress || false}
-                    onChange={(e) => handleProgressCheckboxChange(rowIndex, e.target.checked)}
-                  />
-                </td>
+              {/* Progress Checkbox */}
+              <td>
+                <input
+                  type="checkbox"
+                  checked={action.progress || false}
+                  onChange={(e) => {
+                    paginatedData990[rowIndex].progress = e.target.checked;
+                  }}
+                />
+              </td>
 
               {/* Hover Configuration Icon */}
               <td>

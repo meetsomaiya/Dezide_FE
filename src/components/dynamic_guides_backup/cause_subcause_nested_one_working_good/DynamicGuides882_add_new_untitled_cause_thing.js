@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -114,8 +114,6 @@ const [modalName, setModalName] = useState("");
 
   const [showOptionsBox1112, setShowOptionsBox1112] = useState(false);
 
-  const [showOptionsBox1113, setShowOptionsBox1113] = useState(false);
-
   const [hoveredCell1113, setHoveredCell1113] = useState(null);
 
   const [hoveredCell1114, setHoveredCell1114] = useState(null);
@@ -123,66 +121,12 @@ const [modalName, setModalName] = useState("");
    // New state variables for nested sub-cause (7773) functionalities
    const [editingField7773, setEditingField7773] = useState(null); // State for editing nested sub-cause fields
 
- // New state to track the currently editable cell
- const [editableCell1115, setEditableCell1115] = useState(null); // Tracks { rowIndex, field }
- const [tempValue1115, setTempValue1115] = useState(""); // Temporary value for editing
 
-   // Function to handle changes while editing
-   const handleInputChange1115 = (e) => {
-    setTempValue1115(e.target.value); // Update the temporary value
-  };
-
-    // Function to handle cell click and make it editable
-    const handleCellClick1115 = (rowIndex, field, value) => {
-      setEditableCell1115({ rowIndex, field }); // Set which cell is being edited
-      setTempValue1115(value); // Initialize temp value with the current value of the cell
-    };
-
-    
-  // Function to handle saving the value and exiting edit mode
-  const handleSave1115 = (rowIndex, field) => {
-    // Save changes to the cell
-    paginatedData990[rowIndex][field] = tempValue1115; // Update the actual table data
-    setEditableCell1115(null); // Exit edit mode
-    setTempValue1115(""); // Clear temporary value
-  };
-
-  // Function to handle blur or pressing Enter to save changes
-  const handleBlurOrEnter1115 = (e, rowIndex, field) => {
-    if (e.type === "blur" || (e.type === "keydown" && e.key === "Enter")) {
-      handleSave1115(rowIndex, field);
-    }
-  };
-
-    // Function to handle creating a new action
-    const addNewAction1115 = () => {
-      const newAction = {
-        EventID: null, // Placeholder values
-        RootID: null,
-        EventName: "New Event",
-        ProbabilityPercentage: null,
-        IsParent: "0",
-        ParentID: null,
-        ActionID: actionsData.length + 1, // Generate a unique ID
-        ActionName: "Untitled Action",
-        ActionTime: "00:00:00",
-        ActionCost: 0,
-        Level: 1,
-      };
-    
-      // Prepend the new action to the existing data
-      setActionsData((prevActions) => [newAction, ...prevActions]);
-    };
-    
   
   const [tableData, setTableData] = useState([]);
 
   const handleGearClick1112 = () => {
     setShowOptionsBox1112(!showOptionsBox1112);
-  };
-
-  const handleGearClick1113 = () => {
-    setShowOptionsBox1113(!showOptionsBox1113);
   };
 
   const handleCreateTopCauseClick1112 = () => {
@@ -301,25 +245,9 @@ const [modalName, setModalName] = useState("");
   }, [location.state]);
 
   // Handler for "Progress" checkboxes in the action table
-  // const handleProgressCheckboxChange = (index, isChecked) => {
-  //   setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
-  // };
-
   const handleProgressCheckboxChange = (index, isChecked) => {
-    // Make a copy of the actionsData
-    const updatedActionsData = [...actionsData];
-    
-    // Update the progress of the specific action
-    updatedActionsData[index].progress = isChecked;
-    
-    // Update the state with the modified actionsData
-    setActionsData(updatedActionsData);
-    
-    // Optionally, if you want to track if any progress is checked globally
-    const anyProgressChecked = updatedActionsData.some(action => action.progress === true);
-    setIsAnyProgressChecked(anyProgressChecked);
+    setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
   };
-  
 
   const [solveCheckboxes900, setSolveCheckboxes900] = useState({});
   const [showBreakIcon900, setShowBreakIcon900] = useState(
@@ -981,120 +909,27 @@ const addNewCause = () => {
 };
 
 // Handles when the user clicks to create a new top cause
-// const addNewUntitledSubCause = () => {
-//   setIsCreateTopCauseInputVisible(true);
-
-//   if (expandedCauseData && expandedCauseData.length > 0) {
-//     // Define the new cause using expandedCauseData
-//     const firstCause = expandedCauseData[0]; // Example: Fetch the first entry
-//     const newCause = {
-//       CauseName: firstCause.CauseName, // Use CauseName from expandedCauseData
-//       ProbabilityPercentage: firstCause.ProbabilityPercentage // Use ProbabilityPercentage from expandedCauseData
-//     };
-
-//     // Update the expandedCauseData state with the new cause at the next available position
-//     setExpandedCauseData([...expandedCauseData, newCause]); // Add the new cause to the end of the expandedCauseData
-//   } else {
-//     console.warn("expandedCauseData is empty or undefined. No new cause added.");
-//   }
-
-//   setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
-//   setShowOptionsBox1112(!showOptionsBox1112);
-// };
-
-// Handles when the user clicks to create a new top cause
 const addNewUntitledSubCause = () => {
   setIsCreateTopCauseInputVisible(true);
 
-  // Define the new cause with default values
-  const newCause = {
-    CauseName: "Untitled Cause", // Default cause name
-    ProbabilityPercentage: 0, // Default probability percentage
-  };
+  if (expandedCauseData && expandedCauseData.length > 0) {
+    // Define the new cause using expandedCauseData
+    const firstCause = expandedCauseData[0]; // Example: Fetch the first entry
+    const newCause = {
+      CauseName: firstCause.CauseName, // Use CauseName from expandedCauseData
+      ProbabilityPercentage: firstCause.ProbabilityPercentage // Use ProbabilityPercentage from expandedCauseData
+    };
 
-  if (expandedCauseData && Array.isArray(expandedCauseData)) {
-    // Update the expandedCauseData state by adding the new cause to the end
-    setExpandedCauseData([...expandedCauseData, newCause]);
-  } else if (!expandedCauseData) {
-    // If expandedCauseData is null, initialize it with the new cause
-    setExpandedCauseData([newCause]);
+    // Update the expandedCauseData state with the new cause at the next available position
+    setExpandedCauseData([...expandedCauseData, newCause]); // Add the new cause to the end of the expandedCauseData
   } else {
-    console.error("expandedCauseData is not in the expected format.");
+    console.warn("expandedCauseData is empty or undefined. No new cause added.");
   }
 
   setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
-  // setShowOptionsBox1112(!showOptionsBox1112);
+  setShowOptionsBox1112(!showOptionsBox1112);
 };
 
-// Handles when the user clicks to create a new top cause
-const addNewUntitledNestedSubCause = () => {
-  setIsCreateTopCauseInputVisible(true);
-
-  // Define the new cause with default values
-  const newCause = {
-    eventName: "Untitled Cause", // Default event name
-    probability: 0, // Default probability
-  };
-
-  // Check if nestedSubCauseData is initialized and if a specific key exists
-  const key = "Issues related to pitch motor-Elctrical issues of pitch motor"; // Replace with your desired key
-  if (nestedSubCauseData[key]) {
-    // Append the new cause to the existing array for the key
-    const updatedData = {
-      ...nestedSubCauseData,
-      [key]: [...nestedSubCauseData[key], newCause],
-    };
-    setNestedSubCauseData(updatedData);
-  } else {
-    // If the key doesn't exist, create a new entry for the key
-    const updatedData = {
-      ...nestedSubCauseData,
-      [key]: [newCause],
-    };
-    setNestedSubCauseData(updatedData);
-  }
-
-  setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
- // setShowOptionsBox1112(!showOptionsBox1112);
-};
-
-
-// Function to add a new "Untitled Nested SubCause" under a specific sub-cause
-// const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
-//   setExpandedCauseData((prevState) => {
-//     const updatedCause = { 
-//       ...prevState[causeIndex],
-//       causeObject: prevState[causeIndex].causeObject.map((subCause, index) => {
-//         if (index === subCauseIndex) {
-//           // Add a new nested sub-cause to the "data" array of the specific sub-cause
-//           return {
-//             ...subCause,
-//             data: [
-//               ...(subCause.data || []), // Ensure that data is an array
-//               {
-//                 EventID: Date.now(), // Unique identifier for the nested sub-cause
-//                 ModelID: 1, // Assuming this is static, adjust if needed
-//                 ParentID: subCause.EventID, // The parent of the nested sub-cause is the sub-cause itself
-//                 IsParent: "0", // Not a parent sub-cause
-//                 IsActive: "1", // Active by default
-//                 ProbabilityPercentage: 0, // Default probability
-//                 EventName: "Untitled Nested Cause", // Default name for the nested sub-cause
-//                 CreatedBy: "41064", // Static creator ID, adjust if necessary
-//                 UpdatedBy: "41064", // Static updater ID, adjust if necessary
-//               },
-//             ],
-//           };
-//         }
-//         return subCause;
-//       }),
-//     };
-
-//     const updatedCauses = [...prevState];
-//     updatedCauses[causeIndex] = updatedCause;
-
-//     return updatedCauses;
-//   });
-// };
 
 // Function to add a new "Untitled SubCause" under a specific cause
 const addNewSubCause = (causeName) => {
@@ -1192,7 +1027,42 @@ const addNewNestedSubCause = (causeName, subCauseName) => {
 
 
 
+// Function to add a new "Untitled Nested SubCause" under a specific sub-cause
+const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
+  setExpandedCauseData((prevState) => {
+    const updatedCause = { 
+      ...prevState[causeIndex],
+      causeObject: prevState[causeIndex].causeObject.map((subCause, index) => {
+        if (index === subCauseIndex) {
+          // Add a new nested sub-cause to the "data" array of the specific sub-cause
+          return {
+            ...subCause,
+            data: [
+              ...(subCause.data || []), // Ensure that data is an array
+              {
+                EventID: Date.now(), // Unique identifier for the nested sub-cause
+                ModelID: 1, // Assuming this is static, adjust if needed
+                ParentID: subCause.EventID, // The parent of the nested sub-cause is the sub-cause itself
+                IsParent: "0", // Not a parent sub-cause
+                IsActive: "1", // Active by default
+                ProbabilityPercentage: 0, // Default probability
+                EventName: "Untitled Nested Cause", // Default name for the nested sub-cause
+                CreatedBy: "41064", // Static creator ID, adjust if necessary
+                UpdatedBy: "41064", // Static updater ID, adjust if necessary
+              },
+            ],
+          };
+        }
+        return subCause;
+      }),
+    };
 
+    const updatedCauses = [...prevState];
+    updatedCauses[causeIndex] = updatedCause;
+
+    return updatedCauses;
+  });
+};
 
 
 
@@ -2151,19 +2021,7 @@ const handleConstraintClick = () => {
 
           {/* Right Panel */}
           <div className="modal-right-panel">
-          <h3>Actions
-          <span className="gear-icon-1112" onClick={handleGearClick1113}>
-          <FaCog />
-        </span>
-          </h3>
-          {showOptionsBox1113 && (
-        <div className="options-box-1113">
-      {/* Create Action Button */}
-      <div className="option-1113" onClick={addNewAction1115}>
-        <FaPlus className="icon-1112" /> Create Action
-      </div>
-        </div>
-      )}
+          <h3>Actions</h3>
 {/* Pagination Wrapper */}
 {/* Pagination Wrapper */}
 <div className="pagination-wrapper">
@@ -2215,120 +2073,66 @@ const handleConstraintClick = () => {
 {/* Table */}
       {/* Action Table */}
       <div style={{ position: "relative" }}>
-      <table className="modal-table" id="action-table" ref={tableRef}>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Time</th>
-          <th>Money</th>
-          <th>Level</th>
-          <th>Progress</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {paginatedData990.length > 0 ? (
-          paginatedData990.map((action, rowIndex) => (
-            <tr
-              key={rowIndex}
-              onMouseEnter={() => handleMouseEnter901(rowIndex)}
+  <table className="modal-table" id="action-table" ref={tableRef}>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Time</th>
+        <th>Money</th>
+        <th>Level</th>
+        <th>Progress</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {paginatedData990.length > 0 ? (
+        paginatedData990.map((action, index) => (
+          <tr
+            key={index}
+            style={{
+              backgroundColor:
+                hoverItems894.actions.includes(action.name) ||
+                hoverItems895.actions.includes(action.name)
+                  ? "brown"
+                  : "transparent",
+            }}
+          >
+            <td>{action.name}</td>
+            {/* <td>{action.time || "N/A"}</td>
+            <td>{action.money || "N/A"}</td>
+            <td>{action.level || "N/A"}</td> */}
+
+            <td>{action.time || "0"}</td>
+            <td>{action.money || "0"}</td>
+            <td>{action.level || "0"}</td>
+            <td>
+              <input
+                type="checkbox"
+                onChange={(e) =>
+                  handleProgressCheckboxChange(index, e.target.checked)
+                }
+              />
+            </td>
+            <td
+              onMouseEnter={() => handleMouseEnter901(index)}
               onMouseLeave={handleMouseLeave901}
-              style={{
-                backgroundColor:
-                  hoveredCell901 === rowIndex ? "rgba(200, 200, 255, 0.5)" : "transparent",
-              }}
             >
-              {/* Editable Name */}
-              <td onClick={() => handleCellClick1115(rowIndex, "name", action.name)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "name" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "name")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "name")}
-                  />
-                ) : (
-                  action.name
-                )}
-              </td>
-
-              {/* Editable Time */}
-              <td onClick={() => handleCellClick1115(rowIndex, "time", action.time)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "time" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "time")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "time")}
-                  />
-                ) : (
-                  action.time || "0"
-                )}
-              </td>
-
-              {/* Editable Money */}
-              <td onClick={() => handleCellClick1115(rowIndex, "money", action.money)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "money" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "money")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "money")}
-                  />
-                ) : (
-                  action.money || "0"
-                )}
-              </td>
-
-              {/* Editable Level */}
-              <td onClick={() => handleCellClick1115(rowIndex, "level", action.level)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "level" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "level")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "level")}
-                  />
-                ) : (
-                  action.level || "0"
-                )}
-              </td>
-
-           {/* Progress Checkbox */}
-           <td>
-                  <input
-                    type="checkbox"
-                    checked={action.progress || false}
-                    onChange={(e) => handleProgressCheckboxChange(rowIndex, e.target.checked)}
-                  />
-                </td>
-
-              {/* Hover Configuration Icon */}
-              <td>
-                {hoveredCell901 === rowIndex && (
-                  <FaCog
-                    className="config-icon901"
-                    onClick={(e) => handleIconClick901(rowIndex, e)}
-                  />
-                )}
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="6">No actions available</td>
+              {hoveredCell901 === index && (
+                <FaCog
+                  className="config-icon901"
+                  onClick={(e) => handleIconClick901(index, e)}
+                />
+              )}
+            </td>
           </tr>
-        )}
-      </tbody>
-    </table>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="6">No actions available</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
 
   {clickedCell901 !== null && (
     <div

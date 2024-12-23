@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -123,57 +123,7 @@ const [modalName, setModalName] = useState("");
    // New state variables for nested sub-cause (7773) functionalities
    const [editingField7773, setEditingField7773] = useState(null); // State for editing nested sub-cause fields
 
- // New state to track the currently editable cell
- const [editableCell1115, setEditableCell1115] = useState(null); // Tracks { rowIndex, field }
- const [tempValue1115, setTempValue1115] = useState(""); // Temporary value for editing
 
-   // Function to handle changes while editing
-   const handleInputChange1115 = (e) => {
-    setTempValue1115(e.target.value); // Update the temporary value
-  };
-
-    // Function to handle cell click and make it editable
-    const handleCellClick1115 = (rowIndex, field, value) => {
-      setEditableCell1115({ rowIndex, field }); // Set which cell is being edited
-      setTempValue1115(value); // Initialize temp value with the current value of the cell
-    };
-
-    
-  // Function to handle saving the value and exiting edit mode
-  const handleSave1115 = (rowIndex, field) => {
-    // Save changes to the cell
-    paginatedData990[rowIndex][field] = tempValue1115; // Update the actual table data
-    setEditableCell1115(null); // Exit edit mode
-    setTempValue1115(""); // Clear temporary value
-  };
-
-  // Function to handle blur or pressing Enter to save changes
-  const handleBlurOrEnter1115 = (e, rowIndex, field) => {
-    if (e.type === "blur" || (e.type === "keydown" && e.key === "Enter")) {
-      handleSave1115(rowIndex, field);
-    }
-  };
-
-    // Function to handle creating a new action
-    const addNewAction1115 = () => {
-      const newAction = {
-        EventID: null, // Placeholder values
-        RootID: null,
-        EventName: "New Event",
-        ProbabilityPercentage: null,
-        IsParent: "0",
-        ParentID: null,
-        ActionID: actionsData.length + 1, // Generate a unique ID
-        ActionName: "Untitled Action",
-        ActionTime: "00:00:00",
-        ActionCost: 0,
-        Level: 1,
-      };
-    
-      // Prepend the new action to the existing data
-      setActionsData((prevActions) => [newAction, ...prevActions]);
-    };
-    
   
   const [tableData, setTableData] = useState([]);
 
@@ -301,25 +251,9 @@ const [modalName, setModalName] = useState("");
   }, [location.state]);
 
   // Handler for "Progress" checkboxes in the action table
-  // const handleProgressCheckboxChange = (index, isChecked) => {
-  //   setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
-  // };
-
   const handleProgressCheckboxChange = (index, isChecked) => {
-    // Make a copy of the actionsData
-    const updatedActionsData = [...actionsData];
-    
-    // Update the progress of the specific action
-    updatedActionsData[index].progress = isChecked;
-    
-    // Update the state with the modified actionsData
-    setActionsData(updatedActionsData);
-    
-    // Optionally, if you want to track if any progress is checked globally
-    const anyProgressChecked = updatedActionsData.some(action => action.progress === true);
-    setIsAnyProgressChecked(anyProgressChecked);
+    setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
   };
-  
 
   const [solveCheckboxes900, setSolveCheckboxes900] = useState({});
   const [showBreakIcon900, setShowBreakIcon900] = useState(
@@ -2158,10 +2092,10 @@ const handleConstraintClick = () => {
           </h3>
           {showOptionsBox1113 && (
         <div className="options-box-1113">
-      {/* Create Action Button */}
-      <div className="option-1113" onClick={addNewAction1115}>
-        <FaPlus className="icon-1112" /> Create Action
-      </div>
+          <div className="option-1113">
+          {/* <div className="option-1112" onClick={addNewSubCause}> */}
+            <FaPlus className="icon-1112" /> Action
+          </div>
         </div>
       )}
 {/* Pagination Wrapper */}
@@ -2215,120 +2149,66 @@ const handleConstraintClick = () => {
 {/* Table */}
       {/* Action Table */}
       <div style={{ position: "relative" }}>
-      <table className="modal-table" id="action-table" ref={tableRef}>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Time</th>
-          <th>Money</th>
-          <th>Level</th>
-          <th>Progress</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {paginatedData990.length > 0 ? (
-          paginatedData990.map((action, rowIndex) => (
-            <tr
-              key={rowIndex}
-              onMouseEnter={() => handleMouseEnter901(rowIndex)}
+  <table className="modal-table" id="action-table" ref={tableRef}>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Time</th>
+        <th>Money</th>
+        <th>Level</th>
+        <th>Progress</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {paginatedData990.length > 0 ? (
+        paginatedData990.map((action, index) => (
+          <tr
+            key={index}
+            style={{
+              backgroundColor:
+                hoverItems894.actions.includes(action.name) ||
+                hoverItems895.actions.includes(action.name)
+                  ? "brown"
+                  : "transparent",
+            }}
+          >
+            <td>{action.name}</td>
+            {/* <td>{action.time || "N/A"}</td>
+            <td>{action.money || "N/A"}</td>
+            <td>{action.level || "N/A"}</td> */}
+
+            <td>{action.time || "0"}</td>
+            <td>{action.money || "0"}</td>
+            <td>{action.level || "0"}</td>
+            <td>
+              <input
+                type="checkbox"
+                onChange={(e) =>
+                  handleProgressCheckboxChange(index, e.target.checked)
+                }
+              />
+            </td>
+            <td
+              onMouseEnter={() => handleMouseEnter901(index)}
               onMouseLeave={handleMouseLeave901}
-              style={{
-                backgroundColor:
-                  hoveredCell901 === rowIndex ? "rgba(200, 200, 255, 0.5)" : "transparent",
-              }}
             >
-              {/* Editable Name */}
-              <td onClick={() => handleCellClick1115(rowIndex, "name", action.name)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "name" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "name")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "name")}
-                  />
-                ) : (
-                  action.name
-                )}
-              </td>
-
-              {/* Editable Time */}
-              <td onClick={() => handleCellClick1115(rowIndex, "time", action.time)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "time" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "time")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "time")}
-                  />
-                ) : (
-                  action.time || "0"
-                )}
-              </td>
-
-              {/* Editable Money */}
-              <td onClick={() => handleCellClick1115(rowIndex, "money", action.money)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "money" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "money")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "money")}
-                  />
-                ) : (
-                  action.money || "0"
-                )}
-              </td>
-
-              {/* Editable Level */}
-              <td onClick={() => handleCellClick1115(rowIndex, "level", action.level)}>
-                {editableCell1115?.rowIndex === rowIndex && editableCell1115?.field === "level" ? (
-                  <input
-                    type="text"
-                    value={tempValue1115}
-                    autoFocus
-                    onChange={handleInputChange1115}
-                    onBlur={(e) => handleBlurOrEnter1115(e, rowIndex, "level")}
-                    onKeyDown={(e) => handleBlurOrEnter1115(e, rowIndex, "level")}
-                  />
-                ) : (
-                  action.level || "0"
-                )}
-              </td>
-
-           {/* Progress Checkbox */}
-           <td>
-                  <input
-                    type="checkbox"
-                    checked={action.progress || false}
-                    onChange={(e) => handleProgressCheckboxChange(rowIndex, e.target.checked)}
-                  />
-                </td>
-
-              {/* Hover Configuration Icon */}
-              <td>
-                {hoveredCell901 === rowIndex && (
-                  <FaCog
-                    className="config-icon901"
-                    onClick={(e) => handleIconClick901(rowIndex, e)}
-                  />
-                )}
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="6">No actions available</td>
+              {hoveredCell901 === index && (
+                <FaCog
+                  className="config-icon901"
+                  onClick={(e) => handleIconClick901(index, e)}
+                />
+              )}
+            </td>
           </tr>
-        )}
-      </tbody>
-    </table>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="6">No actions available</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
 
   {clickedCell901 !== null && (
     <div

@@ -652,6 +652,40 @@ input {
   width: 20vw;
 }
 
+.options-box-1113 {
+  position: absolute; /* Ensures it's positioned relative to its nearest positioned ancestor */
+  background-color: #ffffff; /* White background for better readability */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  padding: 10px; /* Space inside the box */
+  width: 200px; /* Modest size */
+  z-index: 10; /* Keep it above other elements */
+  margin-top: 8px; /* Slight gap below the <h3> element */
+}
+
+.option-1113, .option-1112 {
+  padding: 8px 12px; /* Space around the text */
+  cursor: pointer; /* Indicates interactivity */
+  font-size: 14px; /* Modest text size */
+  color: #333; /* Dark gray text for readability */
+  display: flex; /* Align icon and text */
+  align-items: center; /* Vertically align icon and text */
+  gap: 8px; /* Space between icon and text */
+  border-radius: 4px; /* Subtle rounded corners for hover effect */
+  transition: background-color 0.2s ease; /* Smooth hover effect */
+}
+
+.option-1113:hover, .option-1112:hover {
+  background-color: #f5f5f5; /* Light gray hover effect */
+}
+
+.icon-1112 {
+  font-size: 16px; /* Icon size */
+  color: #555; /* Icon color */
+}
+
+
 /* Individual option styles */
 .option-1112 {
   display: flex;
