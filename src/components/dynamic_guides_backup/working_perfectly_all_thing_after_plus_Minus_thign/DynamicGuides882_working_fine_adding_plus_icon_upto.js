@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -1028,164 +1028,70 @@ const addNewCause = () => {
 //   setShowOptionsBox1112(!showOptionsBox1112);
 // };
 
-// // Handles when the user clicks to create a new top cause
-// const addNewUntitledSubCause = () => {
-//   setIsCreateTopCauseInputVisible(true);
-
-//   // Define the new cause with default values
-//   const newCause = {
-//     EventID: null, // Default or placeholder value
-//     ModelID: 1,    // Default value
-//     ParentID: 3,   // Default value
-//     IsParent: "1", // Default value (same as the structure)
-//     CreatedOn: new Date().toISOString(), // Set current time
-//     UpdatedOn: new Date().toISOString(), // Set current time
-//     IsActive: "1", // Default value
-//     ProbabilityPercentage: 0, // Default probability percentage
-//     CauseName: "Untitled Cause", // Default cause name
-//     CreatedBy: "41064", // Default value
-//     UpdatedBy: "41064", // Default value
-//     internalSubCause: true, // Set this as true since it's a sub-cause
-//   };
-
-//   // Initialize expandedCauseData if it's empty or undefined
-//   if (!expandedCauseData || !Array.isArray(expandedCauseData) || expandedCauseData.length === 0) {
-//     // Set the default structure if it's empty
-//     setExpandedCauseData([
-//       {
-//            EventID: null, // Default or placeholder value
-//     ModelID: 1,    // Default value
-//     ParentID: 3,   // Default value
-//     IsParent: "1", // Default value (same as the structure)
-//     CreatedOn: new Date().toISOString(), // Set current time
-//     UpdatedOn: new Date().toISOString(), // Set current time
-//     IsActive: "1", // Default value
-//     ProbabilityPercentage: 0, // Default probability percentage
-//     CauseName: "Untitled Cause", // Default cause name
-//     CreatedBy: "41064", // Default value
-//     UpdatedBy: "41064", // Default value
-//     internalSubCause: true, // Set this as true since it's a sub-cause
-//       }
-      
-//     ]);
-//       // Set the expandedCauseName to the newly added cause to trigger expansion
-//   setExpandedCauseName("Untitled Cause");
-//   } else {
-//     // If the data exists, just add the new cause to the existing causes
-//     setExpandedCauseData([...expandedCauseData, newCause]);
-//   }
-
-//   // Hide input after adding cause
-//   setIsCreateTopCauseInputVisible(false);
-// };
-
 // Handles when the user clicks to create a new top cause
 const addNewUntitledSubCause = () => {
   setIsCreateTopCauseInputVisible(true);
 
+  // Define the new cause with default values
+  const newCause = {
+    EventID: null, // Default or placeholder value
+    ModelID: 1,    // Default value
+    ParentID: 3,   // Default value
+    IsParent: "1", // Default value (same as the structure)
+    CreatedOn: new Date().toISOString(), // Set current time
+    UpdatedOn: new Date().toISOString(), // Set current time
+    IsActive: "1", // Default value
+    ProbabilityPercentage: 0, // Default probability percentage
+    CauseName: "Untitled Cause", // Default cause name
+    CreatedBy: "41064", // Default value
+    UpdatedBy: "41064", // Default value
+    internalSubCause: true, // Set this as true since it's a sub-cause
+  };
+
   // Initialize expandedCauseData if it's empty or undefined
   if (!expandedCauseData || !Array.isArray(expandedCauseData) || expandedCauseData.length === 0) {
     // Set the default structure if it's empty
-    const initialCause = {
-      EventID: null, // Default or placeholder value
-      ModelID: 1,    // Default value
-      ParentID: 3,   // Default value
-      IsParent: "1", // Default value (same as the structure)
-      CreatedOn: new Date().toISOString(), // Set current time
-      UpdatedOn: new Date().toISOString(), // Set current time
-      IsActive: "1", // Default value
-      ProbabilityPercentage: 0, // Default probability percentage
-      CauseName: "Untitled Cause", // Default cause name
-      CreatedBy: "41064", // Default value
-      UpdatedBy: "41064", // Default value
-      internalSubCause: true, // Set this as true since it's a sub-cause
-    };
-    setExpandedCauseData([initialCause]);
-
-    // Set the expandedCauseName to the newly added cause to trigger expansion
-    setExpandedCauseName("Untitled Cause");
+    setExpandedCauseData([
+      {
+        EventID: 4,
+        ModelID: 1,
+        ParentID: 3,
+        IsParent: "1",
+        CreatedOn: "2024-11-21 00:00:00.0000000",
+        UpdatedOn: "2024-11-21 00:00:00.0000000",
+        IsActive: "1",
+        ProbabilityPercentage: 99.8,
+        CauseName: "untitledcause",
+        CreatedBy: "41064",
+        UpdatedBy: "41064",
+        internalSubCause: true
+      },
+      {
+        EventID: 6,
+        ModelID: 1,
+        ParentID: 3,
+        IsParent: "1",
+        CreatedOn: "2024-11-21 00:00:00.0000000",
+        UpdatedOn: "2024-11-21 00:00:00.0000000",
+        IsActive: "1",
+        ProbabilityPercentage: 0.2,
+        CauseName: "untitledcause",
+        CreatedBy: "41064",
+        UpdatedBy: "41064",
+        internalSubCause: true
+      }
+      
+    ]);
+      // Set the expandedCauseName to the newly added cause to trigger expansion
+  setExpandedCauseName("Untitled Cause");
   } else {
-    // Check for existing names to ensure uniqueness
-    const existingNames = expandedCauseData.map(cause => cause.CauseName);
-
-    // Generate a unique name
-    let newCauseName = "Untitled Cause";
-    let counter = 2;
-
-    while (existingNames.includes(newCauseName)) {
-      newCauseName = `Untitled Cause ${counter}`;
-      counter++;
-    }
-
-    // Define the new cause with default values and the unique name
-    const newCause = {
-      EventID: null, // Default or placeholder value
-      ModelID: 1,    // Default value
-      ParentID: 3,   // Default value
-      IsParent: "1", // Default value (same as the structure)
-      CreatedOn: new Date().toISOString(), // Set current time
-      UpdatedOn: new Date().toISOString(), // Set current time
-      IsActive: "1", // Default value
-      ProbabilityPercentage: 0, // Default probability percentage
-      CauseName: newCauseName, // Unique cause name
-      CreatedBy: "41064", // Default value
-      UpdatedBy: "41064", // Default value
-      internalSubCause: true, // Set this as true since it's a sub-cause
-    };
-
-    // Add the new cause to the existing causes
+    // If the data exists, just add the new cause to the existing causes
     setExpandedCauseData([...expandedCauseData, newCause]);
-
-    // Set the expandedCauseName to the newly added cause to trigger expansion
-    setExpandedCauseName(newCauseName);
   }
 
   // Hide input after adding cause
   setIsCreateTopCauseInputVisible(false);
 };
-
-
-const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
-  setIsCreateTopCauseInputVisible(true);
-
-  // Get the parent cause and sub-cause names
-  const selectedCause = causesData[causeIndex];
-  const selectedSubCause = expandedCauseData[subCauseIndex];
-
-  // Construct the key for the nested sub-cause using the cause and sub-cause names
-  const key = `${selectedCause?.name}-${selectedSubCause?.CauseName}`;
-
-  // Check if the key exists in nestedSubCauseData and determine the new name
-  setNestedSubCauseData((prevState) => {
-    const currentSubCauses = prevState[key] || [];
-    const existingNames = currentSubCauses.map(subCause => subCause.eventName);
-
-    // Generate a unique name for the new nested sub-cause
-    let newEventName = "Untitled Nested SubCause";
-    let counter = 2;
-
-    while (existingNames.includes(newEventName)) {
-      newEventName = `Untitled Nested SubCause ${counter}`;
-      counter++;
-    }
-
-    // Define the new nested sub-cause with the unique name
-    const newNestedSubCause = {
-      eventName: newEventName, // Unique event name
-      probability: 0, // Default probability
-    };
-
-    // Update the nestedSubCauseData with the new sub-cause
-    return {
-      ...prevState,
-      [key]: [...currentSubCauses, newNestedSubCause],
-    };
-  });
-
-  setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
-};
-
-
 
    // Log expandedCauseData whenever it changes
    useEffect(() => {
@@ -1226,6 +1132,36 @@ const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
 // };
 
 
+const addNewUntitledNestedSubCause = () => {
+  setIsCreateTopCauseInputVisible(true);
+
+  // Define the new cause with default values
+  const newCause = {
+    eventName: "Untitled Cause", // Default event name
+    probability: 0, // Default probability
+  };
+
+  // Dynamically get the key from the current state or logic
+  const key = Object.keys(nestedSubCauseData)[0]; // Use first key in the state as the key to add the cause
+  
+  if (nestedSubCauseData[key]) {
+    // Append the new cause to the existing array for the key
+    const updatedData = {
+      ...nestedSubCauseData,
+      [key]: [...nestedSubCauseData[key], newCause],
+    };
+    setNestedSubCauseData(updatedData);
+  } else {
+    // If the key doesn't exist, create a new entry for the key
+    const updatedData = {
+      ...nestedSubCauseData,
+      [key]: [newCause],
+    };
+    setNestedSubCauseData(updatedData);
+  }
+
+  setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
+};
 
 
 // Function to add a new "Untitled Nested SubCause" under a specific sub-cause
@@ -1708,15 +1644,15 @@ const handleConstraintClick = () => {
   };
   
   // useEffect to print EventName and ProbabilityPercentage whenever data is updated
-  useEffect(() => {
-    console.log('Current nestedSubCauseData state:', nestedSubCauseData);
-    // Print both EventName and ProbabilityPercentage for each key in nestedSubCauseData
-    Object.keys(nestedSubCauseData).forEach((key) => {
-      nestedSubCauseData[key].forEach((item) => {
-        console.log(`Event: ${item.eventName}, Probability: ${item.probability}%`);
-      });
-    });
-  }, [nestedSubCauseData]); // This effect runs whenever nestedSubCauseData changes
+  // useEffect(() => {
+  //   console.log('Current nestedSubCauseData state:', nestedSubCauseData);
+  //   // Print both EventName and ProbabilityPercentage for each key in nestedSubCauseData
+  //   Object.keys(nestedSubCauseData).forEach((key) => {
+  //     nestedSubCauseData[key].forEach((item) => {
+  //       console.log(`Event: ${item.eventName}, Probability: ${item.probability}%`);
+  //     });
+  //   });
+  // }, [nestedSubCauseData]); // This effect runs whenever nestedSubCauseData changes
   
   
 
@@ -1795,11 +1731,6 @@ const handleConstraintClick = () => {
       setModalOpen(true); // Open modal
     };
     
-    useEffect(() => {
-      // Log the causesData whenever it changes
-      console.log("Updated causesData:", causesData);
-    }, [causesData]);
-  
     
 
     // Function to handle fetching cause data and toggling expansion
@@ -2674,39 +2605,26 @@ const handleConstraintClick = () => {
 
     {/* Handle SubCause Row */}
     {clickedRowType === 'subcause' && (
-  <div
-    onClick={() => {
-      // Split the clickedCell902 identifier to get causeIndex and subCauseIndex
-      const identifiers = clickedCell902.split('-');
-      const causeIndex = parseInt(identifiers[0], 10);
-      const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
+      <div
+        onClick={() => {
+          // Split the clickedCell902 identifier to get causeIndex and subCauseIndex
+          const identifiers = clickedCell902.split('-');
+          const causeIndex = parseInt(identifiers[0], 10);
+          const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
 
-      // Get the cause name for the sub-cause
-      const selectedCause = causesData[causeIndex];
-      // const subCauseName = selectedCause?.subCauses?.[subCauseIndex]?.name || "Unknown SubCause";
-      // const subCauseName = selectedCause?.subCauses?.[subCauseIndex]?.name || "Unknown SubCause";
+          // Get the cause name for the sub-cause
+          const selectedCause = causesData[causeIndex]; 
+          const subCauseName = selectedCause?.subCauses?.[subCauseIndex]?.name || "Unknown SubCause";
 
-            // Get the sub-cause data from expandedCauseData using subCauseIndex
-            const selectedSubCause = expandedCauseData[subCauseIndex];
+          console.log('Clicked on SubCause:', subCauseName);  // Log sub-cause name
 
-            // Ensure the selectedSubCause exists
-            const subCauseName = selectedSubCause?.CauseName || "Unknown SubCause";
-
-      console.log('Clicked on Causee beloww:', selectedCause);  // Log sub-cause name
-      console.log('Clicked on SubCausee beloww:', subCauseName);  // Log sub-cause name
-
-
-      // Add new untitled sub-cause using the causeIndex
-      // addNewUntitledSubCause(causeIndex);
-
-      // Also trigger adding a new nested sub-cause
-      addNewUntitledNestedSubCause(causeIndex, subCauseIndex);
-    }}
-  >
-    Add SubCause
-  </div>
-)}
-
+          // Add new untitled sub-cause using the causeIndex
+          addNewUntitledSubCause(causeIndex);
+        }}
+      >
+        Add SubCause
+      </div>
+    )}
 
     {/* Handle NestedSubCause Row */}
     {clickedRowType === 'nestedSubCause' && (

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -1795,11 +1795,6 @@ const handleConstraintClick = () => {
       setModalOpen(true); // Open modal
     };
     
-    useEffect(() => {
-      // Log the causesData whenever it changes
-      console.log("Updated causesData:", causesData);
-    }, [causesData]);
-  
     
 
     // Function to handle fetching cause data and toggling expansion
