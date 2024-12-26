@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -49,11 +49,6 @@ const untitledCauseRef = useRef(null);
   const [isCreateTopCauseBoxVisible, setCreateTopCauseBoxVisible] = React.useState(false);
 
   const [topCause, setTopCause] = React.useState(null);
-
-  // New state for tracking the previous value and edited cause
-const [editedCause, setEditedCause] = useState(null);
-const [previousCauseValue, setPreviousCauseValue] = useState(null);
-const [isCauseEdited, setIsCauseEdited] = useState(false); // Flag to track if a cause is edited
 
   const [topCauseText, setTopCauseText] = React.useState(''); // State for the editable text
 
@@ -138,15 +133,6 @@ const [isCauseEdited, setIsCauseEdited] = useState(false); // Flag to track if a
  const [editableCell1115, setEditableCell1115] = useState(null); // Tracks { rowIndex, field }
  const [tempValue1115, setTempValue1115] = useState(""); // Temporary value for editing
 
- const [isNewCauseCreated, setIsNewCauseCreated] = useState(false);
-
- const [debouncedSave, setDebouncedSave] = useState(null);  // State for debouncing API call
-
-// State to track the edited field and its previous value
-const [editedField, setEditedField] = useState(null);
-const [previousFieldValue, setPreviousFieldValue] = useState(null);
-const [editedFieldValue, setEditedFieldValue] = useState(null);
-
    // Function to handle changes while editing
    const handleInputChange1115 = (e) => {
     setTempValue1115(e.target.value); // Update the temporary value
@@ -220,58 +206,23 @@ const [editedFieldValue, setEditedFieldValue] = useState(null);
   };
 
     // Handler for saving nested sub-cause field
-    // Handler for saving nested sub-cause field
-const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) => {
-  // Extract the parent cause and sub-cause names from the key
-  const [parentCauseName, subCauseName] = key.split("-");
-
-  // Get the previous value of the nested sub-cause field
-  const previousValue = nestedSubCauseData[key]?.[nestedIndex]?.[field];
-
-  // Update the value for the specific nested sub-cause
-  const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
-  if (nestedIndex < updatedNestedSubCauses.length) {
-    updatedNestedSubCauses[nestedIndex][field] = newValue;
-  }
-
-  // Update the nested sub-causes state
-  setNestedSubCauseData((prevState) => ({
-    ...prevState,
-    [key]: updatedNestedSubCauses,
-  }));
-
-  // Exit edit mode
-  setEditingField7773(null);
-
-  // Prepare the payload for the API
-  const payload = {
-    parentCauseName, // Name of the parent cause
-    subCauseName, // Name of the sub-cause
-    fieldName: field, // Name of the field being edited
-    previousValue, // Previous value of the field
-    currentValue: newValue, // New value of the field
-  };
-
-  // Log the payload for debugging
-  console.log("Data being sent to the API:", JSON.stringify(payload, null, 2));
-
-  // Send the data to the API
-  fetch("http://localhost:226/api/edited_cause_data", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Edited nested sub-cause data successfully sent:", data);
-    })
-    .catch((error) => {
-      console.error("Error sending edited nested sub-cause data:", error);
-    });
-};
-
+    const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, value) => {
+      const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
+    
+      // Update the value for the specific nested sub-cause
+      if (nestedIndex < updatedNestedSubCauses.length) {
+        updatedNestedSubCauses[nestedIndex][field] = value;
+      }
+    
+      // Update the nested sub-causes state
+      setNestedSubCauseData((prevState) => ({
+        ...prevState,
+        [key]: updatedNestedSubCauses,
+      }));
+    
+      // Exit edit mode by resetting the editing state
+      setEditingField7773(null);
+    };
     
     
 
@@ -281,6 +232,50 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
     };
     
   
+     // Handler for slider change in nested sub-causes
+     const handleNestedSubCauseSliderChange7773 = (key, nestedIndex, value) => {
+      console.log("Slider Change Triggered: ", { key, nestedIndex, value });
+    
+      const total = 100;
+      const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
+      let delta = 0;
+    
+      if (nestedIndex < updatedNestedSubCauses.length) {
+        delta = value - updatedNestedSubCauses[nestedIndex].probability;
+        updatedNestedSubCauses[nestedIndex].probability = value;
+      }
+    
+      let remaining = total - value;
+      const otherNestedSubCauses = updatedNestedSubCauses.filter((_, i) => i !== nestedIndex);
+    
+      otherNestedSubCauses.forEach((nestedSubCause) => {
+        if (remaining <= 0) return;
+    
+        const adjustment = Math.min(
+          Math.round((nestedSubCause.probability / (total - value)) * delta),
+          remaining
+        );
+        nestedSubCause.probability = Math.max(0, nestedSubCause.probability - adjustment);
+        remaining -= adjustment;
+      });
+    
+      const correctedTotal = updatedNestedSubCauses.reduce(
+        (sum, nestedSub) => sum + nestedSub.probability,
+        0
+      );
+    
+      const balancedNestedSubCauses = updatedNestedSubCauses.map((nestedSubCause) => ({
+        ...nestedSubCause,
+        probability: Math.round((nestedSubCause.probability / correctedTotal) * total),
+      }));
+    
+      console.log("Updated Nested Sub-Causes: ", balancedNestedSubCauses);
+    
+      setNestedSubCauseData((prevState) => ({
+        ...prevState,
+        [key]: balancedNestedSubCauses,
+      }));
+    };
     
     
     
@@ -516,124 +511,59 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
 
     const deleteRow = (type, identifier) => {
-  if (type === 'cause') {
-    const causeIndex = parseInt(identifier, 10);
-    const causeToDelete = causesData[causeIndex];
-
-    // Ensure the cause exists
-    if (causeToDelete) {
-      const modalName = "yourModalName"; // This should be dynamically set based on your modal
-      const causeName = causeToDelete.name; // Assuming each cause has a `name` property
-
-      // Delete the cause from causesData
-      const updatedCausesData = causesData.filter((_, index) => index !== causeIndex);
-      setCausesData(updatedCausesData);
-
-      // Send the data to API
-      const payload = {
-        modalName,
-        causeName,
-        deletionFlag: true,
-      };
-
-      console.log("Deleted Cause:", payload);
-
-      fetch("http://localhost:226/api/deleted_cause", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("Cause deletion sent successfully:", data))
-        .catch((err) => console.error("Error sending cause deletion:", err));
-    }
-  } else if (type === 'subcause') {
-    const subCauseIndex = parseInt(identifier, 10);
+      if (type === 'cause') {
+        // Delete a cause from causesData
+        const updatedCausesData = causesData.filter((_, index) => index !== parseInt(identifier, 10));
+        setCausesData(updatedCausesData);
+        console.log(`Deleted Cause at index: ${identifier}`);
+      } else if (type === 'subcause') {
+        const subCauseIndex = parseInt(identifier, 10);
     
-    // Ensure expandedCauseData is valid
-    if (Array.isArray(expandedCauseData) && expandedCauseData[subCauseIndex]) {
-      const subCauseToDelete = expandedCauseData[subCauseIndex];
-      const parentCauseName = causesData[subCauseToDelete.parentCauseIndex]?.name; // Assuming `parentCauseIndex` exists on sub-cause
-      const subCauseName = subCauseToDelete.CauseName;
-
-      // Delete the sub-cause
-      const updatedExpandedCauseData = [...expandedCauseData];
-      updatedExpandedCauseData.splice(subCauseIndex, 1);
-      setExpandedCauseData(updatedExpandedCauseData);
-
-      // Send the data to API
-      const payload = {
-        modalName: "yourModalName", // Adjust as needed
-        parentCauseName,
-        subCauseName,
-        deletionFlag: true,
-      };
-
-      console.log("Deleted SubCause:", payload);
-
-      fetch("http://localhost:226/api/deleted_subcause", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("SubCause deletion sent successfully:", data))
-        .catch((err) => console.error("Error sending sub-cause deletion:", err));
-    } else {
-      console.error("Error: Invalid subCauseIndex or expandedCauseData structure.");
-    }
-  } else if (type === 'nestedSubCause') {
-    const [causeIndex, subCauseIndex, nestedSubCauseIndex] = identifier.split('-').map(Number);
-
-    // Construct the keys
-    const selectedCauseName = causesData[causeIndex]?.name;
-    const selectedSubCauseName = expandedCauseData[subCauseIndex]?.CauseName;
-
-    if (selectedCauseName && selectedSubCauseName) {
-      const key = `${selectedCauseName}-${selectedSubCauseName}`;
-      const nestedSubCauseToDelete = nestedSubCauseData[key]?.[nestedSubCauseIndex];
-
-      if (nestedSubCauseToDelete) {
-        const modalName = "yourModalName"; // Adjust this
-        const parentCauseName = selectedCauseName;
-        const parentSubCauseName = selectedSubCauseName;
-        const nestedSubCauseName = nestedSubCauseToDelete.eventName || "Unknown Nested Sub-Cause";
-
-        // Delete the nested sub-cause from nestedSubCauseData
-        setNestedSubCauseData((prevState) => {
-          if (prevState[key]) {
-            const updatedSubCauses = prevState[key].filter((_, index) => index !== nestedSubCauseIndex);
-            return { ...prevState, [key]: updatedSubCauses };
-          }
-          return prevState;
-        });
-
-        // Send the data to API
-        const payload = {
-          modalName,
-          parentCauseName,
-          parentSubCauseName,
-          nestedSubCauseName,
-          deletionFlag: true,
-        };
-
-        console.log("Deleted Nested SubCause:", payload);
-
-        fetch("http://localhost:226/api/deleted_nested_subcause", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        })
-          .then((res) => res.json())
-          .then((data) => console.log("Nested SubCause deletion sent successfully:", data))
-          .catch((err) => console.error("Error sending nested sub-cause deletion:", err));
+        // Ensure expandedCauseData is valid
+        if (Array.isArray(expandedCauseData) && expandedCauseData[subCauseIndex]) {
+          const updatedExpandedCauseData = [...expandedCauseData];
+    
+          // Remove the subcause by index
+          updatedExpandedCauseData.splice(subCauseIndex, 1);
+    
+          setExpandedCauseData(updatedExpandedCauseData);
+          console.log(`Deleted SubCause at index: ${subCauseIndex}`);
+        } else {
+          console.error('Error: Invalid subCauseIndex or expandedCauseData structure.');
+        }
+      } else if (type === 'nestedSubCause') {
+        const [causeIndex, subCauseIndex, nestedSubCauseIndex] = identifier.split('-').map(Number);
+    
+        // Construct the key for nested sub-cause
+        const selectedCauseName = causesData[causeIndex]?.name;
+        const selectedSubCauseName = expandedCauseData[subCauseIndex]?.CauseName;
+    
+        if (selectedCauseName && selectedSubCauseName) {
+          const key = `${selectedCauseName}-${selectedSubCauseName}`;
+    
+          // Safeguard: Ensure the key exists in nestedSubCauseData
+          setNestedSubCauseData((prevState) => {
+            if (prevState[key]) {
+              const updatedSubCauses = prevState[key].filter((_, index) => index !== nestedSubCauseIndex);
+    
+              return {
+                ...prevState,
+                [key]: updatedSubCauses,
+              };
+            } else {
+              console.error(`Error: Key '${key}' not found in nestedSubCauseData.`);
+              return prevState; // Return the original state if key not found
+            }
+          });
+    
+          console.log(
+            `Deleted Nested SubCause at index: ${nestedSubCauseIndex} for key: ${key}`
+          );
+        } else {
+          console.error('Error: Cause or SubCause names are invalid or missing.');
+        }
       }
-    } else {
-      console.error("Error: Cause or SubCause names are invalid or missing.");
-    }
-  }
-};
-
+    };
     
     
     
@@ -726,50 +656,13 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     //   setEditingField886(null); // Exit edit mode
     // };
 
-    const handleSaveSubField886 = (subIndex, field, newValue) => {
-      // Extract the parent cause name
-      const parentCauseName = expandedCauseName;
-    
-      // Get the previous value of the subcause field
-      const previousValue = expandedCauseData[subIndex][field];
-    
-      // Update the subcause data
+    const handleSaveSubField886 = (index, field, value) => {
       const updatedSubCauses = [...expandedCauseData];
-      updatedSubCauses[subIndex][field] = newValue; // Update the specific field
+      updatedSubCauses[index][field] = value; // Update the specific field
       setExpandedCauseData(updatedSubCauses); // Update the state
     
-      // Clear editing state
-      setEditingField886(null);
-    
-      // Prepare the payload for the API
-      const payload = {
-        modalName,
-        parentCauseName, // Name of the parent cause
-        fieldName: field, // Name of the field being edited
-        previousValue, // Previous value of the field
-        currentValue: newValue, // New value of the field
-      };
-    
-      // Log the payload for debugging
-      console.log("Data being sent to the API:", JSON.stringify(payload, null, 2));
-    
-      // Send the data to the API
-      fetch("http://localhost:226/api/sub_cause_edited_data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Edited sub-cause data successfully sent:", data);
-        })
-        .catch((error) => {
-          console.error("Error sending edited sub-cause data:", error);
-        });
+      setEditingField886(null); // Exit edit mode
     };
-    
     
     
 
@@ -842,7 +735,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log("Data being sent to the backend:", JSON.stringify(payload, null, 2));
     
       // Send the payload to the backend API
-      fetch('http://localhost:226/api/submit-causes', {
+      fetch('http://localhost:3001/api/submit-causes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -852,18 +745,11 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         .then((response) => response.json())
         .then((data) => {
           console.log('Data successfully sent to the backend:', data);
-
-                // Call handleRowClick after successfully saving the data
-      handleRowClick(modalName); // Pass modalName to handleRowClick
         })
         .catch((error) => {
           console.error('Error sending data to the backend:', error);
         });
     };
-
- 
-  
-    
     
     
 
@@ -936,62 +822,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       setIsProbabilityVisible(true); // Optionally, make sliders permanently visible
     };
     
-     // Function to send the edited data to the API
-  const saveEditedCauseData = ({ modalName, fieldName, previousValue, currentValue }) => {
-    const payload = {
-      modalName, // Context of the modal
-      fieldName, // The field that was edited
-      previousValue, // The value before the edit
-      currentValue, // The new value after the edit
-    };
-  
-    // Log the payload for debugging
-    console.log("Data being sent to the API for edited top cause:", JSON.stringify(payload, null, 2));
-  
-    fetch('http://localhost:226/api/edited_top_cause_data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Edited cause data successfully sent:', data);
-                        // Call handleRowClick after successfully saving the data
-      // handleRowClick(modalName); // Pass modalName to handleRowClick
-      })
-      .catch((error) => {
-        console.error('Error sending edited cause data:', error);
-      });
-  };
-  
-
-     // Function to save the edited field
-     const handleSaveField = (index, field, value, event) => {
-      if (event.key === "Enter") {
-        // Capture the previous value before updating
-        const previousValue = causesData[index][field];
-    
-        // Update the causesData state
-        const updatedCauses = [...causesData];
-        updatedCauses[index][field] = value;
-        setCausesData(updatedCauses);
-    
-        // Clear editing field state
-        setEditingField886(null);
-    
-        // Call the API directly with the correct values
-        saveEditedCauseData({
-          modalName,
-          fieldName: field,
-          previousValue,
-          currentValue: value,
-        });
-      }
-    };
-    
-    
 
     // const handleSaveField = (index, field, value) => {
     //   const updatedCauses = [...causesData];
@@ -1000,9 +830,14 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     //   setEditingField886(null);
     // };
 
-
-    
-  
+    const handleSaveField = (index, field, value, event) => {
+      if (event.key === "Enter") {
+        const updatedCauses = [...causesData];
+        updatedCauses[index][field] = value;
+        setCausesData(updatedCauses);
+        setEditingField886(null);
+      }
+    };
     
 
 
@@ -1141,257 +976,132 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     };
   
 
-    const handleSliderChange = (index, value) => {
-      if (value === 1) value = 100; // Adjust value if it's 1
-      
-      const total = 100;
-      let updatedCauses = [...causesData];
-      let delta = 0;
-    
-      const previousValue = updatedCauses[index]?.probability || 0;
-      const causeName = updatedCauses[index]?.name || "Unknown Cause";
-    
-      if (index < updatedCauses.length) {
-        delta = value - updatedCauses[index].probability;
-        updatedCauses[index].probability = value;
-      }
-    
-      let remaining = total - value;
-      const otherCauses = updatedCauses.filter((_, i) => i !== index);
-    
-      otherCauses.forEach((cause) => {
-        if (remaining <= 0) return;
-        const adjustment = Math.min(
-          Math.round((cause.probability / Math.max(1, total - value)) * delta),
-          remaining
-        );
-        cause.probability = Math.max(0, cause.probability - adjustment);
-        remaining -= adjustment;
-      });
-    
-      const correctedTotal = updatedCauses.reduce((sum, c) => sum + c.probability, 0);
-    
-      updatedCauses = correctedTotal > 0
-        ? updatedCauses.map((cause) => ({
-            ...cause,
-            probability: Math.round((cause.probability / correctedTotal) * total),
-          }))
-        : updatedCauses;
-    
-      setCausesData(updatedCauses);
-    
-      const payload = {
-        modalName,
-        causeName,
-        previousValue,
-        currentValue: value,
-      };
-    
-      console.log("Sending to API:", JSON.stringify(payload, null, 2));
-    
-      fetch("http://localhost:226/api/edited_cause_data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("Cause data sent successfully:", data))
-        .catch((err) => console.error("Error sending cause data:", err));
-    };
-    
-  
-    const handleSubCauseSliderChange = (subIndex, value) => {
-      if (value === 1) value = 100; // Adjust value if it's 1
-      
-      const total = 100;
-      let updatedSubCauses = [...expandedCauseData];
-      let delta = 0;
-    
-      const previousValue = updatedSubCauses[subIndex]?.ProbabilityPercentage || 0;
-      const causeName = expandedCauseName || "Unknown Cause"; // Parent Cause Name
-      const subCauseName = updatedSubCauses[subIndex]?.CauseName || "Unknown Sub-Cause";
-    
-      if (subIndex < updatedSubCauses.length) {
-        delta = value - updatedSubCauses[subIndex].ProbabilityPercentage;
-        updatedSubCauses[subIndex].ProbabilityPercentage = value;
-      }
-    
-      let remaining = total - value;
-      const otherSubCauses = updatedSubCauses.filter((_, i) => i !== subIndex);
-    
-      otherSubCauses.forEach((subCause) => {
-        if (remaining <= 0) return;
-        const adjustment = Math.min(
-          Math.round(
-            (subCause.ProbabilityPercentage / Math.max(1, total - value)) * delta
-          ),
-          remaining
-        );
-        subCause.ProbabilityPercentage = Math.max(
-          0,
-          subCause.ProbabilityPercentage - adjustment
-        );
-        remaining -= adjustment;
-      });
-    
-      const correctedTotal = updatedSubCauses.reduce(
-        (sum, sub) => sum + sub.ProbabilityPercentage,
-        0
-      );
-    
-      updatedSubCauses = correctedTotal > 0
-        ? updatedSubCauses.map((subCause) => ({
-            ...subCause,
-            ProbabilityPercentage: Math.round(
-              (subCause.ProbabilityPercentage / correctedTotal) * total
-            ),
-          }))
-        : updatedSubCauses;
-    
-      setExpandedCauseData(updatedSubCauses);
-    
-      const payload = {
-        modalName,
-        parentCauseName: causeName,
-        subCauseName,
-        previousValue,
-        currentValue: value,
-      };
-    
-      console.log("Sending to API:", JSON.stringify(payload, null, 2));
-    
-      fetch("http://localhost:226/api/edited_subcause_data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("Sub-cause data sent successfully:", data))
-        .catch((err) => console.error("Error sending sub-cause data:", err));
-    };
-    
-  
-   // Handler for slider change in nested sub-causes
-   const handleNestedSubCauseSliderChange7773 = (key, nestedIndex, value) => {
-    if (value === 1) value = 100; // Adjust value if it's 1
-    
+  const handleSliderChange = (index, value) => {
     const total = 100;
-    const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
+    let updatedCauses = [...causesData]; // Clone the existing causes
     let delta = 0;
   
-    const [parentCauseName, parentSubCauseName] = key.split("-");
-    const previousValue = updatedNestedSubCauses[nestedIndex]?.probability || 0;
-    // const nestedSubCauseName =
-    //   updatedNestedSubCauses[nestedIndex]?.name || "Unknown Nested Sub-Cause";
-
-    // Use the eventName from nestedSubCauseData, since that's how it's stored
-  const nestedSubCauseName = updatedNestedSubCauses[nestedIndex]?.eventName || "Unknown Nested Sub-Cause"; 
-  
-    if (nestedIndex < updatedNestedSubCauses.length) {
-      delta = value - updatedNestedSubCauses[nestedIndex].probability;
-      updatedNestedSubCauses[nestedIndex].probability = value;
+    // If the index is less than causesData length, we're adjusting an existing cause
+    if (index < causesData.length) {
+      delta = value - updatedCauses[index].probability;
+      updatedCauses[index].probability = value;
+    } else {
+      // If the index is the new cause index, update the new cause directly
+      delta = value - newCause.probability;
+      setNewCause((prevState) => ({
+        ...prevState,
+        probability: value,
+      }));
     }
   
+    // Redistribute the delta proportionally among the other causes (excluding the one being adjusted)
     let remaining = total - value;
-    const otherNestedSubCauses = updatedNestedSubCauses.filter((_, i) => i !== nestedIndex);
+    const otherCauses = updatedCauses.filter((_, i) => i !== index);
   
-    otherNestedSubCauses.forEach((nestedSubCause) => {
+    otherCauses.forEach((cause) => {
       if (remaining <= 0) return;
+  
       const adjustment = Math.min(
-        Math.round((nestedSubCause.probability / Math.max(1, total - value)) * delta),
+        Math.round((cause.probability / (total - value)) * delta),
         remaining
       );
-      nestedSubCause.probability = Math.max(0, nestedSubCause.probability - adjustment);
+      cause.probability = Math.max(0, cause.probability - adjustment);
       remaining -= adjustment;
     });
   
-    const correctedTotal = updatedNestedSubCauses.reduce(
-      (sum, nestedSub) => sum + nestedSub.probability,
-      0
-    );
+    // If the new cause is being adjusted, it will be tracked in state directly
+    // Do not add it to `updatedCauses` yet, it's managed in state separately
   
-    const balancedNestedSubCauses = correctedTotal > 0
-      ? updatedNestedSubCauses.map((nestedSubCause) => ({
-          ...nestedSubCause,
-          probability: Math.round((nestedSubCause.probability / correctedTotal) * total),
-        }))
-      : updatedNestedSubCauses;
-  
-    setNestedSubCauseData((prevState) => ({
-      ...prevState,
-      [key]: balancedNestedSubCauses,
+    // Recalculate the total to ensure the sum is always 100%
+    const correctedTotal = updatedCauses.reduce((sum, c) => sum + c.probability, 0);
+    updatedCauses = updatedCauses.map((cause) => ({
+      ...cause,
+      probability: Math.round((cause.probability / correctedTotal) * total),
     }));
   
-    const payload = {
-      modalName,
-      parentCauseName,
-      parentSubCauseName,
-      nestedSubCauseName,
-      previousValue,
-      currentValue: value,
-    };
-  
-    console.log("Sending to API:", JSON.stringify(payload, null, 2));
-  
-    fetch("http://localhost:226/api/edited_nested_subcause_data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("Nested sub-cause data sent successfully:", data))
-      .catch((err) => console.error("Error sending nested sub-cause data:", err));
+    setCausesData(updatedCauses); // Update the causes data without the new cause
   };
   
-    
+  const handleSubCauseSliderChange = (subIndex, value) => {
+    const total = 100;
+    let updatedSubCauses = [...expandedCauseData]; // Clone existing sub-causes
+    let delta = 0;
+  
+    // Adjust the probability for the selected sub-cause
+    if (subIndex < updatedSubCauses.length) {
+      delta = value - updatedSubCauses[subIndex].ProbabilityPercentage;
+      updatedSubCauses[subIndex].ProbabilityPercentage = value;
+    }
+  
+    // Redistribute the delta proportionally among other sub-causes
+    let remaining = total - value;
+    const otherSubCauses = updatedSubCauses.filter((_, i) => i !== subIndex);
+  
+    otherSubCauses.forEach((subCause) => {
+      if (remaining <= 0) return;
+  
+      const adjustment = Math.min(
+        Math.round(
+          (subCause.ProbabilityPercentage / (total - value)) * delta
+        ),
+        remaining
+      );
+      subCause.ProbabilityPercentage = Math.max(
+        0,
+        subCause.ProbabilityPercentage - adjustment
+      );
+      remaining -= adjustment;
+    });
+  
+    // Ensure the total of all probabilities is 100%
+    const correctedTotal = updatedSubCauses.reduce(
+      (sum, sub) => sum + sub.ProbabilityPercentage,
+      0
+    );
+    updatedSubCauses = updatedSubCauses.map((subCause) => ({
+      ...subCause,
+      ProbabilityPercentage: Math.round(
+        (subCause.ProbabilityPercentage / correctedTotal) * total
+      ),
+    }));
+  
+    setExpandedCauseData(updatedSubCauses); // Update sub-causes state
+  };
+  
   
   
   
   
    // Handles when the user clicks to create a new top cause
- // Handles when the user clicks to create a new top cause
-const handleCreateTopCauseClick = () => {
-  setIsCreateTopCauseInputVisible(true);
-
-  // Generate a unique ID for the new cause (e.g., using Date.now or a UUID library)
-  const uniqueId = `cause-${Date.now()}`;
-
-  // Determine the base name for the new cause
-  const baseName = 'Untitled Cause';
-
-  // Generate a new name based on existing causes
-  let untitledIndex = 1;
-  let newCauseName = baseName;
-  while (causesData.some(cause => cause.name === newCauseName)) {
-    untitledIndex++;
-    newCauseName = `${baseName} ${untitledIndex}`;
-  }
-
-  // Add a new cause with the generated name and unique ID
-  const newCause = { id: uniqueId, name: newCauseName, probability: 0, internalCause: false };
-
-  // Update the causesData with the new cause
-  setCausesData([{ ...newCause }, ...causesData]); // Add the new cause to the beginning of the array
-
-  setNewCause(newCause); // Update the new cause state
-  setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
-
-  setShowOptionsBox1112(!showOptionsBox1112); // Toggle options box
-
-  // Set the flag to indicate that a new cause has been created
-  setIsNewCauseCreated(true);
-};
-
-// Call saveCauseData after causesData state has been updated and a new cause has been created
-useEffect(() => {
-  if (isNewCauseCreated && causesData.length > 0) {
-    // Call saveCauseData only once after a new cause is created
-    saveCauseData();
-
-    // Reset the flag to avoid calling saveCauseData repeatedly
-    setIsNewCauseCreated(false);
-  }
-}, [causesData, isNewCauseCreated]); // This will trigger when causesData or isNewCauseCreated changes
+   const handleCreateTopCauseClick = () => {
+    setIsCreateTopCauseInputVisible(true);
+  
+    // Generate a unique ID for the new cause (e.g., using Date.now or a UUID library)
+    const uniqueId = `cause-${Date.now()}`;
+  
+    // Determine the base name for the new cause
+    const baseName = 'Untitled Cause';
+  
+    // Generate a new name based on existing causes
+    let untitledIndex = 1;
+    let newCauseName = baseName;
+    while (causesData.some(cause => cause.name === newCauseName)) {
+      untitledIndex++;
+      newCauseName = `${baseName} ${untitledIndex}`;
+    }
+  
+    // Add a new cause with the generated name and unique ID
+    const newCause = { id: uniqueId, name: newCauseName, probability: 0, internalCause: false };
+  
+    // Update the causesData with the new cause
+    setCausesData([{ ...newCause }, ...causesData]); // Add the new cause to the beginning of the array
+  
+    setNewCause(newCause); // Update the new cause state
+    setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
+  
+    setShowOptionsBox1112(!showOptionsBox1112); // Toggle options box
+  };
+  
 
 
 // Function to add a new "Untitled Cause"

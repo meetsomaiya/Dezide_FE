@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -743,7 +743,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       // Prepare the payload for the API
       const payload = {
-        modalName,
         parentCauseName, // Name of the parent cause
         fieldName: field, // Name of the field being edited
         previousValue, // Previous value of the field
@@ -754,7 +753,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log("Data being sent to the API:", JSON.stringify(payload, null, 2));
     
       // Send the data to the API
-      fetch("http://localhost:226/api/sub_cause_edited_data", {
+      fetch("http://localhost:226/api/edited_cause_data", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
