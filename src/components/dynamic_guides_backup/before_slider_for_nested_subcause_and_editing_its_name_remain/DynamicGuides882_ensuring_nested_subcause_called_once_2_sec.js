@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -1189,7 +1189,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
-      fetch("http://localhost:226/api/topcause_data_change", {
+      fetch("http://localhost:226/api/edited_cause_data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -1260,7 +1260,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
-      fetch("http://localhost:226/api/cause_data_change", {
+      fetch("http://localhost:226/api/edited_subcause_data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -1333,7 +1333,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
   
     console.log("Sending to API:", JSON.stringify(payload, null, 2));
   
-    fetch("http://localhost:226/api/nested_subcause_data_change", {
+    fetch("http://localhost:226/api/edited_nested_subcause_data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -3150,6 +3150,7 @@ const handleConstraintClick = () => {
             onClick={() => {
                       // Log the click to track if it's being triggered twice
         console.log('SubCause Add button clicked');
+        
               const identifiers = clickedCell902.split('-');
               const causeIndex = parseInt(identifiers[0], 10);
               const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;

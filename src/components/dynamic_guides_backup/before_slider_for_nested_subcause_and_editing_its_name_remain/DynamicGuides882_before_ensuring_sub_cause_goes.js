@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -1189,7 +1189,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
-      fetch("http://localhost:226/api/topcause_data_change", {
+      fetch("http://localhost:226/api/edited_cause_data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -1260,7 +1260,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
-      fetch("http://localhost:226/api/cause_data_change", {
+      fetch("http://localhost:226/api/edited_subcause_data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -1333,7 +1333,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
   
     console.log("Sending to API:", JSON.stringify(payload, null, 2));
   
-    fetch("http://localhost:226/api/nested_subcause_data_change", {
+    fetch("http://localhost:226/api/edited_nested_subcause_data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -1477,17 +1477,12 @@ const addNewCause = () => {
 // };
 
 // Handles when the user clicks to create a new top cause
-const addNewUntitledSubCause = (causeIndex, parentCauseName) => {
+const addNewUntitledSubCause = () => {
   setIsCreateTopCauseInputVisible(true);
-
-  let newCauseName = "Untitled Cause"; // Default cause name
-  let previousValue = null; // No previous value for a new cause
-
-  // Use the passed parentCauseName directly
-  console.log("Parent Cause Name passed to the function:", parentCauseName);
 
   // Initialize expandedCauseData if it's empty or undefined
   if (!expandedCauseData || !Array.isArray(expandedCauseData) || expandedCauseData.length === 0) {
+    // Set the default structure if it's empty
     const initialCause = {
       EventID: null, // Default or placeholder value
       ModelID: 1,    // Default value
@@ -1497,7 +1492,7 @@ const addNewUntitledSubCause = (causeIndex, parentCauseName) => {
       UpdatedOn: new Date().toISOString(), // Set current time
       IsActive: "1", // Default value
       ProbabilityPercentage: 0, // Default probability percentage
-      CauseName: newCauseName, // Default cause name
+      CauseName: "Untitled Cause", // Default cause name
       CreatedBy: "41064", // Default value
       UpdatedBy: "41064", // Default value
       internalSubCause: true, // Set this as true since it's a sub-cause
@@ -1505,13 +1500,15 @@ const addNewUntitledSubCause = (causeIndex, parentCauseName) => {
     setExpandedCauseData([initialCause]);
 
     // Set the expandedCauseName to the newly added cause to trigger expansion
-    setExpandedCauseName(newCauseName);
+    setExpandedCauseName("Untitled Cause");
   } else {
     // Check for existing names to ensure uniqueness
     const existingNames = expandedCauseData.map(cause => cause.CauseName);
 
     // Generate a unique name
+    let newCauseName = "Untitled Cause";
     let counter = 2;
+
     while (existingNames.includes(newCauseName)) {
       newCauseName = `Untitled Cause ${counter}`;
       counter++;
@@ -1540,40 +1537,9 @@ const addNewUntitledSubCause = (causeIndex, parentCauseName) => {
     setExpandedCauseName(newCauseName);
   }
 
-  // Prepare the payload for the API
-  const payload = {
-    modalName, // The modal name where the data is being managed
-    parentCauseName, // Parent cause name passed to the function
-    fieldName: "CauseName", // Field being added (the cause name)
-    previousValue, // No previous value for a new cause
-    currentValue: newCauseName, // The name of the newly added cause
-  };
-
-  // Log the payload for debugging
-  console.log("Data being sent to the API for new sub-cause while creating:", JSON.stringify(payload, null, 2));
-
-  // Send the payload to the API
-  fetch("http://localhost:226/api/sub_cause_creation_data", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("New sub-cause data successfully sent:", data);
-    })
-    .catch((error) => {
-      console.error("Error sending new sub-cause data:", error);
-    });
-
   // Hide input after adding cause
   setIsCreateTopCauseInputVisible(false);
 };
-
-
-
 
 
 const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
@@ -1599,36 +1565,6 @@ const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
       newEventName = `Untitled Nested SubCause ${counter}`;
       counter++;
     }
-
-    // Prepare the payload for the API
-    const payload = {
-      modalName: modalName || "Unknown Modal", // Provide modal name
-      parentCauseName: selectedCause?.name || "Unknown Parent", // Parent cause name
-      fieldName: "CauseName", // Field being added (cause name)
-      previousValue: null, // No previous value for a new nested cause
-      currentValue: newEventName, // Name of the newly added nested sub-cause
-      subCauseName: selectedSubCause?.CauseName || "Unknown SubCause", // Sub-cause name
-      nestedSubCauseName: newEventName, // New nested sub-cause name
-    };
-
-    // Log the payload for debugging
-    console.log("Payload being sent to the API for nestedsubcause insertion:", JSON.stringify(payload, null, 2));
-
-    // Send the data to the API
-    fetch("http://localhost:226/api/nested_sub_cause_creation_data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Nested sub-cause data successfully sent:", data);
-      })
-      .catch((error) => {
-        console.error("Error sending nested sub-cause data:", error);
-      });
 
     // Define the new nested sub-cause with the unique name
     const newNestedSubCause = {
@@ -2265,8 +2201,6 @@ const handleConstraintClick = () => {
 
     // Function to handle fetching cause data and toggling expansion
     const handleFetchCause = async (causeName) => {
-        // Reset data before processing further
-  setExpandedCauseData(null);
       if (expandedCauseName === causeName) {
         // If the same cause is clicked again, collapse it
         setExpandedCauseName(null);
@@ -3116,15 +3050,13 @@ const handleConstraintClick = () => {
 
             console.log('Clicked on Cause:', selectedCause.name);
 
-            // Pass the selectedCause.name directly as parentCauseName
-            addNewUntitledSubCause(causeIndex, selectedCause.name);
-
-            setExpandedCauseName(selectedCause.name); // Set the expandedCauseName to the clicked cause
+            addNewUntitledSubCause(causeIndex);
+            setExpandedCauseName(selectedCause.name);
 
             const updatedCausesData = [...causesData];
             updatedCausesData[causeIndex] = {
               ...selectedCause,
-              internalCause: true, // Set internalCause to true
+              internalCause: true,
             };
 
             setCausesData(updatedCausesData);
@@ -3142,47 +3074,35 @@ const handleConstraintClick = () => {
         </div>
       </>
     )}
-    
-      {/* Handle SubCause Row */}
-      {clickedRowType === 'subcause' && (
-        <>
-          <div
-            onClick={() => {
-                      // Log the click to track if it's being triggered twice
-        console.log('SubCause Add button clicked');
-              const identifiers = clickedCell902.split('-');
-              const causeIndex = parseInt(identifiers[0], 10);
-              const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
 
-              const selectedSubCause = expandedCauseData[subCauseIndex];
-              const subCauseName = selectedSubCause?.CauseName || "Unknown SubCause";
+    {/* Handle SubCause Row */}
+    {clickedRowType === 'subcause' && (
+      <>
+        <div
+          onClick={() => {
+            const identifiers = clickedCell902.split('-');
+            const causeIndex = parseInt(identifiers[0], 10);
+            const subCauseIndex = identifiers[1] ? parseInt(identifiers[1], 10) : undefined;
 
-              console.log('Clicked on SubCause:', subCauseName);
+            const selectedSubCause = expandedCauseData[subCauseIndex];
+            const subCauseName = selectedSubCause?.CauseName || "Unknown SubCause";
 
-              addNewUntitledNestedSubCause(causeIndex, subCauseIndex);
+            console.log('Clicked on SubCause:', subCauseName);
 
-              // Update the subcause with internalSubCause: true
-              const updatedCauseData = [...expandedCauseData];
-              if (selectedSubCause) {
-                updatedCauseData[subCauseIndex] = {
-                  ...selectedSubCause,
-                  internalSubCause: true, // Set internalSubCause to true
-                };
-                setExpandedCauseData(updatedCauseData);
-              }
-            }}
-          >
-            Add SubCause
-          </div>
-          <div
-            onClick={() => {
-              deleteRow('subcause', clickedCell902);
-            }}
-          >
-            Delete Cause
-          </div>
-        </>
-      )}
+            addNewUntitledNestedSubCause(causeIndex, subCauseIndex);
+          }}
+        >
+          Add SubCause
+        </div>
+        <div
+          onClick={() => {
+            deleteRow('subcause', clickedCell902);
+          }}
+        >
+          Delete Cause
+        </div>
+      </>
+    )}
 
     {/* Handle NestedSubCause Row */}
     {clickedRowType === 'nestedSubCause' && (
@@ -3200,16 +3120,6 @@ const handleConstraintClick = () => {
             console.log('Clicked on Nested SubCause:', nestedSubCauseName);
 
             addNewUntitledNestedSubCause(causeIndex, subCauseIndex);
-
-            // Update the nestedSubCause with internalSubCause: true
-            const updatedCauseData = [...expandedCauseData];
-            if (expandedCauseData[nestedSubCauseIndex]) {
-              updatedCauseData[nestedSubCauseIndex] = {
-                ...expandedCauseData[nestedSubCauseIndex],
-                internalSubCause: true, // Set internalSubCause to true
-              };
-              setExpandedCauseData(updatedCauseData);
-            }
           }}
         >
           Add SubCause
@@ -3225,7 +3135,6 @@ const handleConstraintClick = () => {
     )}
   </div>
 )}
-
 
 
 
