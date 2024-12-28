@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -1652,50 +1652,60 @@ const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
   const selectedCause = causesData[causeIndex];
   const selectedSubCause = expandedCauseData[subCauseIndex];
 
-  // Generate a unique name using a random number
-  const randomNumber = Math.floor(Math.random() * 10000000000); // Random number between 0 and 999
-  const newEventName = `Untitled Nested SubCause ${randomNumber}`;
+  // Construct the key for the nested sub-cause using the cause and sub-cause names
+  const key = `${selectedCause?.name}-${selectedSubCause?.CauseName}`;
 
-  // Prepare the payload for the API
-  const payload = {
-    modalName: modalName || "Unknown Modal", // Provide modal name
-    parentCauseName: selectedCause?.name || "Unknown Parent", // Parent cause name
-    fieldName: "CauseName", // Field being added (cause name)
-    previousValue: null, // No previous value for a new nested cause
-    currentValue: newEventName, // Name of the newly added nested sub-cause
-    subCauseName: selectedSubCause?.CauseName || "Unknown SubCause", // Sub-cause name
-    nestedSubCauseName: newEventName, // New nested sub-cause name
-  };
-
-  // Log the payload for debugging
-  console.log("Payload being sent to the API for nestedsubcause insertion:", JSON.stringify(payload, null, 2));
-
-  // Send the data to the API
-  fetch("http://localhost:226/api/nested_sub_cause_creation_data", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Nested sub-cause data successfully sent:", data);
-    })
-    .catch((error) => {
-      console.error("Error sending nested sub-cause data:", error);
-    });
-
-  // Define the new nested sub-cause with the unique name
-  const newNestedSubCause = {
-    eventName: newEventName, // Unique event name
-    probability: 0, // Default probability
-  };
-
-  // Update the nestedSubCauseData with the new sub-cause
+  // Check if the key exists in nestedSubCauseData and determine the new name
   setNestedSubCauseData((prevState) => {
-    const key = `${selectedCause?.name}-${selectedSubCause?.CauseName}`;
     const currentSubCauses = prevState[key] || [];
+    const existingNames = currentSubCauses.map(subCause => subCause.eventName);
+
+    // Generate a unique name for the new nested sub-cause
+    let newEventName = "Untitled Nested SubCause";
+    let counter = 2;
+
+    while (existingNames.includes(newEventName)) {
+      newEventName = `Untitled Nested SubCause ${counter}`;
+      counter++;
+    }
+
+    // Prepare the payload for the API
+    const payload = {
+      modalName: modalName || "Unknown Modal", // Provide modal name
+      parentCauseName: selectedCause?.name || "Unknown Parent", // Parent cause name
+      fieldName: "CauseName", // Field being added (cause name)
+      previousValue: null, // No previous value for a new nested cause
+      currentValue: newEventName, // Name of the newly added nested sub-cause
+      subCauseName: selectedSubCause?.CauseName || "Unknown SubCause", // Sub-cause name
+      nestedSubCauseName: newEventName, // New nested sub-cause name
+    };
+
+    // Log the payload for debugging
+    console.log("Payload being sent to the API for nestedsubcause insertion:", JSON.stringify(payload, null, 2));
+
+    // Send the data to the API
+    fetch("http://localhost:226/api/nested_sub_cause_creation_data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Nested sub-cause data successfully sent:", data);
+      })
+      .catch((error) => {
+        console.error("Error sending nested sub-cause data:", error);
+      });
+
+    // Define the new nested sub-cause with the unique name
+    const newNestedSubCause = {
+      eventName: newEventName, // Unique event name
+      probability: 0, // Default probability
+    };
+
+    // Update the nestedSubCauseData with the new sub-cause
     return {
       ...prevState,
       [key]: [...currentSubCauses, newNestedSubCause],
@@ -1704,7 +1714,6 @@ const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
 
   setIsCreateTopCauseInputVisible(false); // Hide input after adding cause
 };
-
 
 
 
@@ -2616,7 +2625,7 @@ const handleConstraintClick = () => {
         </tr>
 
         {/* Expanded Sub-Cause Rows */}
-        {expandedCauseName === cause.name && expandedCauseData &&
+        {expandedCauseName === cause.name &&
           expandedCauseData.map((causeDetail, subIndex) => (
             <React.Fragment key={subIndex}>
               <tr
@@ -3247,7 +3256,7 @@ const handleConstraintClick = () => {
     {/* Handle NestedSubCause Row */}
     {clickedRowType === 'nestedSubCause' && (
       <>
-        {/* <div
+        <div
           onClick={() => {
             const identifiers = clickedCell902.split('-');
             const causeIndex = parseInt(identifiers[0], 10);
@@ -3273,7 +3282,7 @@ const handleConstraintClick = () => {
           }}
         >
           Add SubCause
-        </div> */}
+        </div>
         <div
           onClick={() => {
             deleteRow('nestedSubCause', clickedCell902);
