@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -146,15 +146,6 @@ const [isCauseEdited, setIsCauseEdited] = useState(false); // Flag to track if a
 const [editedField, setEditedField] = useState(null);
 const [previousFieldValue, setPreviousFieldValue] = useState(null);
 const [editedFieldValue, setEditedFieldValue] = useState(null);
-
-const [debouncedValue0001, setDebouncedValue0001] = useState(null);
-const [timer0001, setTimer0001] = useState(null);
-
-const [debouncedValue0002, setDebouncedValue0002] = useState(null);
-const [timer0002, setTimer0002] = useState(null);
-
-const [debouncedValue0003, setDebouncedValue0003] = useState(null);
-const [timer0003, setTimer0003] = useState(null);
 
    // Function to handle changes while editing
    const handleInputChange1115 = (e) => {
@@ -1153,7 +1144,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     const handleSliderChange = (index, value) => {
       if (value === 1) value = 100; // Adjust value if it's 1
       
-      // Update the causes data with the new value
       const total = 100;
       let updatedCauses = [...causesData];
       let delta = 0;
@@ -1190,21 +1180,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       setCausesData(updatedCauses);
     
-      // Set the debounced value after a delay (debouncing logic)
-      if (timer0001) {
-        clearTimeout(timer0001);
-      }
-    
-      const newTimer = setTimeout(() => {
-        setDebouncedValue0001(value);
-        sendDataToAPI0001(updatedCauses, causeName, previousValue, value);
-      }, 500); // Adjust the delay (500ms) as needed
-      
-      setTimer0001(newTimer);
-    };
-    
-    // This function will send the data to the API
-    const sendDataToAPI0001 = (updatedCauses, causeName, previousValue, value) => {
+      // Create payload including all probabilities
       const payload = {
         modalName,
         updatedCauses: updatedCauses.map((cause) => ({
@@ -1229,6 +1205,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         .then((data) => console.log("Cause data sent successfully:", data))
         .catch((err) => console.error("Error sending cause data:", err));
     };
+    
     
   
     const handleSubCauseSliderChange = (subIndex, value) => {
@@ -1282,21 +1259,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       setExpandedCauseData(updatedSubCauses);
     
-      // Set the debounced value after a delay (debouncing logic)
-      if (timer0002) {
-        clearTimeout(timer0002);
-      }
-    
-      const newTimer = setTimeout(() => {
-        setDebouncedValue0002(value);
-        sendDataToAPI0002(updatedSubCauses, causeName, value);
-      }, 500); // Adjust the delay (500ms) as needed
-      
-      setTimer0002(newTimer);
-    };
-    
-    // This function will send the data to the API
-    const sendDataToAPI0002 = (updatedSubCauses, causeName, value) => {
+      // Step 4: Build the payload for all sub-causes
       const payload = {
         modalName,
         parentCauseName: causeName,
@@ -1309,6 +1272,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
+      // Step 5: Send the payload to the API
       fetch("http://localhost:226/api/cause_data_change", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1321,96 +1285,78 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
     
   
-// Handler for slider change in nested sub-causes
-const handleNestedSubCauseSliderChange7773 = (key, nestedIndex, value) => {
-  if (value === 1) value = 100; // Adjust value if it's 1
-
-  const total = 100;
-  const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
-  let delta = 0;
-
-  const [parentCauseName, parentSubCauseName] = key.split("-");
-  const previousValue = updatedNestedSubCauses[nestedIndex]?.probability || 0;
-
-  // Use the eventName from nestedSubCauseData, since that's how it's stored
-  const nestedSubCauseName = updatedNestedSubCauses[nestedIndex]?.eventName || "Unknown Nested Sub-Cause";
-
-  // Step 1: Update the specific nested sub-cause
-  if (nestedIndex < updatedNestedSubCauses.length) {
-    delta = value - updatedNestedSubCauses[nestedIndex].probability;
-    updatedNestedSubCauses[nestedIndex].probability = value;
-  }
-
-  // Step 2: Adjust other nested sub-causes to maintain total at 100%
-  let remaining = total - value;
-  const otherNestedSubCauses = updatedNestedSubCauses.filter((_, i) => i !== nestedIndex);
-
-  otherNestedSubCauses.forEach((nestedSubCause) => {
-    if (remaining <= 0) return;
-    const adjustment = Math.min(
-      Math.round((nestedSubCause.probability / Math.max(1, total - value)) * delta),
-      remaining
-    );
-    nestedSubCause.probability = Math.max(0, nestedSubCause.probability - adjustment);
-    remaining -= adjustment;
-  });
-
-  // Step 3: Normalize probabilities to ensure they sum up to 100%
-  const correctedTotal = updatedNestedSubCauses.reduce(
-    (sum, nestedSub) => sum + nestedSub.probability,
-    0
-  );
-
-  const balancedNestedSubCauses = correctedTotal > 0
-    ? updatedNestedSubCauses.map((nestedSubCause) => ({
-        ...nestedSubCause,
-        probability: Math.round((nestedSubCause.probability / correctedTotal) * total),
-      }))
-    : updatedNestedSubCauses;
-
-  setNestedSubCauseData((prevState) => ({
-    ...prevState,
-    [key]: balancedNestedSubCauses,
-  }));
-
-  // Set the debounced value after a delay (debouncing logic)
-  if (timer0003) {
-    clearTimeout(timer0003);
-  }
-
-  const newTimer = setTimeout(() => {
-    setDebouncedValue0003(value);
-    sendDataToAPI0003(balancedNestedSubCauses, parentCauseName, parentSubCauseName, value);
-  }, 500); // Adjust the delay (500ms) as needed
+   // Handler for slider change in nested sub-causes
+   const handleNestedSubCauseSliderChange7773 = (key, nestedIndex, value) => {
+    if (value === 1) value = 100; // Adjust value if it's 1
+    
+    const total = 100;
+    const updatedNestedSubCauses = [...(nestedSubCauseData[key] || [])];
+    let delta = 0;
   
-  setTimer0003(newTimer);
-};
+    const [parentCauseName, parentSubCauseName] = key.split("-");
+    const previousValue = updatedNestedSubCauses[nestedIndex]?.probability || 0;
+    // const nestedSubCauseName =
+    //   updatedNestedSubCauses[nestedIndex]?.name || "Unknown Nested Sub-Cause";
 
-// This function will send the data to the API
-const sendDataToAPI0003 = (balancedNestedSubCauses, parentCauseName, parentSubCauseName, value) => {
-  const payload = {
-    modalName,
-    parentCauseName,
-    parentSubCauseName,
-    updatedNestedSubCauses: balancedNestedSubCauses.map((nestedSubCause) => ({
-      name: nestedSubCause.eventName,
-      previousValue: nestedSubCause.previousProbability || 0,
-      currentValue: nestedSubCause.probability,
-    })),
+    // Use the eventName from nestedSubCauseData, since that's how it's stored
+  const nestedSubCauseName = updatedNestedSubCauses[nestedIndex]?.eventName || "Unknown Nested Sub-Cause"; 
+  
+    if (nestedIndex < updatedNestedSubCauses.length) {
+      delta = value - updatedNestedSubCauses[nestedIndex].probability;
+      updatedNestedSubCauses[nestedIndex].probability = value;
+    }
+  
+    let remaining = total - value;
+    const otherNestedSubCauses = updatedNestedSubCauses.filter((_, i) => i !== nestedIndex);
+  
+    otherNestedSubCauses.forEach((nestedSubCause) => {
+      if (remaining <= 0) return;
+      const adjustment = Math.min(
+        Math.round((nestedSubCause.probability / Math.max(1, total - value)) * delta),
+        remaining
+      );
+      nestedSubCause.probability = Math.max(0, nestedSubCause.probability - adjustment);
+      remaining -= adjustment;
+    });
+  
+    const correctedTotal = updatedNestedSubCauses.reduce(
+      (sum, nestedSub) => sum + nestedSub.probability,
+      0
+    );
+  
+    const balancedNestedSubCauses = correctedTotal > 0
+      ? updatedNestedSubCauses.map((nestedSubCause) => ({
+          ...nestedSubCause,
+          probability: Math.round((nestedSubCause.probability / correctedTotal) * total),
+        }))
+      : updatedNestedSubCauses;
+  
+    setNestedSubCauseData((prevState) => ({
+      ...prevState,
+      [key]: balancedNestedSubCauses,
+    }));
+  
+    const payload = {
+      modalName,
+      parentCauseName,
+      parentSubCauseName,
+      nestedSubCauseName,
+      previousValue,
+      currentValue: value,
+    };
+  
+    console.log("Sending to API:", JSON.stringify(payload, null, 2));
+  
+    fetch("http://localhost:226/api/nested_subcause_data_change", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("Nested sub-cause data sent successfully:", data))
+      .catch((err) => console.error("Error sending nested sub-cause data:", err));
   };
-
-  console.log("Sending to API:", JSON.stringify(payload, null, 2));
-
-  fetch("http://localhost:226/api/nested_subcause_data_change", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
-    .then((res) => res.json())
-    .then((data) => console.log("Nested sub-cause data sent successfully:", data))
-    .catch((err) => console.error("Error sending nested sub-cause data:", err));
-};
-
+  
     
   
   
