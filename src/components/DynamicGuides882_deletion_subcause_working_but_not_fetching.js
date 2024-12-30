@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -613,64 +613,48 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         }
     }
     
-    else if (type === 'nestedSubCause') {
-      const [causeIndex, subCauseIndex, nestedSubCauseIndex] = identifier.split('-').map(Number);
-  
-      // Construct the keys
-      const selectedCauseName = causesData[causeIndex]?.name;
-      const selectedSubCauseName = expandedCauseData[subCauseIndex]?.CauseName;
-  
-      console.log("Debug: Selected Cause Name:", selectedCauseName);
-      console.log("Debug: Selected Sub Cause Name:", selectedSubCauseName);
-      console.log("Debug: Identifier:", identifier);
-  
-      if (selectedCauseName && selectedSubCauseName) {
+       else if (type === 'nestedSubCause') {
+        const [causeIndex, subCauseIndex, nestedSubCauseIndex] = identifier.split('-').map(Number);
+    
+        // Construct the keys
+        const selectedCauseName = causesData[causeIndex]?.name;
+        const selectedSubCauseName = expandedCauseData[subCauseIndex]?.CauseName;
+    
+        if (selectedCauseName && selectedSubCauseName) {
           const key = `${selectedCauseName}-${selectedSubCauseName}`;
           const nestedSubCauseToDelete = nestedSubCauseData[key]?.[nestedSubCauseIndex];
-  
+    
           if (nestedSubCauseToDelete) {
-              const parentCauseName = selectedCauseName;
-              const parentSubCauseName = selectedSubCauseName;
-  
-              const payload = {
-                  modalName,
-                  parentCauseName,
-                  parentSubCauseName,
-                  nestedSubCauseName: nestedSubCauseToDelete.eventName || "Unknown Nested Sub-Cause",
-                  deletionFlag: true,
-              };
-  
-              console.log("Debug: Payload to API:", payload);
-  
-              fetch("http://localhost:226/api/deleted_subcause", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(payload),
-              })
-                  .then((res) => {
-                      if (!res.ok) {
-                          throw new Error(`API response error: ${res.status}`);
-                      }
-                      return res.json();
-                  })
-                  .then((data) => {
-                      console.log("Debug: Nested SubCause deletion response:", data);
-  
-                      // Call handleSubCauseToggleAndFetch after successful deletion
-                      handleSubCauseToggleAndFetch(key, parentSubCauseName);
-                  })
-                  .catch((err) => {
-                      console.error("Error sending nested sub-cause deletion:", err);
-                  });
-          } else {
-              console.error("Error: Nested sub-cause to delete is missing.");
+            const parentCauseName = selectedCauseName;
+            const parentSubCauseName = selectedSubCauseName;
+            const nestedSubCauseName = nestedSubCauseToDelete.eventName || "Unknown Nested Sub-Cause";
+    
+            // Send the data to API without modifying the nestedSubCauseData
+            const payload = {
+              modalName,
+              parentCauseName,
+              parentSubCauseName,
+              nestedSubCauseName,
+              deletionFlag: true,
+            };
+    
+            console.log("Deleted Nested SubCause:", payload);
+    
+            fetch("http://localhost:226/api/deleted_subcause", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            })
+              .then((res) => res.json())
+              .then((data) => console.log("Nested SubCause deletion sent successfully:", data))
+              handleSubCauseToggleAndFetch(parentSubCauseName)
+              .catch((err) => console.error("Error sending nested sub-cause deletion:", err));
           }
-      } else {
+        } else {
           console.error("Error: Cause or SubCause names are invalid or missing.");
+        }
       }
-  }
-  
-  }    
+    };
     
 
     

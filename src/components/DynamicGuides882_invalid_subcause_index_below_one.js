@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -566,111 +566,96 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         }
       }
       else if (type === 'subcause') {
-        const subCauseIndex = parseInt(identifier.split('-')[1], 10); // Extract sub-cause index from identifier
-    
+        const subCauseIndex = parseInt(identifier, 10);
+      
+        // Validate expandedCauseData and subCauseIndex
         if (Array.isArray(expandedCauseData) && expandedCauseData[subCauseIndex]) {
-            const subCauseToDelete = expandedCauseData[subCauseIndex];
-            console.log("SubCause to delete:", subCauseToDelete);
-    
-            const parentCauseName = subCauseToDelete.parentCauseName || expandedCauseName;
-            if (!parentCauseName) {
-                console.error("Error: Parent cause name is missing.");
-                return;
-            }
-    
-            const subCauseName = subCauseToDelete.CauseName;
-    
-            const payload = {
-                modalName,
-                parentCauseName,
-                subCauseName,
-                deletionFlag: true,
-            };
-    
-            console.log("Deleted SubCause:", payload);
-    
-            fetch("http://localhost:226/api/deleted_cause", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
+          const subCauseToDelete = expandedCauseData[subCauseIndex];
+          console.log("SubCause to delete:", subCauseToDelete);
+      
+          // Attempt to retrieve parentCauseName
+          const parentCauseName = subCauseToDelete.parentCauseName || expandedCauseName;
+      
+          if (!parentCauseName) {
+            console.error("Error: Parent cause name is missing.");
+            return;
+          }
+      
+          const subCauseName = subCauseToDelete.CauseName;
+      
+          // Prepare payload for API call
+          const payload = {
+            modalName,
+            parentCauseName,
+            subCauseName,
+            deletionFlag: true,
+          };
+      
+          console.log("Deleted SubCause:", payload);
+      
+          // Send deletion request to API
+          fetch("http://localhost:226/api/deleted_cause", {
+            // fetch("http://localhost:3001/api/deleted_cause", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          })
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error(`API call failed with status: ${res.status}`);
+              }
+              return res.json();
             })
-                .then((res) => {
-                    if (!res.ok) {
-                        throw new Error(`API call failed with status: ${res.status}`);
-                    }
-                    return res.json();
-                })
-                .then((data) => {
-                    console.log("SubCause deletion sent successfully:", data);
-
-                   // Call handleRowClick after successful API response
-                   handleFetchCause2(parentCauseName)
-                    
-                })
-                .catch((err) => console.error("Error sending sub-cause deletion:", err));
+            .then((data) => {
+              console.log("SubCause deletion sent successfully:", data);
+              // Optional: Trigger refresh or update logic
+            })
+            .catch((err) => console.error("Error sending sub-cause deletion:", err));
         } else {
-            console.error("Error: Invalid subCauseIndex or expandedCauseData structure.");
+          console.error("Error: Invalid subCauseIndex or expandedCauseData structure.");
         }
-    }
+      }
+       else if (type === 'nestedSubCause') {
+        const [causeIndex, subCauseIndex, nestedSubCauseIndex] = identifier.split('-').map(Number);
     
-    else if (type === 'nestedSubCause') {
-      const [causeIndex, subCauseIndex, nestedSubCauseIndex] = identifier.split('-').map(Number);
-  
-      // Construct the keys
-      const selectedCauseName = causesData[causeIndex]?.name;
-      const selectedSubCauseName = expandedCauseData[subCauseIndex]?.CauseName;
-  
-      console.log("Debug: Selected Cause Name:", selectedCauseName);
-      console.log("Debug: Selected Sub Cause Name:", selectedSubCauseName);
-      console.log("Debug: Identifier:", identifier);
-  
-      if (selectedCauseName && selectedSubCauseName) {
+        // Construct the keys
+        const selectedCauseName = causesData[causeIndex]?.name;
+        const selectedSubCauseName = expandedCauseData[subCauseIndex]?.CauseName;
+    
+        if (selectedCauseName && selectedSubCauseName) {
           const key = `${selectedCauseName}-${selectedSubCauseName}`;
           const nestedSubCauseToDelete = nestedSubCauseData[key]?.[nestedSubCauseIndex];
-  
+    
           if (nestedSubCauseToDelete) {
-              const parentCauseName = selectedCauseName;
-              const parentSubCauseName = selectedSubCauseName;
-  
-              const payload = {
-                  modalName,
-                  parentCauseName,
-                  parentSubCauseName,
-                  nestedSubCauseName: nestedSubCauseToDelete.eventName || "Unknown Nested Sub-Cause",
-                  deletionFlag: true,
-              };
-  
-              console.log("Debug: Payload to API:", payload);
-  
-              fetch("http://localhost:226/api/deleted_subcause", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(payload),
-              })
-                  .then((res) => {
-                      if (!res.ok) {
-                          throw new Error(`API response error: ${res.status}`);
-                      }
-                      return res.json();
-                  })
-                  .then((data) => {
-                      console.log("Debug: Nested SubCause deletion response:", data);
-  
-                      // Call handleSubCauseToggleAndFetch after successful deletion
-                      handleSubCauseToggleAndFetch(key, parentSubCauseName);
-                  })
-                  .catch((err) => {
-                      console.error("Error sending nested sub-cause deletion:", err);
-                  });
-          } else {
-              console.error("Error: Nested sub-cause to delete is missing.");
+            const parentCauseName = selectedCauseName;
+            const parentSubCauseName = selectedSubCauseName;
+            const nestedSubCauseName = nestedSubCauseToDelete.eventName || "Unknown Nested Sub-Cause";
+    
+            // Send the data to API without modifying the nestedSubCauseData
+            const payload = {
+              modalName,
+              parentCauseName,
+              parentSubCauseName,
+              nestedSubCauseName,
+              deletionFlag: true,
+            };
+    
+            console.log("Deleted Nested SubCause:", payload);
+    
+            fetch("http://localhost:226/api/deleted_nested_subcause", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            })
+              .then((res) => res.json())
+              .then((data) => console.log("Nested SubCause deletion sent successfully:", data))
+              .catch((err) => console.error("Error sending nested sub-cause deletion:", err));
           }
-      } else {
+        } else {
           console.error("Error: Cause or SubCause names are invalid or missing.");
+        }
       }
-  }
-  
-  }    
+    };
     
 
     
@@ -2396,49 +2381,6 @@ const handleConstraintClick = () => {
       }
     };
        
-
-    const handleFetchCause2 = async (causeName) => {
-      // Reset data before processing further
-// setExpandedCauseData(null);
-//     if (expandedCauseName === causeName) {
-//       // If the same cause is clicked again, collapse it
-//       setExpandedCauseName(null);
-//       setExpandedCauseData(null);
-//       return;
-//     }
-
-    // Otherwise, fetch new cause data and expand the row
-    try {
-      console.log(`Fetching additional data for cause: ${causeName}`);
-
-          // Form the URL
-  const url = `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
-  
-  // Log the URL formed
-  console.log("cause URL formed from top cause:", url);
-      
-      const response = await fetch(
-        `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
-        {
-          method: "GET",
-        }
-      );
-  
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-  
-      const result = await response.json();
-      console.log("Additional Cause Data:", result);
-  
-      // Set the expanded cause name and the fetched data
-      setExpandedCauseName(causeName);
-      setExpandedCauseData(result.data.causeObject);
-  
-    } catch (error) {
-      console.error("Failed to fetch additional cause data:", error);
-    }
-  };
   
 
   const closeModal = () => {
