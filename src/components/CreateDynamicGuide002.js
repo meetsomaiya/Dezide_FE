@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 
 import Sidebar991 from '../components/Sidebar991';
 
+import { BASE_URL } from '../config'
+
 const CreateDynamicGuide002 = () => {
   const navigate = useNavigate();
   // States for dropdowns
@@ -74,7 +76,8 @@ const [selectedChildVariant002, setSelectedChildVariant002] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:226/api/fetch_turbine_model_and_temperature_variant', {
+        // const response = await fetch('http://localhost:226/api/fetch_turbine_model_and_temperature_variant', {
+          const response = await fetch(`${BASE_URL}/api/fetch_turbine_model_and_temperature_variant`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +101,8 @@ const [selectedChildVariant002, setSelectedChildVariant002] = useState(null);
 
     // Handle clicks on the plus icon inside dropdown items
     const handleDropdownClick002 = async (type, value) => {
-      const endpoint = 'http://localhost:226/api/fetch_internal_turbine_model_and_temperature_variant';
+      // const endpoint = 'http://localhost:226/api/fetch_internal_turbine_model_and_temperature_variant';
+      const endpoint = `${BASE_URL}/api/fetch_internal_turbine_model_and_temperature_variant`;
     
       // Update the state for expansion
       if (type === 'model') {
@@ -214,7 +218,8 @@ const [selectedChildVariant002, setSelectedChildVariant002] = useState(null);
       try {
         // Make API call to create_dynamic_guide
         // const response = await fetch(`http://localhost:3001/api/create_dynamic_guide?${params.toString()}`, {
-          const response = await fetch(`http://localhost:226/api/create_dynamic_guide?${params.toString()}`, {
+          // const response = await fetch(`http://localhost:226/api/create_dynamic_guide?${params.toString()}`, {
+            const response = await fetch(`${BASE_URL}/api/create_dynamic_guide?${params.toString()}`, {
           method: 'GET',
         });
     

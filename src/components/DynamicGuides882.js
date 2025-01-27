@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DynamicGuides882.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // import Sidebar from '../components/Sidebar';
-import Sidebar991 from '../components/Sidebar991';
+import Sidebar991 from './Sidebar991';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faRandom } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +10,8 @@ import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faH
 import { FiTrendingUp } from "react-icons/fi"; // Slant upward icon
 import { FiClock } from "react-icons/fi"; // Import clock icon
 import { FaPlus, FaRandom, FaCog } from 'react-icons/fa';
+
+import { BASE_URL } from '../config'
 
 
 
@@ -22,6 +24,8 @@ const DynamicGuides882 = () => {
 const [isModalOpen, setModalOpen] = useState(false);
 const [modalName, setModalName] = useState("");
 
+// State to manage whether a question answer was clicked
+const [isAnswerClicked, setIsAnswerClicked] = useState(false);
 
 const untitledCauseRef = useRef(null);
 
@@ -31,11 +35,55 @@ const untitledCauseRef = useRef(null);
 
   const [clickedRowType, setClickedRowType] = useState(null); // State to track clicked row type
 
+// State to hold the previous values of all fields
+const [previousValues, setPreviousValues] = useState({});
 
     // State to track expanded row by cause.name, and store the fetched data
     const [expandedCauseName, setExpandedCauseName] = useState(null);
     const [expandedCauseData, setExpandedCauseData] = useState(null);
     
+
+    const [hoveredRow, setHoveredRow] = useState(null);
+
+    const [clickedCell903, setClickedCell903] = useState(null);
+    const [menuPosition903, setMenuPosition903] = useState({ top: 0, left: 0 });
+  
+    const tableRef903 = useRef(null); // Define tableRef903
+    
+    // Function to toggle state on question answer click
+const handleQuestionAnswerClick = () => {
+  // Reset isAnyProgressChecked to false
+  setIsAnyProgressChecked(false);
+
+  // Toggle the isAnswerClicked state
+  setIsAnswerClicked((prevState) => !prevState);
+};
+
+    const handleRowClick903 = (event, index) => {
+      // Get the clicked cell's position
+      const rect = event.target.getBoundingClientRect();
+      setMenuPosition903({ top: rect.bottom, left: rect.left });
+  
+      // Set the clicked cell state
+      setClickedCell903(index);
+    };
+
+    const handleIconClick903 = (index, event) => {
+      if (clickedCell903 === index) {
+        setClickedCell903(null); // Close if already open
+      } else {
+        const rect = event.target.getBoundingClientRect();
+        const tableRect = tableRef903.current.getBoundingClientRect(); // Use tableRef903 for positioning
+  
+        setMenuPosition903({
+          top: rect.bottom - tableRect.top + window.scrollY, // Position below the icon
+          left: rect.left - tableRect.left + window.scrollX, // Align with the icon
+        });
+  
+        setClickedCell903(index); // Open the menu for the clicked cell
+      }
+    };
+
 
   // State to track the expanded causes and store fetched data
   const [expandedCauses, setExpandedCauses] = useState({});
@@ -67,6 +115,47 @@ const [isCauseEdited, setIsCauseEdited] = useState(false); // Flag to track if a
 
   const [expandedRow883, setExpandedRow883] = useState(null);
 
+    // Add new states for editing answers
+ // States to track editing state
+ const [editingAnswerName9970, setEditingAnswerName9970] = useState(null); // store the answer name
+ const [editingAnswerValue9970, setEditingAnswerValue9970] = useState(""); // store the new value for the answer
+ const inputRef9970 = useRef(null);
+
+   // Function to handle editing of answers by passing the name
+   const handleEditAnswerClick9970 = (answer) => {
+    console.log("Editing answer:", answer); // Debugging log
+    setEditingAnswerName9970(answer);
+    setEditingAnswerValue9970(answer); // Set current value to the input field
+  };
+
+  // Function to save the edited answer by finding it by name
+  const handleSaveAnswer9970 = () => {
+    console.log("Saving answer:", editingAnswerName9970); // Debugging log
+
+    // Find the index of the answer in questionAnswers885 based on its name
+    const index = questionAnswers885.findIndex((answers) =>
+      Array.isArray(answers) ? answers.includes(editingAnswerName9970) : false
+    );
+
+    // If the answer is found, update it
+    if (index !== -1) {
+      questionAnswers885[index] = questionAnswers885[index].map((answer) =>
+        answer === editingAnswerName9970 ? editingAnswerValue9970 : answer
+      );
+    }
+
+    // Clear the editing state after saving
+    setEditingAnswerName9970(null);
+    setEditingAnswerValue9970("");
+  };
+
+  // Function to handle Enter key or click outside to save the edit
+  const handleAnswerKeyDown9970 = (event) => {
+    if (event.key === "Enter") {
+      handleSaveAnswer9970();
+    }
+  };
+
     // New useState with the '884' suffix
     const [data884, setData884] = useState(null);
     const [loading884, setLoading884] = useState(true);
@@ -85,6 +174,8 @@ const [isCauseEdited, setIsCauseEdited] = useState(false); // Flag to track if a
     // };
 
     const [lastClickedCauseName, setLastClickedCauseName] = useState(null);
+
+    const [hoverItems899, setHoverItems899] = useState([]);  // New state for hover items
 
     const [rowsPerPage990, setRowsPerPage990] = useState(25); // Number of rows per page
     const [currentPage990, setCurrentPage990] = useState(1); // Current page number
@@ -156,25 +247,156 @@ const [timer0002, setTimer0002] = useState(null);
 const [debouncedValue0003, setDebouncedValue0003] = useState(null);
 const [timer0003, setTimer0003] = useState(null);
 
+// State to store the previous value
+const [previousactionvalue0008, setPreviousActionValue0008] = useState(""); // Previous value
+
+
+const [editingQuestion3300, setEditingQuestion3300] = useState(null);
+const [editValue3300, setEditValue3300] = useState("");
+const [editingField3300, setEditingField3300] = useState("");
+
+const editRef3300 = useRef();
+
    // Function to handle changes while editing
    const handleInputChange1115 = (e) => {
     setTempValue1115(e.target.value); // Update the temporary value
   };
 
     // Function to handle cell click and make it editable
-    const handleCellClick1115 = (rowIndex, field, value) => {
-      setEditableCell1115({ rowIndex, field }); // Set which cell is being edited
-      setTempValue1115(value); // Initialize temp value with the current value of the cell
-    };
+
+// Function to handle cell click and set previous value
+  const handleCellClick1115 = (rowIndex, field, value) => {
+    console.log("Field Retrieved inside cellclick:", field);
+    console.log("Temp Value:", tempValue1115, "New Value:", value);
+
+    // If the field being edited is 'name', check if it has changed.
+    if (field === "name") {
+      console.log("Setting previous action value:", value); // Log before calling setPreviousActionValue0008
+      setPreviousActionValue0008(value); // Store the previous value only if it was changed
+    }
+
+    setEditableCell1115({ rowIndex, field }); // Set which cell is being edited
+    setTempValue1115(value); // Set temporary value to current value of the cell
+  
+  
+  };
+
+    // Function to handle mouse enter and send the action name to the API via GET
+const handleMouseEnter1119 = async (rowIndex, actionName) => {
+  try {
+    // Log the data being sent to the API
+    console.log("Sending data to API:", { actionName });
+
+    // Make the API call to fetch hovering data using GET method
+    // const response = await fetch(`http://localhost:226/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      method: "GET", // Use GET method
+      headers: {
+        "Content-Type": "application/json", // Optional: Only needed if your API requires it
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Hover data received:", data);
+
+      // Update the hoverItems899 state with the hovered action name
+      setHoverItems899(data.causes);
+    } else {
+      console.error("Failed to fetch hover data");
+    }
+  } catch (error) {
+    console.error("Error during hover API call:", error);
+  }
+};
+
+
+  // useEffect to print hoverItems899 state to the console for verification
+  useEffect(() => {
+    console.log("Current hoverItems899 state:", hoverItems899);
+  }, [hoverItems899]); // Trigger when hoverItems899 state changes
+
+// Function to handle cell click and set previous value
+// const handleCellClick1115 = (rowIndex, field, value) => {
+//   setEditableCell1115({ rowIndex, field }); // Set which cell is being edited
+//   setTempValue1115(value); // Set temporary value to current value of the cell
+//   setPreviousActionValue0008(value); // Store the current value (before edit) as the previous value
+// };
+
+useEffect(() => {
+  if (previousactionvalue0008 !== null) {
+    console.log("Previous Action Value:", previousactionvalue0008);
+  }
+}, [previousactionvalue0008]);  // This effect will run whenever previousActionValue0008 changes.
+
+
+
 
     
   // Function to handle saving the value and exiting edit mode
-  const handleSave1115 = (rowIndex, field) => {
-    // Save changes to the cell
+  // const handleSave1115 = (rowIndex, field) => {
+  //   // Save changes to the cell
+  //   paginatedData990[rowIndex][field] = tempValue1115; // Update the actual table data
+  //   setEditableCell1115(null); // Exit edit mode
+  //   setTempValue1115(""); // Clear temporary value
+  // };
+
+  // Function to handle saving the changes
+  const handleSave1115 = async (rowIndex, field) => {
+    const previousValue = previousactionvalue0008; // Get the previous value before editing
+    const updatedRow = paginatedData990[rowIndex]; // Get the updated row after saving
+  
+    // Save the new value to the table data
     paginatedData990[rowIndex][field] = tempValue1115; // Update the actual table data
-    setEditableCell1115(null); // Exit edit mode
+  
+    // Clear temporary value and exit edit mode
+    setEditableCell1115(null);
     setTempValue1115(""); // Clear temporary value
+  
+    // Prepare the data to send to the API with both the previous and current values
+    const dataToSend = {
+      actionname: updatedRow.name || "",
+      time: updatedRow.time || "0",
+      money: updatedRow.money || "0",
+      level: updatedRow.level || "0",
+      previousActionname: previousactionvalue0008 || "", // Send previous value for name
+      time: updatedRow.time || "0",
+      money: updatedRow.money || "0",
+      level: updatedRow.level || "0",
+      modalName
+    };
+  
+    // Log the data being sent to the API for debugging
+    console.log("Data being sent to the API:", dataToSend);
+  
+    try {
+      // Sending the data to the API
+      // const response = await fetch("http://localhost:3001/api/edit_action_data", {
+        // const response = await fetch("http://localhost:226/api/edit_action_data", {
+      const response = await fetch(`${BASE_URL}/api/edit_action_data`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to update action data");
+      }
+  
+      const result = await response.json();
+      console.log("Update success:", result);
+  
+      // Reset previous action value to null after the save
+      setPreviousActionValue0008(null);
+  
+    } catch (error) {
+      console.error("Error updating action data:", error);
+    }
   };
+  
+  
 
   // Function to handle blur or pressing Enter to save changes
   const handleBlurOrEnter1115 = (e, rowIndex, field) => {
@@ -183,28 +405,193 @@ const [timer0003, setTimer0003] = useState(null);
     }
   };
 
-    // Function to handle creating a new action
-    const addNewAction1115 = () => {
-      const newAction = {
-        EventID: null, // Placeholder values
-        RootID: null,
-        EventName: "New Event",
-        ProbabilityPercentage: null,
-        IsParent: "0",
-        ParentID: null,
-        ActionID: actionsData.length + 1, // Generate a unique ID
-        ActionName: "Untitled Action",
-        ActionTime: "00:00:00",
-        ActionCost: 0,
-        Level: 1,
-      };
-    
-      // Prepend the new action to the existing data
-      setActionsData((prevActions) => [newAction, ...prevActions]);
-    };
-    
+  const shouldHideTickMark = (index, subIndex = null, nestedIndex = null) => {
+    if (solveCheckboxes900[index]) return true; // If the cause is hidden
+    if (subIndex !== null && solveCheckboxes900[`${index}-${subIndex}`]) return true; // If sub-cause is hidden
+    if (nestedIndex !== null && solveCheckboxes900[`${index}-${subIndex}-${nestedIndex}`]) return true; // If nested sub-cause is hidden
+    return false;
+  };
+  
+
+// Function to handle creating a new action
+const addNewAction1115 = async () => {
+  const baseName = "Untitled Action";
+  let nextName = baseName;
+
+  // Check existing actions to find the next unique name
+  const existingNames = actionsData.map((action) => action.name);
+  let count = 1;
+
+  // Increment the count to generate a unique name
+  while (existingNames.includes(nextName)) {
+    count += 1;
+    nextName = `${baseName}${count}`;
+  }
+
+  const newAction = {
+    EventID: null, // Placeholder values
+    RootID: null,
+    EventName: "New Event",
+    ProbabilityPercentage: null,
+    IsParent: "0",
+    ParentID: null,
+    ActionID: actionsData.length + 1, // Generate a unique ID
+    name: nextName, // Use the unique name
+    ActionTime: "00:00:00",
+    ActionCost: 0,
+    Level: 1,
+  };
+
+  // Prepend the new action to the existing data
+  setActionsData((prevActions) => [newAction, ...prevActions]);
+
+  // Prepare data to send to the API
+  const payload = {
+    action: {
+      name: newAction.name,
+    },
+    modalName, // Include the modalName state
+  };
+
+  // Log the data being sent
+  console.log("Data being sent to API:", payload);
+
+  // Send data to the API
+  try {
+    // const response = await fetch("http://localhost:226/api/add_new_action", {
+      const response = await fetch(`${BASE_URL}/api/add_new_action`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("API response:", data);
+  } catch (error) {
+    console.error("Error sending data to API:", error);
+  }
+};
+
+
+
   
   const [tableData, setTableData] = useState([]);
+
+  // const addNewQuestion1115 = () => {
+  //   // Ensure `data884` and `data884.questions` are not null or undefined
+  //   setData884((prevData) => {
+  //     const safeData = prevData || { modalName: "", eventID: 0, questions: [] };
+  //     const safeQuestions = safeData.questions || [];
+  
+  //     // Generate a unique arbitrary suffix for the untitled question
+  //     const newQuestionNumber = safeQuestions.length + 1;
+  //     const newQuestion = {
+  //       questionName: `Untitled Question ${newQuestionNumber}`,
+  //       questionTime: "00:00:00", // Default time for the new question
+  //       questionCost: 0, // Default cost for the new question
+  //     };
+  
+  //     // Return the updated state
+  //     return {
+  //       ...safeData,
+  //       questions: [...safeQuestions, newQuestion],
+  //     };
+  //   });
+  // };
+
+  const addNewQuestion1115 = async () => {
+    // Ensure `data884` and `data884.questions` are not null or undefined
+    setData884((prevData) => {
+      const safeData = prevData || { modalName, eventID: 0, questions: [] };
+      const safeQuestions = safeData.questions || [];
+    
+      // Generate a unique arbitrary suffix for the untitled question
+      const newQuestionNumber = safeQuestions.length + 1;
+      const newQuestion = {
+        questionName: `Untitled Question ${newQuestionNumber}`,
+        questionTime: "00:00:00", // Default time for the new question
+        questionCost: 0, // Default cost for the new question
+      };
+  
+      // Return the updated state
+      const updatedData = {
+        ...safeData,
+        questions: [...safeQuestions, newQuestion],
+      };
+  
+      // Log the data being sent
+      console.log("Data to be sent to backend:", updatedData);
+  
+      // Send the data to the backend
+      // fetch("http://localhost:226/api/add_new_question", {
+        fetch(`${BASE_URL}/api/add_new_question`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to send data to the backend.");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Response from backend:", data);
+        })
+        .catch((error) => {
+          console.error("Error sending data to backend:", error);
+        });
+  
+      return updatedData;
+    });
+  };
+  
+
+  const handleEditClick3300 = (index, currentValue, field) => {
+    setEditingQuestion3300(index);
+    setEditValue3300(currentValue);
+    setEditingField3300(field);
+  };
+  
+
+  const saveEditedQuestion3300 = () => {
+    if (editingQuestion3300 !== null) {
+      setData884((prev) => {
+        const updatedQuestions = [...prev.questions];
+        updatedQuestions[editingQuestion3300].questionName = editValue3300;
+        return { ...prev, questions: updatedQuestions };
+      });
+      setEditingQuestion3300(null);
+    }
+  };
+
+  const handleClickOutside3300 = (e) => {
+    if (editRef3300.current && !editRef3300.current.contains(e.target)) {
+      saveEditedQuestion3300();
+    }
+  };
+
+  const handleKeyDown3300 = (e) => {
+    if (e.key === "Enter") {
+      saveEditedQuestion3300();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside3300);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside3300);
+    };
+  }, []);
+  
 
   const handleGearClick1112 = () => {
     setShowOptionsBox1112(!showOptionsBox1112);
@@ -266,8 +653,9 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
   console.log("Data being sent to the API:", JSON.stringify(payload, null, 2));
 
   // Send the data to the API
-  fetch("http://localhost:226/api/nested_subcause_edited_data", {
+  // fetch("http://localhost:226/api/nested_subcause_edited_data", {
     // fetch("http://localhost:3001/api/nested_subcause_edited_data", {
+    fetch(`${BASE_URL}/api/nested_subcause_edited_data`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -292,13 +680,55 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
     };
     
   
+    const createAnswer903 = (rowIndex, questionName) => {
+      let newAnswer = "New Answer"; // Default new answer
+      
+      // Generate a random 6-digit number
+      const random6DigitNumber = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
+      
+      // Create the new answer with the random 6-digit number
+      newAnswer = `Untitled Answer ${random6DigitNumber}`;
+      
+      // Check if there are existing answers
+      setQuestionAnswers885((prevAnswers) => {
+        const updatedAnswers = [...prevAnswers];
+        const existingAnswers = updatedAnswers[rowIndex] || [];
+        
+        // Add the new answer to the array (this will create a new row)
+        updatedAnswers[rowIndex] = [...existingAnswers, newAnswer];
+        return updatedAnswers;
+      });
+      
+      // Send the new answer to the backend
+      // fetch('http://localhost:226/api/add_answer', {
+        fetch(`${BASE_URL}/api/add_answer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          questionName,
+          newAnswer,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Response from server after adding answer:", data);
+        })
+        .catch((error) => {
+          console.error("Error while adding answer:", error);
+        });
+    };
+    
+    
     
     
     
 
   useEffect(() => {
     // Fetch data from the API
-    fetch('http://localhost:226/api/fetch_main_table_data')
+    // fetch('http://localhost:226/api/fetch_main_table_data')
+    fetch(`${BASE_URL}/api/fetch_main_table_data`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -352,6 +782,8 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
   // };
 
   const handleProgressCheckboxChange = (index, isChecked) => {
+      // Set isAnswerClicked to null
+  setIsAnswerClicked(null);
     // Make a copy of the actionsData
     const updatedActionsData = [...actionsData];
     
@@ -372,19 +804,128 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
     Array(causesData.length).fill(true)
   ); // Initially show all break icons
 
-  const handleSolveCheckboxToggle900 = (index) => {
-    setSolveCheckboxes900((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
+  // const handleSolveCheckboxToggle900 = (index) => {
+  //   setSolveCheckboxes900((prev) => ({
+  //     ...prev,
+  //     [index]: !prev[index],
+  //   }));
 
-    // Hide the break icon when the "Solve" checkbox is checked
-    setShowBreakIcon900((prev) => {
-      const newShowBreakIcon = [...prev];
-      newShowBreakIcon[index] = !newShowBreakIcon[index];
-      return newShowBreakIcon;
-    });
+  //   // Hide the break icon when the "Solve" checkbox is checked
+  //   setShowBreakIcon900((prev) => {
+  //     const newShowBreakIcon = [...prev];
+  //     newShowBreakIcon[index] = !newShowBreakIcon[index];
+  //     return newShowBreakIcon;
+  //   });
+  // };
+
+  // const handleSolveCheckboxChange = (e, index, causeName) => {
+  //   const isChecked = e.target.checked;
+  
+  //   // Update the state for the checkboxes
+  //   setSolveCheckboxes900((prev) => ({
+  //     ...prev,
+  //     [index]: isChecked,
+  //   }));
+  
+  //   // Call the API if the checkbox is ticked
+  //   if (isChecked) {
+  //     const actionName = paginatedData990.find((action) => action.progress)?.name || null;
+  
+  //     if (actionName) {
+  //       // Prepare data for the API
+  //       const payload = {
+  //         actionName,
+  //         causeName,
+  //       };
+
+  //            // Log the payload
+  //     console.log('Payload being sent to API:', payload);
+  
+  //       // API Call
+  //       fetch('http://localhost:226/api/match_actions_causes', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify(payload),
+  //       })
+  //         .then((response) => {
+  //           if (!response.ok) {
+  //             throw new Error(`Error: ${response.statusText}`);
+  //           }
+  //           return response.json();
+  //         })
+  //         .then((data) => {
+  //           console.log('Successfully sent to API:', data);
+  //         })
+  //         .catch((error) => {
+  //           console.error('API Error:', error);
+  //         });
+  //     } else {
+  //       console.warn('No action with progress found to match with cause.');
+  //     }
+  //   }
+  // };
+
+  
+
+  const handleSolveCheckboxChange = (e, index, causeName) => {
+    const isChecked = e.target.checked;
+  
+    // Update the state for the checkboxes
+    // setSolveCheckboxes900((prev) => ({
+    //   ...prev,
+    //   [index]: isChecked,
+    // }));
+  
+    // Call the API if the checkbox is ticked
+    if (isChecked) {
+      const selectedAction = paginatedData990[index]; // Fetch the entire action object
+  
+      if (selectedAction?.progress) {
+        // Prepare data for the API
+        const payload = {
+          actionName: selectedAction.name,
+          time: selectedAction.time,
+          money: selectedAction.money,
+          level: selectedAction.level,
+          causeName,
+          modalName,
+        };
+  
+        // Log the payload for verification
+        console.log('Payload being sent to API:', payload);
+  
+        // API Call
+        // fetch('http://localhost:226/api/match_actions_causes', {
+          // fetch('http://localhost:3001/api/match_actions_causes', {
+          fetch(`${BASE_URL}/api/match_actions_causes`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Error: ${response.statusText}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log('Successfully sent to API:', data);
+          })
+          .catch((error) => {
+            console.error('API Error:', error);
+          });
+      } else {
+        console.warn('No action with progress found to match with cause.');
+      }
+    }
   };
+  
+  
+  
     
 
   const [hoveredCell901, setHoveredCell901] = useState(null); // Track hovered cell
@@ -545,7 +1086,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
           console.log("Deleted Cause:", payload);
       
           // Perform the API call
-          fetch("http://localhost:226/api/deleted_top_cause", {
+          // fetch("http://localhost:226/api/deleted_top_cause", {
+            fetch(`${BASE_URL}/api/deleted_top_cause`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -589,7 +1131,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
             console.log("Deleted SubCause:", payload);
     
-            fetch("http://localhost:226/api/deleted_cause", {
+            // fetch("http://localhost:226/api/deleted_cause", {
+              fetch(`${BASE_URL}/api/deleted_cause`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -642,7 +1185,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
   
               console.log("Debug: Payload to API:", payload);
   
-              fetch("http://localhost:226/api/deleted_subcause", {
+              // fetch("http://localhost:226/api/deleted_subcause", {
+                fetch(`${BASE_URL}/api/deleted_subcause`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(payload),
@@ -685,6 +1229,12 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
    useEffect(() => {
     console.log('expandedCauseData updated ,,,,:', expandedCauseData);
   }, [expandedCauseData]); // This dependency array makes it log whenever expandedCauseData changes
+
+
+     // Log expandedCauseData whenever it changes
+     useEffect(() => {
+      console.log('question answers updated ,,,,:', questionAnswers885);
+    }, [questionAnswers885]); // This dependency array makes it log whenever expandedCauseData changes
   
   
 
@@ -793,7 +1343,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log("Data being sent to the API:", JSON.stringify(payload, null, 2));
     
       // Send the data to the API
-      fetch("http://localhost:226/api/sub_cause_edited_data", {
+      // fetch("http://localhost:226/api/sub_cause_edited_data", {
+        fetch(`${BASE_URL}/api/sub_cause_edited_data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -816,7 +1367,9 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       try {
         console.log("Sending request for cause:", causeName);
         const encodedCauseName = encodeURIComponent(causeName).replace(/\+/g, '%2B');
-        const response = await fetch(`http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodedCauseName}`);
+        // const response = await fetch(`http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodedCauseName}`);
+
+        const response = await fetch(`${BASE_URL}/api/fetch_hovering_items_for_topcause?cause=${encodedCauseName}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch');
@@ -881,7 +1434,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log("Data being sent to the backend:", JSON.stringify(payload, null, 2));
     
       // Send the payload to the backend API
-      fetch('http://localhost:226/api/submit-causes', {
+      // fetch('http://localhost:226/api/submit-causes', {
+        fetch(`${BASE_URL}/api/submit-causes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -909,9 +1463,14 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     const fetchHoveringItemsForCause = async (causeName) => {
       try {
         // Update API endpoint and parameter name
+        // const response = await fetch(
+        //   `http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodeURIComponent(causeName)}`
+        // );
+
         const response = await fetch(
-          `http://localhost:226/api/fetch_hovering_items_for_topcause?cause=${encodeURIComponent(causeName)}`
+          `${BASE_URL}/api/fetch_hovering_items_for_topcause?cause=${encodeURIComponent(causeName)}`
         );
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -987,7 +1546,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     // Log the payload for debugging
     console.log("Data being sent to the API for edited top cause:", JSON.stringify(payload, null, 2));
   
-    fetch('http://localhost:226/api/edited_top_cause_data', {
+    // fetch('http://localhost:226/api/edited_top_cause_data', {
+      fetch(`${BASE_URL}/api/edited_top_cause_data`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1097,7 +1657,9 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log("Sending data to API:", { questionName });
   
       // Use Fetch API to send the request to the backend
-      fetch(`http://localhost:226/api/fetch_subquestion_for_event?questionName=${encodeURIComponent(questionName)}`)
+      // fetch(`http://localhost:226/api/fetch_subquestion_for_event?questionName=${encodeURIComponent(questionName)}`)
+
+      fetch(`${BASE_URL}/api/fetch_subquestion_for_event?questionName=${encodeURIComponent(questionName)}`)
         .then((response) => response.json())
         .then((data) => {
           console.log("Received data from API:", data);
@@ -1122,9 +1684,14 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
 
         // Send a GET request to the API with modalName as a query parameter
+        // const response = await fetch(
+        //   `http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`
+        // );
+
         const response = await fetch(
-          `http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`
+          `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
         );
+
 
         if (!response.ok) {
           throw new Error("Failed to fetch data");
@@ -1146,6 +1713,11 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
 
     fetchData884(); // Call the fetch function on component mount
   }, [modalName]); // Only re-run the effect if modalName changes
+
+     // useEffect to print expandedCauseData and nestedSubCauseData
+     useEffect(() => {
+      console.log('question data :', data884); // Log to console
+    }, [data884]); // Dependency array ensures it runs when these states change
 
   // Close the textbox when clicking outside
   useEffect(() => {
@@ -1250,7 +1822,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
-      fetch("http://localhost:226/api/topcause_data_change", {
+      // fetch("http://localhost:226/api/topcause_data_change", {
+        fetch(`${BASE_URL}/api/topcause_data_change`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -1339,7 +1912,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
       console.log("Sending to API:", JSON.stringify(payload, null, 2));
     
-      fetch("http://localhost:226/api/cause_data_change", {
+      // fetch("http://localhost:226/api/cause_data_change", {
+        fetch(`${BASE_URL}/api/cause_data_change`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -1431,7 +2005,8 @@ const sendDataToAPI0003 = (balancedNestedSubCauses, parentCauseName, parentSubCa
 
   console.log("Sending to API:", JSON.stringify(payload, null, 2));
 
-  fetch("http://localhost:226/api/nested_subcause_data_change", {
+  // fetch("http://localhost:226/api/nested_subcause_data_change", {
+    fetch(`${BASE_URL}/api/nested_subcause_data_change`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -1651,7 +2226,8 @@ const addNewUntitledSubCause = (causeIndex, parentCauseName) => {
   console.log("Data being sent to the API for new sub-cause while creating:", JSON.stringify(payload, null, 2));
 
   // Send the payload to the API
-  fetch("http://localhost:226/api/sub_cause_creation_data", {
+  // fetch("http://localhost:226/api/sub_cause_creation_data", {
+    fetch(`${BASE_URL}/api/sub_cause_creation_data`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1700,7 +2276,8 @@ const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
   console.log("Payload being sent to the API for nestedsubcause insertion:", JSON.stringify(payload, null, 2));
 
   // Send the data to the API
-  fetch("http://localhost:226/api/nested_sub_cause_creation_data", {
+  // fetch("http://localhost:226/api/nested_sub_cause_creation_data", {
+    fetch(`${BASE_URL}/api/nested_sub_cause_creation_data`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1994,10 +2571,37 @@ const handleNewCauseChange = (e) => {
     setIsCreateTopCauseInputVisible(true);
   }
 };
-const handlePreviewClick = () => {
-  // Navigate to the preview page with modalName passed in state
-  navigate('/preview', { state: { modalName } });
+// const handlePreviewClick = () => {
+//   // Navigate to the preview page with modalName passed in state
+//   navigate('/preview', { state: { modalName } });
+// };
+
+const handlePreviewClick = async () => {
+  try {
+    // Log the modalName for debugging
+    console.log('Preparing to fetch preview data for modalName:', modalName);
+
+    // Send a GET request with modalName as a query parameter
+    // const response = await fetch(`http://localhost:226/api/fetch_preview_data?modalname=${encodeURIComponent(modalName)}`);
+
+    const response = await fetch(`${BASE_URL}/api/fetch_preview_data?modalname=${encodeURIComponent(modalName)}`);
+
+    // Check if the response is successful
+    if (response.ok) {
+      const responseData = await response.json(); // Parse the response data
+      console.log('Fetched preview data:', responseData);
+
+      // Navigate to the preview page with modalName and API response data passed in state
+      navigate('/preview', { state: { modalName, previewData: responseData.data } });
+    } else {
+      console.error('Failed to fetch preview data:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error during fetch:', error);
+  }
 };
+
+
 
 const handleConstraintClick = () => {
   // Navigate to the preview page with modalName passed in state
@@ -2224,7 +2828,9 @@ const handleConstraintClick = () => {
     // Fetch data only if expanding the sub-cause and no data exists
     if (!expandedSubCause[key] || !nestedSubCauseData[key]) {
       try {
-        const url = `http://localhost:226/api/fetch_sub_cause_based_on_cause?CauseName=${encodeURIComponent(subCauseName)}`;
+        // const url = `http://localhost:226/api/fetch_sub_cause_based_on_cause?CauseName=${encodeURIComponent(subCauseName)}`;
+        const url = `${BASE_URL}/api/fetch_sub_cause_based_on_cause?CauseName=${encodeURIComponent(subCauseName)}`;
+
         console.log(`subcause URL formed: ${url}`); // Log the URL being used
   
         const response = await fetch(url);
@@ -2292,7 +2898,9 @@ const handleConstraintClick = () => {
       console.log(`Navigating to modal with name: ${name}`);
       
       try {
-        const url = `http://localhost:226/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
+        // const url = `http://localhost:226/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
+        const url = `${BASE_URL}/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
+
         console.log("API URL:", url);
     
         const response = await fetch(url, { method: "GET" });
@@ -2373,12 +2981,20 @@ const handleConstraintClick = () => {
     // Log the URL formed
     console.log("cause URL formed from top cause:", url);
         
+        // const response = await fetch(
+        //   `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
+        //   {
+        //     method: "GET",
+        //   }
+        // );
+
         const response = await fetch(
-          `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
+          `${BASE_URL}/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
           {
             method: "GET",
           }
         );
+
     
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
@@ -2417,12 +3033,20 @@ const handleConstraintClick = () => {
   // Log the URL formed
   console.log("cause URL formed from top cause:", url);
       
+      // const response = await fetch(
+      //   `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
+      //   {
+      //     method: "GET",
+      //   }
+      // );
+
       const response = await fetch(
-        `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
+        `${BASE_URL}/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`,
         {
           method: "GET",
         }
       );
+
   
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -2610,6 +3234,12 @@ const handleConstraintClick = () => {
       <th></th> {/* For the plus/minus icon */}
       <th>Cause</th>
       <th>Probability</th>
+      {isAnswerClicked && (
+        <>
+          <th>Identify</th>
+          <th>Eliminate</th>
+        </>
+      )}
       {isAnyProgressChecked && <th>Solve</th>}
       <th>Action</th> {/* Action column header */}
     </tr>
@@ -2619,12 +3249,25 @@ const handleConstraintClick = () => {
       <React.Fragment key={index}>
         {/* Main Cause Row */}
         <tr
-          onMouseEnter={() => setHoveredCell1114(`cause-${index}`)}
-          onMouseLeave={() => setHoveredCell1114(null)}
-        >
-          <td>
-            {!solveCheckboxes900[index] && <span>✓</span>} {/* Show tick mark */}
-          </td>
+  onMouseEnter={() => {
+    setHoveredCell1114(`cause-${index}`); // Set the hovered cell
+    setHoveredCause993(cause.name); // Set the hovered cause name
+    fetchHoveringItemsForCause993(cause.name); // Fetch items when hovering
+  }}
+  onMouseLeave={() => {
+    setHoveredCell1114(null); // Clear hovered cell
+    setHoveredCause993(null); // Clear hovered cause when mouse leaves
+  }}
+  style={{
+    backgroundColor: hoverItems899.includes(cause.name)
+      ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
+      : 'transparent' // Default color
+  }}
+>
+<td>
+  {!shouldHideTickMark(index) && <span>✓</span>} {/* Main Cause */}
+</td>
+
           <td>
             {cause.internalCause && (
               <button
@@ -2666,15 +3309,34 @@ const handleConstraintClick = () => {
               <span className="probability">{cause.probability}%</span>
             </div>
           </td>
+
+          {isAnswerClicked && (
+            <>
+              <td>
+                <input type="checkbox" />
+              </td>
+              <td>
+                <input type="checkbox" />
+              </td>
+            </>
+          )}
+
           <td>
-            {isAnyProgressChecked && (
-              <input
-                type="checkbox"
-                checked={solveCheckboxes900[index] || false}
-                onChange={() => setSolveCheckboxes900((prev) => ({ ...prev, [index]: !prev[index] }))}
-              />
-            )}
-          </td>
+  {isAnyProgressChecked && (
+    <input
+      type="checkbox"
+      checked={solveCheckboxes900[index] || false}
+      onChange={(e) => {
+        // Execute the existing state update logic
+        setSolveCheckboxes900((prev) => ({ ...prev, [index]: !prev[index] }));
+
+        // Call the additional handler with required parameters
+        handleSolveCheckboxChange(e, index, cause.name);
+      }}
+    />
+  )}
+</td>
+
           <td>
           {hoveredCell1114 === `cause-${index}` && (
   <FaCog
@@ -2691,14 +3353,34 @@ const handleConstraintClick = () => {
         {expandedCauseName === cause.name && expandedCauseData &&
           expandedCauseData.map((causeDetail, subIndex) => (
             <React.Fragment key={subIndex}>
-              <tr
+              {/* <tr
                 className="sub-cause-row"
                 onMouseEnter={() => setHoveredCell1114(`subcause-${index}-${subIndex}`)}
                 onMouseLeave={() => setHoveredCell1114(null)}
-              >
-                <td>
-                  {!solveCheckboxes900[index] && <span>✓</span>} {/* Show tick mark */}
-                </td>
+              > */}
+
+              <tr
+  className="sub-cause-row"
+  onMouseEnter={() => {
+    setHoveredCell1114(`subcause-${index}-${subIndex}`); // Set the hovered sub-cause cell
+    setHoveredCause993(causeDetail.CauseName); // Set the hovered cause name
+    fetchHoveringItemsForCause993(causeDetail.CauseName); // Fetch items when hovering
+  }}
+  onMouseLeave={() => {
+    setHoveredCell1114(null); // Clear hovered sub-cause cell
+    setHoveredCause993(null); // Clear hovered cause when mouse leaves
+  }}
+  style={{
+    backgroundColor: hoverItems899.includes(cause.name)
+      ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
+      : 'transparent' // Default color
+  }}
+>
+<td>
+  {!shouldHideTickMark(index, subIndex) && <span>✓</span>} {/* Sub-Cause */}
+</td>
+
+
                 <td>
                   {causeDetail.internalSubCause && (
                     <button
@@ -2747,20 +3429,34 @@ const handleConstraintClick = () => {
                   </div>
                 </td>
 
+                {isAnswerClicked && (
+            <>
+              <td>
+                <input type="checkbox" />
+              </td>
+              <td>
+                <input type="checkbox" />
+              </td>
+            </>
+          )}
+
                 <td>
-                  {isAnyProgressChecked && (
-                    <input
-                      type="checkbox"
-                      checked={solveCheckboxes900[`${index}-${subIndex}`] || false}
-                      onChange={() =>
-                        setSolveCheckboxes900((prev) => ({
-                          ...prev,
-                          [`${index}-${subIndex}`]: !prev[`${index}-${subIndex}`],
-                        }))
-                      }
-                    />
-                  )}
-                </td>
+  {isAnyProgressChecked && (
+    <input
+      type="checkbox"
+      checked={solveCheckboxes900[`${index}-${subIndex}`] || false}
+      onChange={(e) => {
+        setSolveCheckboxes900((prev) => ({
+          ...prev,
+          [`${index}-${subIndex}`]: !prev[`${index}-${subIndex}`],
+        }));
+        // Call handleSolveCheckboxChange with the event `e`, subIndex, and causeName
+        handleSolveCheckboxChange(e, subIndex, causeDetail.CauseName); // Passing `e` here
+      }}
+    />
+  )}
+</td>
+
                 <td>
   {hoveredCell1114 === `subcause-${index}-${subIndex}` && (
     <FaCog
@@ -2779,20 +3475,34 @@ const handleConstraintClick = () => {
                   className="nested-sub-cause-row"
                   onMouseEnter={() => setHoveredCell1114(`nested-subcause-${index}-${subIndex}`)} // Unique ID for nested sub-cause
                   onMouseLeave={() => setHoveredCell1114(null)}
+                  style={{
+                    backgroundColor: hoverItems899.includes(cause.name)
+                      ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
+                      : 'transparent' // Default color
+                  }}
                 >
                   <td colSpan={5}> {/* Adjust the column span to remove the first column */}
                     <table className="nested-sub-cause-table">
                       <tbody>
                       {nestedSubCauseData[`${cause.name}-${causeDetail.CauseName}`]?.map((nestedSubCause, nestedIndex) => (
-  <tr
-    key={nestedIndex}
-    className="nested-sub-cause-row"
-    onMouseEnter={() => setHoveredCell1114(`nested-subcause-${index}-${subIndex}-${nestedIndex}`)}
-    onMouseLeave={() => setHoveredCell1114(null)}
-  >
-                            <td>
-                              {!solveCheckboxes900[index] && <span>✓</span>} {/* Show tick mark */}
-                            </td>
+                        <tr
+  key={nestedIndex}
+  className="nested-sub-cause-row"
+  onMouseEnter={() => {
+    setHoveredCell1114(`nested-subcause-${index}-${subIndex}-${nestedIndex}`); // Set the hovered nested sub-cause cell
+    setHoveredCause993(nestedSubCause.eventName); // Set the hovered cause name
+    fetchHoveringItemsForCause993(nestedSubCause.eventName); // Fetch items when hovering
+  }}
+  onMouseLeave={() => {
+    setHoveredCell1114(null); // Clear hovered nested sub-cause cell
+    setHoveredCause993(null); // Clear hovered cause when mouse leaves
+  }}
+>
+<td>
+  {!shouldHideTickMark(index, subIndex, nestedIndex) && <span>✓</span>} {/* Nested Sub-Cause */}
+</td>
+
+
                             <td></td>
                             <td>
   {editingField7773?.index === nestedIndex && editingField7773?.field === "eventName" ? (
@@ -2837,20 +3547,36 @@ const handleConstraintClick = () => {
                               </div>
                             </td>
 
+                            {isAnswerClicked && (
+            <>
+              <td>
+                <input type="checkbox" />
+              </td>
+              <td>
+                <input type="checkbox" />
+              </td>
+            </>
+          )}
+
                             <td>
-                              {isAnyProgressChecked && (
-                                <input
-                                  type="checkbox"
-                                  checked={solveCheckboxes900[`${index}-${subIndex}-${nestedIndex}`] || false}
-                                  onChange={() =>
-                                    setSolveCheckboxes900((prev) => ({
-                                      ...prev,
-                                      [`${index}-${subIndex}-${nestedIndex}`]: !prev[`${index}-${subIndex}-${nestedIndex}`],
-                                    }))
-                                  }
-                                />
-                              )}
-                            </td>
+  {isAnyProgressChecked && (
+    <input
+      type="checkbox"
+      checked={solveCheckboxes900[`${index}-${subIndex}-${nestedIndex}`] || false}
+      onChange={(e) => {
+        // Update the checkbox state
+        setSolveCheckboxes900((prev) => ({
+          ...prev,
+          [`${index}-${subIndex}-${nestedIndex}`]: !prev[`${index}-${subIndex}-${nestedIndex}`], // Toggle state
+        }));
+
+        // Call the handleSolveCheckboxChange function with `e`, `nestedIndex`, and the sub-cause name
+        handleSolveCheckboxChange(e, nestedIndex, nestedSubCause.eventName); // Pass e and the name
+      }}
+    />
+  )}
+</td>
+
 
                             <td>
   {hoveredCell1114 === `nested-subcause-${index}-${subIndex}-${nestedIndex}` && (
@@ -2882,14 +3608,13 @@ const handleConstraintClick = () => {
 
     
 {/* Save Button Below Table */}
-<div className="save-button-container-882">
+{/* <div className="save-button-container-882">
   <button
     className="save-button-882"
-    onClick={saveCauseData}
   >
     Save
   </button>
-</div>
+</div> */}
 
 
 
@@ -3006,11 +3731,18 @@ const handleConstraintClick = () => {
           paginatedData990.map((action, rowIndex) => (
             <tr
               key={rowIndex}
-              onMouseEnter={() => handleMouseEnter901(rowIndex)}
-              onMouseLeave={handleMouseLeave901}
+              // onMouseEnter={() => handleMouseEnter901(rowIndex)}
+              // onMouseLeave={handleMouseLeave901}
+              onMouseEnter={() => { 
+                handleMouseEnter1119(rowIndex, action.name); // Call handleMouseEnter1119 with rowIndex and action.name
+                handleMouseEnter901(rowIndex); // Call handleMouseEnter901 with rowIndex
+              }}
+              onMouseLeave={() => handleMouseLeave901()} // Call handleMouseLeave901 on mouse leave
               style={{
-                backgroundColor:
-                  hoveredCell901 === rowIndex ? "rgba(200, 200, 255, 0.5)" : "transparent",
+                // backgroundColor:
+                //   hoveredCell901 === rowIndex ? "rgba(200, 200, 255, 0.5)" : "transparent",
+                // Apply the hover effect if the action is found in hoverItems894.actions
+            backgroundColor: hoverItems894.actions.includes(action.name) ? 'rgba(200, 200, 255, 0.5)' : 'transparent',
               }}
             >
               {/* Editable Name */}
@@ -3104,6 +3836,15 @@ const handleConstraintClick = () => {
         )}
       </tbody>
     </table>
+
+    <div className="save-button-container-882">
+  <button
+    className="save-button-882"
+  >
+    Save
+  </button>
+</div> 
+
 
   {clickedCell901 !== null && (
     <div
@@ -3358,24 +4099,6 @@ const handleConstraintClick = () => {
   </div>
 )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 
   
@@ -3388,79 +4111,322 @@ const handleConstraintClick = () => {
                   <FaCog />
                 </span>
       </h3>
-      <table className="modal-table" id="question-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th><FiClock /></th>
-      <th><FiTrendingUp /></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {data884 && data884.questions.map((question, index) => {
-      // Check if the question name is in either hoverItems894 or hoverItems895
-      const isHoveredQuestion =
-        hoverItems894.questions.includes(question.questionName) ||
-        hoverItems895.questions.includes(question.questionName);
-
-      // Check if any of the question answers are in either hoverItems894 or hoverItems895
-      const isHoveredAnswer = questionAnswers885.some(answer =>
-        hoverItems894.questionAnswers.includes(answer) ||
-        hoverItems895.questionAnswers.includes(answer)
-      );
-
-      return (
-        <tr
-          key={index}
-          style={{
-            // Apply brown background color if the question or any answer is found in hoverItems894 or hoverItems895
-            backgroundColor: isHoveredQuestion || isHoveredAnswer ? 'brown' : 'transparent',
-          }}
-        >
-          <td>
-            <div>
-              {question.questionName}
-              <span
-                style={{ marginLeft: "10px", cursor: "pointer" }}
-                onClick={() => toggleRow883(index, question.questionName)}
-              >
-                {expandedRow883 === index ? "➖" : "➕"}
-              </span>
+           {showOptionsBox1114 && (
+              <div className="options-box-1113">
+            {/* Create Action Button */}
+            <div className="option-1113" onClick={addNewQuestion1115}>
+            {/* <div className="option-1113" onClick={handleGearClick1114}> */}
+              <FaPlus className="icon-1112" /> Create Question
             </div>
-            {expandedRow883 === index && (
-              <div style={{ marginLeft: "20px" }}>
-                {questionAnswers885.length > 0 ? (
-                  questionAnswers885.map((answer, idx) => {
-                    // Check if the answer is in either hoverItems894 or hoverItems895
-                    const isHoveredAnswer =
-                      hoverItems894.questionAnswers.includes(answer) ||
-                      hoverItems895.questionAnswers.includes(answer);
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          backgroundColor: isHoveredAnswer ? 'brown' : 'transparent',
-                        }}
-                      >
-                        {answer}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div>No answers available</div>
-                )}
               </div>
             )}
+     <div style={{ position: "relative" }} ref={tableRef903}>
+      <table className="modal-table" id="question-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th><FiClock /></th>
+            <th><FiTrendingUp /></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {data884 && data884.questions.map((question, index) => {
+            const isHoveredQuestion =
+              hoverItems894.questions.includes(question.questionName) ||
+              hoverItems895.questions.includes(question.questionName);
+
+            const isHoveredAnswer = questionAnswers885.some(answer =>
+              hoverItems894.questionAnswers.includes(answer) ||
+              hoverItems895.questionAnswers.includes(answer)
+            );
+
+            return (
+              <tr
+                key={index}
+                style={{
+                  backgroundColor: isHoveredQuestion || isHoveredAnswer
+                    ? 'rgba(200, 200, 255, 0.5)'
+                    : 'transparent',
+                }}
+                onMouseEnter={() => setHoveredRow(index)}
+                onMouseLeave={() => setHoveredRow(null)}
+              >
+                {/* Editable Name Column */}
+                <td>
+                  <div>
+                    {editingQuestion3300 === index && editingField3300 === "name" ? (
+                      <input
+                        ref={editRef3300}
+                        value={editValue3300}
+                        onChange={(e) => setEditValue3300(e.target.value)}
+                        onKeyDown={handleKeyDown3300}
+                        autoFocus
+                      />
+                    ) : (
+                      <span
+                        onClick={() => handleEditClick3300(index, question.questionName, "name")}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {question.questionName}
+                      </span>
+                    )}
+                    <span
+                      style={{ marginLeft: "10px", cursor: "pointer" }}
+                      onClick={() => {
+                        toggleRow883(index, question.questionName);
+                      }}
+                    >
+                      {expandedRow883 === index ? "➖" : "➕"}
+                    </span>
+                  </div>
+                  {/* {expandedRow883 === index && (
+                    <>
+                      {Array.isArray(questionAnswers885[index]) && questionAnswers885[index].length > 0 ? (
+                        questionAnswers885[index].map((answer, idx) => (
+                          <tr key={idx} className="answer-row">
+                            <td colSpan="4">
+                              <div
+                                className="answer-item"
+                                style={{
+                                  backgroundColor: isHoveredAnswer
+                                    ? "rgba(200, 200, 255, 0.5)"
+                                    : "transparent",
+                                }}
+                                onClick={() => handleQuestionAnswerClick()} // Call the function on click
+                              >
+                                {editingAnswerName9970 === answer ? (
+                                  <input
+                                    ref={inputRef9970}
+                                    value={editingAnswerValue9970}
+                                    onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                                    onBlur={handleSaveAnswer9970}
+                                    onKeyDown={handleAnswerKeyDown9970}
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <span
+                                    onClick={() => handleEditAnswerClick9970(answer)}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {answer}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr className="answer-row">
+                          <td colSpan="4">Invalid answers format</td>
+                        </tr>
+                      )}
+                    </>
+                  )} */}
+
+{expandedRow883 === index && (
+  <>
+    {Array.isArray(questionAnswers885[index]) && questionAnswers885[index].length > 0 ? (
+      // If it's already an array, render as usual
+      questionAnswers885[index].map((answer, idx) => (
+        <tr key={idx} className="answer-row">
+          <td colSpan="4">
+            <div
+              className="answer-item"
+              style={{
+                backgroundColor: isHoveredAnswer
+                  ? "rgba(200, 200, 255, 0.5)"
+                  : "transparent",
+              }}
+              onClick={() => handleQuestionAnswerClick()} // Call the function on click
+            >
+              {editingAnswerName9970 === answer ? (
+                <input
+                  ref={inputRef9970}
+                  value={editingAnswerValue9970}
+                  onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                  onBlur={handleSaveAnswer9970}
+                  onKeyDown={handleAnswerKeyDown9970}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  onClick={() => handleEditAnswerClick9970(answer)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {answer}
+                </span>
+              )}
+            </div>
           </td>
-          <td>{question.questionTime}</td>
-          <td>{question.questionCost}</td>
-          <td></td>
         </tr>
-      );
-    })}
-  </tbody>
-</table>
+      ))
+    ) : (
+      // If it's not an array, check if it's an object and render accordingly
+      typeof questionAnswers885[index] === "object" && questionAnswers885[index] !== null ? (
+        Object.values(questionAnswers885[index]).map((answer, idx) => (
+          <tr key={idx} className="answer-row">
+            <td colSpan="4">
+              <div
+                className="answer-item"
+                style={{
+                  backgroundColor: isHoveredAnswer
+                    ? "rgba(200, 200, 255, 0.5)"
+                    : "transparent",
+                }}
+                onClick={() => handleQuestionAnswerClick()} // Call the function on click
+              >
+                {editingAnswerName9970 === answer ? (
+                  <input
+                    ref={inputRef9970}
+                    value={editingAnswerValue9970}
+                    onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                    onBlur={handleSaveAnswer9970}
+                    onKeyDown={handleAnswerKeyDown9970}
+                    autoFocus
+                  />
+                ) : (
+                  <span
+                    onClick={() => handleEditAnswerClick9970(answer)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {answer}
+                  </span>
+                )}
+              </div>
+            </td>
+          </tr>
+        ))
+      ) : (
+        // If it's neither an array nor an object, treat it as a single string and display
+        <tr className="answer-row">
+          <td colSpan="4">
+            <div
+              className="answer-item"
+              style={{
+                backgroundColor: isHoveredAnswer
+                  ? "rgba(200, 200, 255, 0.5)"
+                  : "transparent",
+              }}
+              onClick={() => handleQuestionAnswerClick()} // Call the function on click
+            >
+              {editingAnswerName9970 === questionAnswers885[index] ? (
+                <input
+                  ref={inputRef9970}
+                  value={editingAnswerValue9970}
+                  onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                  onBlur={handleSaveAnswer9970}
+                  onKeyDown={handleAnswerKeyDown9970}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  onClick={() => handleEditAnswerClick9970(questionAnswers885[index])}
+                  style={{ cursor: "pointer" }}
+                >
+                  {questionAnswers885[index]}
+                </span>
+              )}
+            </div>
+          </td>
+        </tr>
+      )
+    )}
+  </>
+)}
+
+                </td>
+
+                {/* Editable Time Column */}
+                <td>
+                  {editingQuestion3300 === index && editingField3300 === "time" ? (
+                    <input
+                      ref={editRef3300}
+                      value={editValue3300}
+                      onChange={(e) => setEditValue3300(e.target.value)}
+                      onKeyDown={handleKeyDown3300}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      onClick={() => handleEditClick3300(index, question.questionTime, "time")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {question.questionTime}
+                    </span>
+                  )}
+                </td>
+
+                {/* Editable Cost Column */}
+                <td>
+                  {editingQuestion3300 === index && editingField3300 === "cost" ? (
+                    <input
+                      ref={editRef3300}
+                      value={editValue3300}
+                      onChange={(e) => setEditValue3300(e.target.value)}
+                      onKeyDown={handleKeyDown3300}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      onClick={() => handleEditClick3300(index, question.questionCost, "cost")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {question.questionCost}
+                    </span>
+                  )}
+                </td>
+
+                {/* Blank TD with Icon */}
+                <td style={{ position: "relative", textAlign: "center" }}>
+                  {hoveredRow === index && (
+                    <FaCog
+                      style={{ cursor: "pointer" }}
+                      onClick={(event) => handleIconClick903(index, event)}
+                    />
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+
+          {/* Options Menu */}
+          {clickedCell903 !== null && (
+            <div
+              className="options-menu901"
+              style={{
+                position: "absolute",
+                top: `${menuPosition903.top}px`,
+                left: `${menuPosition903.left}px`,
+                zIndex: 1000,
+                background: "white",
+                border: "1px solid #ccc",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                borderRadius: "4px",
+                padding: "10px",
+                minWidth: "150px",
+              }}
+            >
+              <div
+                style={{
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                }}
+                onClick={() =>
+                  createAnswer903(
+                    clickedCell903,
+                    paginatedData990[clickedCell903]?.name || "Unknown"
+                  )
+                }
+              >
+                Create Answer
+              </div>
+            </div>
+          )}
+        </tbody>
+      </table>
+    </div>
+
 
           </div>
         </div>

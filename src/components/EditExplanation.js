@@ -4,6 +4,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./EditExplanation.css";
 
+import { BASE_URL } from '../config'
+
 const EditExplanation = () => {
   const location = useLocation();
   const { modalName = "N/A", actionName = "N/A" } = location.state || {}; // Safely retrieve data with defaults
@@ -18,12 +20,20 @@ const EditExplanation = () => {
   useEffect(() => {
     const fetchActionExplanation = async () => {
       try {
+        // const response = await fetch(
+        //   `http://localhost:226/api/fetch_action_explanation?actionName=${encodeURIComponent(actionName)}`,
+        //   {
+        //     method: "GET",
+        //   }
+        // );
+
         const response = await fetch(
-          `http://localhost:226/api/fetch_action_explanation?actionName=${encodeURIComponent(actionName)}`,
+          `${BASE_URL}/api/fetch_action_explanation?actionName=${encodeURIComponent(actionName)}`,
           {
             method: "GET",
           }
         );
+
         if (response.ok) {
           const data = await response.json();
           console.log("API Response:", data); // Log the API response
@@ -49,9 +59,14 @@ const EditExplanation = () => {
 
     const fetchImageGallery = async () => {
       try {
-        const response = await fetch(`http://localhost:226/api/fetch_image_gallery`, {
+        // const response = await fetch(`http://localhost:226/api/fetch_image_gallery`, {
+        //   method: "GET",
+        // });
+
+        const response = await fetch(`${BASE_URL}/api/fetch_image_gallery`, {
           method: "GET",
         });
+
         if (response.ok) {
           const data = await response.json();
           setImageList(data.images || []); // Populate the image gallery

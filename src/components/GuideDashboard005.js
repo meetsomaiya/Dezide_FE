@@ -5,6 +5,8 @@ import "./GuideDashboard005.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome } from '@fortawesome/free-solid-svg-icons';
 
+import { BASE_URL } from '../config'
+
 
 const GuideDashboard005 = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -23,7 +25,8 @@ const GuideDashboard005 = () => {
     // Fetch turbine data on component mount
     const fetchTurbineData = async () => {
       try {
-        const response = await fetch("http://localhost:226/api/fetch_turbine_data");
+        // const response = await fetch("http://localhost:226/api/fetch_turbine_data");
+        const response = await fetch(`${BASE_URL}/api/fetch_turbine_data`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -56,9 +59,14 @@ const GuideDashboard005 = () => {
 
     try {
       // Fetch FM data from the API
+      // const response = await fetch(
+      //   `http://localhost:226/api/fetch_fm_data?turbineModel=${encodeURIComponent(turbineModel)}`
+      // );
+
       const response = await fetch(
-        `http://localhost:226/api/fetch_fm_data?turbineModel=${encodeURIComponent(turbineModel)}`
+        `${BASE_URL}/api/fetch_fm_data?turbineModel=${encodeURIComponent(turbineModel)}`
       );
+
 
       if (!response.ok) {
         throw new Error("Failed to fetch data from fetch_fm_data API");
@@ -120,9 +128,14 @@ const handleAlarmItemClick = async (eventName) => {
   console.log("Sending event data to the API:", eventName);
 
   try {
+    // const response = await fetch(
+    //   `http://localhost:226/api/fetch_question_data_based_on_event?event=${encodeURIComponent(eventName)}`
+    // );
+
     const response = await fetch(
-      `http://localhost:226/api/fetch_question_data_based_on_event?event=${encodeURIComponent(eventName)}`
+      `${BASE_URL}/api/fetch_question_data_based_on_event?event=${encodeURIComponent(eventName)}`
     );
+
 
     if (!response.ok) {
       throw new Error("Failed to fetch question data");
@@ -329,7 +342,7 @@ const handleAlarmItemClick = async (eventName) => {
       )}
 
       {/* Footer Section */}
-      <footer className="footer005">© Dezide 2019</footer>
+      <footer className="footer005">© Dezide 2025</footer>
     </div>
   );
 };

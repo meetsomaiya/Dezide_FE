@@ -226,6 +226,31 @@
   margin-top: 10px;
 }
 
+/* Answer Row: Style for each answer's row */
+.answer-row {
+  background-color: rgba(220, 220, 255, 0.3); /* Light background for the answer row */
+  margin-top: 10px; /* Space between the question and its answers */
+}
+
+/* Style for the answer item within its row */
+.answer-item {
+  padding: 5px 10px; /* Padding around the answer text */
+  background-color: rgba(200, 200, 255, 0.5); /* Background color for the answer */
+  border-radius: 5px; /* Rounded corners for answers */
+  cursor: pointer; /* Pointer cursor when hovering */
+}
+
+/* Hover effect for answers */
+.answer-item:hover {
+  background-color: rgba(150, 150, 255, 0.7); /* Darker highlight on hover */
+}
+
+/* Styling the table rows to ensure answers appear one after another */
+.modal-table td {
+  vertical-align: top; /* Align content to the top of the cell */
+}
+
+
 /* added new */
 
 .modal-table input {
@@ -291,6 +316,12 @@
 /* If you need nested sub-cause rows styled differently */
 .nested-sub-cause-row {
   background-color: #fefefe; /* A slightly different shade */
+}
+
+/* For the nested sub-cause table inside the row */
+.nested-sub-cause-table {
+  margin-left: 7rem; /* Pushes the table to the extreme right */
+  
 }
 
 /* Styling for the * icon */

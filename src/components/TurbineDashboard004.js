@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./TurbineDashboard004.css";
 
+import { BASE_URL } from '../config'
+
 const TurbineDashboard004 = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [listItems, setListItems] = useState([]);
@@ -21,7 +23,8 @@ const TurbineDashboard004 = () => {
     setSelectedSection(section);
 
     try {
-      const response = await fetch(`http://localhost:226/api/fetch_events_for_fm?fm=${section}`);
+      // const response = await fetch(`http://localhost:226/api/fetch_events_for_fm?fm=${section}`);
+      const response = await fetch(`${BASE_URL}/api/fetch_events_for_fm?fm=${section}`);
       if (!response.ok) throw new Error(`Error fetching events: ${response.statusText}`);
       const data = await response.json();
 
@@ -36,9 +39,14 @@ const TurbineDashboard004 = () => {
     setSelectedItem(item);
 
     try {
+      // const response = await fetch(
+      //   `http://localhost:226/api/fetch_question_data_based_on_event?event=${encodeURIComponent(item)}`
+      // );
+
       const response = await fetch(
-        `http://localhost:226/api/fetch_question_data_based_on_event?event=${encodeURIComponent(item)}`
+        `${BASE_URL}/api/fetch_question_data_based_on_event?event=${encodeURIComponent(item)}`
       );
+
 
       if (!response.ok) throw new Error(`Error fetching question data: ${response.statusText}`);
 
@@ -119,11 +127,18 @@ const TurbineDashboard004 = () => {
       setTrackerCount((prevCount) => prevCount + 1);
   
       try {
+        // const response = await fetch(
+        //   `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${
+        //     trackerCount + 1
+        //   }&selectedItem=${encodeURIComponent(selectedItem)}`
+        // );
+
         const response = await fetch(
-          `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${
+          `${BASE_URL}/api/fetch_consecutive_question_for_event?trackerCount=${
             trackerCount + 1
           }&selectedItem=${encodeURIComponent(selectedItem)}`
         );
+
         const data = await response.json();
         console.log("Fetched updated ActionName:", data);
   
@@ -153,11 +168,18 @@ const TurbineDashboard004 = () => {
     const dataToSend = { trackerCount, selectedItem };
     console.log("Sending data to API:", dataToSend);
 
+    // fetch(
+    //   `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${trackerCount}&selectedItem=${encodeURIComponent(
+    //     selectedItem
+    //   )}`
+    // )
+
     fetch(
-      `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${trackerCount}&selectedItem=${encodeURIComponent(
+      `${BASE_URL}/api/fetch_consecutive_question_for_event?trackerCount=${trackerCount}&selectedItem=${encodeURIComponent(
         selectedItem
       )}`
     )
+
       .then((response) => response.json())
       .then((data) => {
         console.log("API response:", data);

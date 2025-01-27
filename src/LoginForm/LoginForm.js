@@ -3,6 +3,8 @@ import video_t from '../assets/figma_design.mp4';
 import './LoginForm.css';
 import { useNavigate } from 'react-router-dom';
 
+import { BASE_URL } from '../config'
+
 
 const Login = () => {
   const [userId, setUserId] = useState('');
@@ -21,7 +23,8 @@ const Login = () => {
 
     // Send the userId and password to the API
     try {
-        const response = await fetch('http://localhost:226/api/login2', {
+        // const response = await fetch('http://localhost:226/api/login2', {
+          const response = await fetch(`${BASE_URL}/api/login2`, {
         //   const response = await fetch(`${BASE_URL}/api/login2`, {
             method: 'POST',
             headers: {
@@ -49,7 +52,8 @@ const Login = () => {
                 });
 
                 // Make a GET request to checkAdmin with query parameters
-                const adminResponse = await fetch(`http://localhost:226/api/checkAdmin?DomainId=${DomainId}&Name=${encodeURIComponent(Name)}`);
+                // const adminResponse = await fetch(`http://localhost:226/api/checkAdmin?DomainId=${DomainId}&Name=${encodeURIComponent(Name)}`);
+                const adminResponse = await fetch(`${BASE_URL}/api/checkAdmin?DomainId=${DomainId}&Name=${encodeURIComponent(Name)}`);
                 // const adminResponse = await fetch(`${BASE_URL}/api/checkAdmin?DomainId=${DomainId}&Name=${encodeURIComponent(Name)}`);
 
                 if (adminResponse.ok) {
@@ -69,7 +73,8 @@ const Login = () => {
                         navigate('/dashboard'); // Redirect to admin home if applicable
                     } else {
                         // If checkAdmin is false, send request to checkUser.js
-                        const userResponse = await fetch(`http://localhost:226/api/checkUser?DomainId=${DomainId}`);
+                        // const userResponse = await fetch(`http://localhost:226/api/checkUser?DomainId=${DomainId}`);
+                        const userResponse = await fetch(`${BASE_URL}/api/checkUser?DomainId=${DomainId}`);
                         // const userResponse = await fetch(`${BASE_URL}/api/checkUser?DomainId=${DomainId}`);
                         
                         if (userResponse.ok) {

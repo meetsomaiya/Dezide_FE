@@ -6,7 +6,9 @@ import Sidebar991 from '../components/Sidebar991'; // Sidebar Component
 
 const PreviewComponent920 = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const modalName = location.state?.modalName || 'Default Modal';
+  const previewData = location.state?.previewData || {}; // Fetched data from the parent component
 
   const [showDetails920, setShowDetails920] = useState(false);
 
@@ -17,8 +19,12 @@ const PreviewComponent920 = () => {
   const handleEditRedirect = () => {
     navigate('/dynamic-guides');
   };
-    const navigate = useNavigate();  // Use the navigate hook
+
+  // Check if a question exists in the previewData
+  const firstQuestion = previewData.questions && previewData.questions.length > 0 ? previewData.questions[0] : null;
   
+  // If no question is available, get the first action to use as a fallback
+  const firstAction = previewData.actions && previewData.actions.length > 0 ? previewData.actions[0] : null;
 
   return (
     <div className="layout-container">
@@ -34,7 +40,7 @@ const PreviewComponent920 = () => {
               <button className="restart-button-920">
                 <FaRedo /> Restart
               </button>
-              <button className="edit-button-920"onClick={handleEditRedirect}>
+              <button className="edit-button-920" onClick={handleEditRedirect}>
                 <FaEdit /> Edit
               </button>
             </div>
@@ -42,22 +48,51 @@ const PreviewComponent920 = () => {
 
           <div className="main-content-920">
             <div className="question-section-920">
-              <h3>Is any of the following circuit breaker tripped?</h3>
+              <h3>{firstQuestion ? firstQuestion.QuestionName : (firstAction ? firstAction.ActionName : 'Is any of the following circuit breaker tripped?')}</h3>
+
               <div className="options-container-920">
-                <button className="option-button-920">None of the breaker tripped.</button>
-                <button className="option-button-920">
-                  230V AC pitch supply breaker (-2F3) tripped in top cabinet (CTO).
-                </button>
-                <button className="option-button-920">
-                  3 x 230V AC pitch supply breaker (-10F1) tripped in bottom cabinet (CBO).
-                </button>
-                <button className="option-button-920">
-                  3 x 400V AC pitch supply breaker (-33F1) tripped in bottom cabinet (CBO).
-                </button>
-                <button className="option-button-920">
-                  3 x 230V AC pitch supply breaker (-2Q1) tripped in top cabinet (CTO).
-                </button>
-                <button className="unknown-button-920">I don’t know</button>
+  {firstQuestion ? (
+    // Display the action buttons based on the first question's actions if it exists
+    firstQuestion.Actions?.map((action, index) => (
+      <button
+        key={index}
+        className="option-button-920"
+        onClick={() => alert(`Clicked: ${action.ActionName}`)}
+      >
+        {action.ActionName}
+      </button>
+    ))
+  ) : (
+    // Default buttons if no question is found or actions are not available
+    <>
+      <button
+        className="option-button-920"
+        onClick={() => alert('Clicked: Yes')}
+      >
+        Yes
+      </button>
+      <button
+        className="option-button-920"
+        onClick={() => alert('Clicked: No')}
+      >
+        No
+      </button>
+      <button
+        className="option-button-920"
+        onClick={() => alert('Clicked: I don’t know')}
+      >
+        I don’t know
+      </button>
+    </>
+  )}
+</div>
+
+
+              {/* Dummy Data Section */}
+              <div className="dummy-data-container">
+                <p><strong>Dummy Data 1:</strong> Circuit breaker panel has no visible damage.</p>
+                <p><strong>Dummy Data 2:</strong> All breakers are in the ON position.</p>
+                <p><strong>Dummy Data 3:</strong> The breaker system was last inspected 6 months ago.</p>
               </div>
             </div>
 
@@ -93,86 +128,81 @@ const PreviewComponent920 = () => {
           {showDetails920 && (
             <div className="details-section-920">
               <div className="details-tables-920">
-                {/* Add your tables here */}
+                {/* Causes Table */}
                 <table className="details-table-920">
-  <thead>
-    <tr>
-      <th>Causes</th>
-      <th>P</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <a href="#" onClick={() => alert('Clicked: Safety speed relay (8K1)')}>
-          Safety speed relay (8K1)
-        </a>
-      </td>
-      <td>10.8</td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#" onClick={() => alert('Clicked: Safety chain contactor (3K1)')}>
-          Safety chain contactor (3K1)
-        </a>
-      </td>
-      <td>10.8</td>
-    </tr>
-  </tbody>
-</table>
+                  <thead>
+                    <tr>
+                      <th>Causes</th>
+                      <th>P</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewData.causes?.map((cause, index) => (
+                      <tr key={index}>
+                        <td>
+                          <a href="#" onClick={() => alert(`Clicked: ${cause.EventName}`)}>
+                            {cause.EventName}
+                          </a>
+                        </td>
+                        <td>{cause.MaxProbability !== undefined ? cause.MaxProbability : '--'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-<table className="details-table-920">
-  <thead>
-    <tr>
-      <th>Actions</th>
-      <th>P</th>
-      <th>C</th>
-      <th>P/C</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <a href="#" onClick={() => alert('Clicked: Check hub slip ring connection tightness')}>
-          Check hub slip ring connection tightness
-        </a>
-      </td>
-      <td>0</td>
-      <td>10.8</td>
-      <td>1.1</td>
-    </tr>
-  </tbody>
-</table>
+                {/* Actions Table */}
+                <table className="details-table-920">
+                  <thead>
+                    <tr>
+                      <th>Actions</th>
+                      <th>P</th>
+                      <th>C</th>
+                      <th>P/C</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewData.actions?.map((action, index) => (
+                      <tr key={index}>
+                        <td>
+                          <a href="#" onClick={() => alert(`Clicked: ${action.ActionName}`)}>
+                            {action.ActionName}
+                          </a>
+                        </td>
+                        <td>{action.MaxProbability}</td>
+                        <td>{action.ActionCost}</td>
+                        <td>
+                          {action.MaxProbability && action.ActionCost
+                            ? (action.MaxProbability / action.ActionCost).toFixed(2)
+                            : '--'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-<table className="details-table-920">
-  <thead>
-    <tr>
-      <th>Questions</th>
-      <th>Level</th>
-      <th>C</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <a href="#" onClick={() => alert('Clicked: Is any of the following circuit breaker tripped?')}>
-          Is any of the following circuit breaker tripped?
-        </a>
-      </td>
-      <td>0</td>
-      <td>5.0</td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#" onClick={() => alert('Clicked: From EVT logs, check Dii_PitX_EmergencyRun...')}>
-          From EVT logs, check Dii_PitX_EmergencyRun...
-        </a>
-      </td>
-      <td>0</td>
-      <td>1.0</td>
-    </tr>
-  </tbody>
-</table>
+                {/* Questions Table */}
+                <table className="details-table-920">
+                  <thead>
+                    <tr>
+                      <th>Questions</th>
+                      <th>Level</th>
+                      <th>C</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewData.questions?.map((question) => (
+                      <tr key={question.QuestionID}>
+                        <td>
+                          <a href="#" onClick={() => alert(`Clicked: ${question.QuestionName}`)}>
+                            {question.QuestionName}
+                          </a>
+                        </td>
+                        <td>0</td>
+                        <td>{question.QuestionCost}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

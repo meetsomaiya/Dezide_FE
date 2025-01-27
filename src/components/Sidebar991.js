@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset, faChevronLeft, faChevronRight, faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar991.css';
 
 const Sidebar991 = () => {
@@ -9,6 +9,7 @@ const Sidebar991 = () => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState(location.pathname);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMediaExpanded, setIsMediaExpanded] = useState(false);
 
   useEffect(() => {
     setActiveItem(location.pathname);
@@ -21,6 +22,10 @@ const Sidebar991 = () => {
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  const toggleMediaSubmenu = () => {
+    setIsMediaExpanded(!isMediaExpanded);
   };
 
   return (
@@ -39,7 +44,7 @@ const Sidebar991 = () => {
             <FontAwesomeIcon icon={faFileAlt} /> {!isCollapsed && 'Dynamic Guides'}
           </Link>
         </li>
-        <li className={activeItem === '/static-guides' ? 'active-991' : ''}>
+        {/* <li className={activeItem === '/static-guides' ? 'active-991' : ''}>
           <Link to="/static-guides" onClick={() => handleClick('/static-guides')}>
             <FontAwesomeIcon icon={faBook} /> {!isCollapsed && 'Static Guides'}
           </Link>
@@ -48,17 +53,42 @@ const Sidebar991 = () => {
           <Link to="/faqs" onClick={() => handleClick('/faqs')}>
             <FontAwesomeIcon icon={faQuestionCircle} /> {!isCollapsed && 'FAQs'}
           </Link>
+        </li> */}
+        <li>
+          <div className="media-header" onClick={toggleMediaSubmenu}>
+            <FontAwesomeIcon icon={faPhotoVideo} />
+            {!isCollapsed && (
+              <>
+                {' Media '}
+                <FontAwesomeIcon icon={isMediaExpanded ? faCaretDown : faCaretRight} />
+              </>
+            )}
+          </div>
+          {isMediaExpanded && !isCollapsed && (
+            <ul className="media-submenu">
+              <li className={activeItem === '/media/images' ? 'active-991' : ''}>
+                <Link to="/images" onClick={() => handleClick('/images')}>
+                  Images
+                </Link>
+              </li>
+              <li className={activeItem === '/media/videos' ? 'active-991' : ''}>
+                <Link to="/videos" onClick={() => handleClick('/videos')}>
+                  Videos
+                </Link>
+              </li>
+              <li className={activeItem === '/media/files' ? 'active-991' : ''}>
+                <Link to="/files" onClick={() => handleClick('/files')}>
+                  Files
+                </Link>
+              </li>
+            </ul>
+          )}
         </li>
-        <li className={activeItem === '/media' ? 'active-991' : ''}>
-          <Link to="/media" onClick={() => handleClick('/media')}>
-            <FontAwesomeIcon icon={faPhotoVideo} /> {!isCollapsed && 'Media'}
-          </Link>
-        </li>
-        <li className={activeItem === '/contact-center' ? 'active-991' : ''}>
+        {/* <li className={activeItem === '/contact-center' ? 'active-991' : ''}>
           <Link to="/contact-center" onClick={() => handleClick('/contact-center')}>
             <FontAwesomeIcon icon={faHeadset} /> {!isCollapsed && 'Contact Center'}
           </Link>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

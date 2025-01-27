@@ -5,6 +5,8 @@ import "./GuideQuestionItem006.css"; // Link the CSS file for styling
 
 import FeedBack222 from './FeedBack222';
 
+import { BASE_URL } from '../config'
+
 const GuideQuestionItem = () => {
   const location = useLocation();
 
@@ -32,9 +34,14 @@ const GuideQuestionItem = () => {
 // Function to send currentActionName to the API
 const sendActionNameToApi = async (actionNameToSend) => {
   try {
+    // const response = await fetch(
+    //   `http://localhost:226/api/fetch_image_and_explanation_for_action?actionName=${encodeURIComponent(actionNameToSend)}`
+    // );
+
     const response = await fetch(
-      `http://localhost:226/api/fetch_image_and_explanation_for_action?actionName=${encodeURIComponent(actionNameToSend)}`
+      `${BASE_URL}/api/fetch_image_and_explanation_for_action?actionName=${encodeURIComponent(actionNameToSend)}`
     );
+
 
     if (!response.ok) {
       throw new Error("Failed to send action name to API");
@@ -109,7 +116,8 @@ const handleCloseModal333 = () => {
     console.log(JSON.stringify(requestData, null, 2)); // Pretty-printed JSON in the console
   
     // Construct the backend API URL
-    const url = `http://localhost:226/api/pause_session`;
+    // const url = `http://localhost:226/api/pause_session`;
+    const url = `${BASE_URL}/api/pause_session`;
     // const url = `http://localhost:3001/api/pause_session`;
   
     // Send the POST request with the data in the body
@@ -215,6 +223,115 @@ const getFormattedEventName = (eventName) => {
   }, [currentActionName]);
 
   // Function to handle the selection of Yes, No, I don't know
+// const handleOptionSelect = async (option) => {
+//   setSelectedOption(option);
+
+//   console.log(`Selected Option: ${option}`);
+//   console.log(`Tracker Count Before Update: ${trackerCount}`);
+
+//   // Check if the question already exists in performedSteps
+//   setPerformedSteps((prevSteps) => {
+//     const questionIndex = prevSteps.findIndex(
+//       (step) => step.question === currentActionName
+//     );
+
+//     if (questionIndex !== -1) {
+//       // Update the response for the existing question
+//       const updatedSteps = [...prevSteps];
+//       updatedSteps[questionIndex] = {
+//         ...updatedSteps[questionIndex],
+//         response: option,
+//       };
+//       return updatedSteps;
+//     } else {
+//       // Add a new question-response pair if it doesn't exist
+//       return [
+//         ...prevSteps,
+//         { question: currentActionName, response: option },
+//       ];
+//     }
+//   });
+
+//   // The rest of your logic remains unchanged
+//   let newTrackerCount = trackerCount;
+
+//   if (option === "Yes") {
+//     console.log("Action: Yes selected. Resetting tracker count.");
+//     setShowSuccessMessage(true);
+//     setTrackerCount(0);
+//     setLastIDontKnowCount(null); // Reset last "I don't know" tracker
+//     setLastAction(null); // Clear last action
+//     setCurrentActionName("");
+//     return;
+//   }
+
+//   if (option === "I don't know") {
+//     newTrackerCount = trackerCount + 1;
+//     setTrackerCount(newTrackerCount);
+
+//     // Update the 'lastI don't know' count
+//     setLastIDontKnowCount(newTrackerCount);
+//     console.log(`Action: "I don't know" selected. New Tracker Count: ${newTrackerCount}`);
+//     console.log(`Last 'I don't know' Count Updated To: ${newTrackerCount}`);
+
+//     // Update last action
+//     setLastAction("I don't know");
+//   }
+
+//   if (option === "No") {
+//     if (lastAction === "I don't know" && lastIDontKnowCount !== null) {
+//       // If "No" follows "I don't know", reset the tracker count
+//       newTrackerCount = lastIDontKnowCount - 1;
+//       setTrackerCount(newTrackerCount);
+
+//       // Log tracker count reset for "No" after "I don't know"
+//       console.log(`Action: "No" selected after "I don't know". Tracker Count Reset To: ${newTrackerCount}`);
+//     } else {
+//       // Normal increment for "No"
+//       newTrackerCount = trackerCount + 1;
+//       setTrackerCount(newTrackerCount);
+//       console.log(`Action: "No" selected. New Tracker Count: ${newTrackerCount}`);
+//     }
+
+//     // Update last action
+//     setLastAction("No");
+//   }
+
+//   // Use the updated trackerCount value to send to the API
+//   const dataToSend = {
+//     trackerCount: newTrackerCount,
+//     selectedItem: eventData,
+//   };
+
+//   console.log("Sending data to API:", dataToSend);
+
+//   try {
+//     // const response = await fetch(
+//     //   `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
+//     // );
+
+//     const response = await fetch(
+//       `${BASE_URL}/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
+//     );
+
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch consecutive question data");
+//     }
+
+//     const data = await response.json();
+//     console.log("Consecutive question data:", data);
+
+//     if (data && data.actionName) {
+//       setCurrentActionName(data.actionName);
+//       sendActionNameToApi(data.actionName);
+//     }
+//   } catch (error) {
+//     console.error("Error fetching consecutive question data:", error);
+//   }
+// };
+
+// Function to handle the selection of Yes, No, I don't know
 const handleOptionSelect = async (option) => {
   setSelectedOption(option);
 
@@ -299,11 +416,12 @@ const handleOptionSelect = async (option) => {
 
   try {
     const response = await fetch(
-      `http://localhost:226/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
+      `${BASE_URL}/api/fetch_consecutive_question_for_event?trackerCount=${dataToSend.trackerCount}&selectedItem=${encodeURIComponent(dataToSend.selectedItem)}`
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch consecutive question data");
+      // If API call fails, throw an error to handle it below
+      throw new Error("404 Not Found");
     }
 
     const data = await response.json();
@@ -315,8 +433,12 @@ const handleOptionSelect = async (option) => {
     }
   } catch (error) {
     console.error("Error fetching consecutive question data:", error);
+    // Set current action name to "404 Not Found" and reset UI elements
+    setCurrentActionName("404 Not Found");
+    setShowSuccessMessage(false); // Ensure success message is hidden
   }
 };
+
 
     // Extract formatted event parts
     const formattedEventNameParts = eventData
@@ -353,32 +475,25 @@ const handleOptionSelect = async (option) => {
         </span>
       )}
 
-        <div className="question-box006">
-          {/* <h2>
-            <FaExclamationCircle size={20} color="blue" style={{ marginRight: '10px' }} />
+<div className="question-box006">
+  {!showSuccessMessage && currentActionName && currentActionName !== "404 Not Found" && (
+    <>
+      <h2>
+        <FaExclamationCircle size={20} color="blue" style={{ marginRight: '10px' }} />
+        {currentActionName}
+      </h2>
 
-            {showSuccessMessage ? "" : currentActionName} 
-          
-          </h2> */}
+      <p>Does this solve the problem?</p>
 
-<h2>
-  {!showSuccessMessage && currentActionName && (
-    <FaExclamationCircle size={20} color="blue" style={{ marginRight: '10px' }} />
+      <div className="options-text006">
+        <button onClick={() => handleOptionSelect("Yes")}>1) Yes</button>
+        <button onClick={() => handleOptionSelect("No")}>2) No</button>
+        <button onClick={() => handleOptionSelect("I don't know")}>3) I don't know</button>
+      </div>
+    </>
   )}
-  {showSuccessMessage ? "" : currentActionName}
-</h2>
+</div>
 
-
-          {!showSuccessMessage && <p>Does this solve the problem?</p>}
-
-          {!showSuccessMessage && (
-            <div className="options-text006">
-              <button onClick={() => handleOptionSelect("Yes")}>1) Yes</button>
-              <button onClick={() => handleOptionSelect("No")}>2) No</button>
-              <button onClick={() => handleOptionSelect("I don't know")}>3) I don't know</button>
-            </div>
-          )}
-        </div>
 
 
         <h7 className="explanation-header006">Explanation</h7>
@@ -387,35 +502,41 @@ const handleOptionSelect = async (option) => {
     <p>Success!</p> // Display success message
   ) : (
     <>
-      <p>{actionExplanation || "Explanation not available."}</p>
+      {currentActionName === "404 Not Found" ? (
+        <p>Consult with OMS engineering.</p> // Show "404 Not Found" message
+      ) : (
+        <>
+          <p>{actionExplanation || "Explanation not available."}</p>
 
-      {actionImage && (
-        <div className="action-image-container">
-          <img src={actionImage} alt="" className="action-image" />
-        </div>
+          {actionImage && (
+            <div className="action-image-container">
+              <img src={actionImage} alt="" className="action-image" />
+            </div>
+          )}
+        </>
       )}
 
       {/* Buttons Section */}
-      <div className="explanation-buttons-container">
-        <div className="explanation-buttons">
-        <button onClick={handleOpenModal333}>Feedback</button>
-          {/* <button>Start Over</button> */}
-          <button
-  type="button"
-  className="modal-reset-button222"
-  onClick={handleStartOver187} // Call the reload function
->
-  Start Over
-</button>
-
-          {/* <button>Pause</button> */}
-          <button onClick={handlePauseSession}>Pause Session</button>
-          <button>View Session</button>
+      {currentActionName !== "404 Not Found" && (
+        <div className="explanation-buttons-container">
+          <div className="explanation-buttons">
+            <button onClick={handleOpenModal333}>Feedback</button>
+            <button
+              type="button"
+              className="modal-reset-button222"
+              onClick={handleStartOver187} // Call the reload function
+            >
+              Start Over
+            </button>
+            <button onClick={handlePauseSession}>Pause Session</button>
+            <button>View Session</button>
+          </div>
         </div>
-      </div>
+      )}
     </>
   )}
 </div>
+
 
 
 

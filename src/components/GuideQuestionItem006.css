@@ -300,9 +300,13 @@
 
 .back-button-008 {
   position: absolute; /* To position it relative to its container */
-  top: 90px;         /* Adjust the distance from the top */
-  left: 500px;        /* Adjust the distance from the left */
-  padding: 8px 16px; /* Add some padding for a better look */
+  /* Adjust the distance from the top */
+  /* top: 90px;  */
+  top: 10; 
+     /* Adjust the distance from the left */        
+  /* left: 500px;      */
+  left: 0;  
+  padding: 3px 6px; /* Add some padding for a better look */
   background-color: #007bff; /* Blue background */
   color: white;      /* White text */
   border: none;      /* Remove border */

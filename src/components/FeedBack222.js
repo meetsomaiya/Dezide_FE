@@ -3,6 +3,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./FeedBack222.css";
 
+import { BASE_URL } from '../config'
+
 const FeedbackModal222 = ({
   agentName,
   currentActionName,
@@ -66,7 +68,8 @@ const handleSubmit = (e) => {
     }
   
     // Send POST request to backend
-    fetch("http://localhost:226/api/feedback_sent", {
+    // fetch("http://localhost:226/api/feedback_sent", {
+      fetch(`${BASE_URL}/api/feedback_sent`, {
       method: "POST",
       body: formData,
     })
@@ -155,9 +158,7 @@ const handleSubmit = (e) => {
               The maximum attachment size is 10 MB.
             </small>
           </div>
-        </div>
-
-        {/* Buttons */}
+                  {/* Buttons */}
         <div className="modal-button-container222">
           <button
             type="button"
@@ -170,6 +171,9 @@ const handleSubmit = (e) => {
             Submit
           </button>
         </div>
+        </div>
+
+
       </div>
     </div>
   );

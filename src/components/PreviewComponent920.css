@@ -1,262 +1,212 @@
-  .preview-container-920 {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    position: relative;
-  }
-
-  .preview-header-920 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .breadcrumb-920 {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 5px;
-  }
-
-  h2 {
-    margin: 0;
-  }
-
-  .header-buttons-920 button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    font-size: 0.9rem;
-  }
-
-  .restart-button-920 {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    color: #333;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
-  
-  .restart-button-920:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .edit-button-920 {
-    background-color: #d9534f;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
-  
-  .edit-button-920:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-
-  .question-section-920 h3 {
-    margin-bottom: 15px;
-  }
-
-  .options-container-920 {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .option-button-920,
-  .unknown-button-920 {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-
-  .option-button-920 {
-    background-color: #fff;
-    color: #333;
-  }
-
-  .unknown-button-920 {
-    background-color: #ffa500;
-    color: white;
-  }
-
-  .history-box-920 {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 200px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    padding: 10px;
-    font-size: 0.9rem;
-    z-index: 10;
-  }
-
-  .history-box-920 h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-  }
-
-  .footer-section-920 {
-    margin-top: 20px;
-  }
-
-
-  
-  
-
-  .details-button-920 {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    display: inline-block;
-  }
-
-  /* Show details button at the bottom-left */
-.show-details-btn {
-  position: fixed;
-  bottom: 20px;
-  left: 300px;
+/* General Layout */
+.layout-container {
+  display: flex; /* Sidebar and content layout */
+  height: 100vh;
 }
 
-/* Hide details button at the top of the tables section */
-.hide-details-btn {
-  position: absolute;
-  top: 250px; /* Adjust this to control the distance from the top of the table */
-  left: 20px;
+.sidebar-container {
+  flex: 0 0 240px; /* Fixed width for the sidebar */
+  background: #f4f4f4; /* Light gray background */
+  height: 100vh; /* Full height */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for sidebar */
+  position: sticky; /* Stick sidebar while scrolling */
+  top: 0; /* Required for sticky positioning */
 }
 
-  .details-section-920 {
-    margin-top: 5rem; /* Increased margin to push the section further down */
-  }
-  
-  .details-tables-920 {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .details-table-920 {
-    border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #ddd;
-    font-size: 0.9rem;
-  }
-  
-  .details-table-920 th,
-  .details-table-920 td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
+.content-container {
+  flex: 1; /* Fill remaining space */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+  padding: 20px;
+  background: #ffffff;
+}
 
-  .details-table-920 th {
-    background-color: #f9f9f9;
-  }
+.preview-container-920 {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  position: relative;
+}
 
-  .expert-level-box-920 {
-    position: absolute;
-    top: 70px; /* Move it above the history box */
-    right: 20px;
-    width: 100px; /* Reduced width */
-    height: 60px; /* Reduced height */
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    padding: 5px;
-  }
+/* Header */
+.preview-header-920 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
 
-  .history-box-920 {
-    position: absolute;
-    top: 200px; /* Thrust downwards */
-    right: 20px;
-    width: 200px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    padding: 10px;
-    font-size: 0.9rem;
-  }
+.breadcrumb-920 {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
 
-  .slider-container-920 {
-    text-align: center;
-    margin-top: 5px;
-  }
+h2 {
+  margin: 0;
+}
 
+/* Buttons */
+.header-buttons-920 button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+}
 
+.restart-button-920,
+.edit-button-920 {
+  margin-top: 10px; /* Add spacing between buttons and elements below */
+}
 
-  .main-content-920 {
+.restart-button-920 {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  color: #333;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.restart-button-920:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.edit-button-920 {
+  background-color: #d9534f;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.edit-button-920:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content */
+.main-content-920 {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 20px; /* Add space between content and right-side elements */
 }
 
 .question-section-920 {
-  width: 90%; /* Adjust width to allow space for side container */
+  width: 70%; /* Adjust width to leave room for side containers */
+  height: 200px; /* Fixed height for the container */
+  overflow-y: auto; /* Enable vertical scrolling when content overflows */
+  border: 1px solid #ccc; /* Optional: Border for better visualization */
+  padding: 20px; /* Optional: Padding inside the section */
+  box-sizing: border-box; /* Ensure padding is included in the element's total width/height */
 }
+
+.options-container-920 {
+  display: flex;
+  justify-content: start;
+  gap: 10px;  /* Optional gap between buttons */
+  margin-bottom: 20px; /* Add some space below the buttons */
+}
+
+.option-button-920 {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dummy-data-container {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.dummy-data-container p {
+  margin: 5px 0;
+}
+
+.dummy-data-container strong {
+  color: #333;
+}
+
 
 .right-side-container-920 {
   display: flex;
-  flex-direction: column; /* Stack the boxes vertically */
-  align-items: center; /* Center content */
-  width: 10%; /* Adjust width to fit beside the question section */
-  gap: 20px; /* Add space between the boxes */
+  flex-direction: column; /* Stack boxes vertically */
+  align-items: flex-start;
+  gap: 20px; /* Space between Expert Level and History boxes */
+  position: sticky; /* Ensure it stays in position while scrolling */
+  top: 120px; /* Push down below the header */
 }
 
-.history-box-920,
-.expert-level-box-920 {
-  width: 10%; /* Compact appearance */
+/* Tables */
+.details-section-920 {
+  margin-top: 2rem;
+}
+
+.details-tables-920 {
+  display: flex;
+  gap: 20px;
+}
+
+.details-table-920 {
+  border-collapse: collapse;
+  width: 100%;
   border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  padding: 10px;
   font-size: 0.9rem;
-  position: absolute; /* Ensure proper positioning */
+  max-height: 300px; /* Add maximum height for scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  display: block; /* Ensure proper scrolling behavior */
+}
+
+.details-table-920 th,
+.details-table-920 td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.details-table-920 th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.details-table-920 tr:nth-child(even) {
+  background-color: #f9f9f9; /* Alternate row background */
+}
+
+/* Expert Level and History Boxes */
+.expert-level-box-920 {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 180px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
 }
 
 .history-box-920 {
-  top: 140px; /* Adjust this value to move it closer to the slider box */
-  right: -30px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 180px;
+  z-index: 10;
 }
 
-.expert-level-box-920 {
-  top: 40px; /* Adjust this for slider-box positioning */
-  right: -30px;
-}
-
-.history-box-920 h4,
-.expert-level-box-920 h4 {
-  margin: 0 0 10px;
-}
-
+/* Slider */
 .slider-container-920 {
+  text-align: center;
   margin-top: 5px;
-}
-
-.slider-container-920 input {
-  margin-top: 5px;
-  height: 1px;
-}
-
-.slider-container-920 {
-  margin-top: 5px;
-}
-
-.slider-container-920 input {
-  margin-top: 5px;
-  height: 1px;
 }
 
 .slider-920 {
-  width: 80%; /* Width adjustment */
-  height: 4px; /* Keep the same height */
-  border: 2px dotted #ddd; /* Dotted border instead of background */
+  width: 80%;
+  height: 4px;
+  border: 2px dotted #ddd;
   border-radius: 2px;
   outline: none;
   cursor: pointer;
-  background: transparent; /* Remove background to show the dotted border */
+  background: transparent;
 }
 
 .slider-920::-webkit-slider-thumb,
@@ -268,24 +218,65 @@
   cursor: pointer;
 }
 
-
-.layout-container {
-  display: flex; /* Flexbox layout to place sidebar and content side by side */
-  height: 100vh;
+/* Buttons for Yes/No/Don't Know */
+.option-button-920 {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #28a745; /* Green for Yes */
+  color: white;
 }
 
-.sidebar-container {
-  flex: 0 0 240px; /* Fixed width for the sidebar */
-  background: #f4f4f4; /* Light gray background */
-  height: 100vh; /* Ensure sidebar takes full viewport height */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for sidebar */
-  position: sticky; /* Stick sidebar while scrolling */
-  top: 0; /* Required for sticky positioning */
+.option-button-920:hover {
+  background-color: #218838; /* Darker green */
 }
 
-.content-container {
-  flex: 1; /* Fill the remaining space */
-  overflow-y: auto; /* Enable scrolling if content overflows */
-  padding: 20px; /* Add padding around content */
-  background: #ffffff; /* White background for content */
+.unknown-button-920 {
+  padding: 10px;
+  border: 1px solid #e0a800;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #ffc107; /* Yellow for I don't know */
+  color: white;
+}
+
+.unknown-button-920:hover {
+  background-color: #e0a800; /* Darker yellow */
+}
+
+/* Footer Section */
+.footer-section-920 {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Show/Hide Details Button */
+.show-details-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 260px; /* Ensure it doesn't overlap with the sidebar */
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 15; /* Keep above overlapping elements */
+}
+
+.hide-details-btn {
+  position: absolute;
+  /*top: 10px; /* Properly align above tables */
+  top: 270px;
+  left: 20px;
+  background-color: #d9534f;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 15; /* Prevent overlap */
 }

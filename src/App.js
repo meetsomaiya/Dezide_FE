@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import LoginForm from './LoginForm/LoginForm';
 import Navbar881 from "./components/Navbar881";
 import DynamicGuides882 from "./components/DynamicGuides882";
@@ -18,13 +18,20 @@ import ConstraintsPage921 from "./components/Constraints921";
 
 import PauseSession224 from "./components/PauseSession224";
 
+import Images009 from "./components/Images009";
+
+import Videos010 from "./components/Videos010";
+
+import files011 from "./components/File011";
+
 import './styles.css';
+import File011 from './components/File011';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <MainApp />
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
@@ -64,6 +71,12 @@ function MainApp() {
             <Route path="/constraints" element={<ConstraintsPage921 />} />
 
             <Route path="/pause-session" element={<PauseSession224 />} />
+
+            <Route path="/images" element={<Images009 />} />
+
+            <Route path="/videos" element={<Videos010 />} />
+
+            <Route path="/files" element={<File011 />} />
 
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<Navigate to="/login" replace />} />
