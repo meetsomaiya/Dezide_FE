@@ -84,31 +84,6 @@ const handleQuestionAnswerClick = () => {
       }
     };
 
-    // State for answer menu
-const [clickedAnswerCell913, setClickedAnswerCell913] = useState(null);
-const [menuPosition913, setMenuPosition913] = useState({ top: 0, left: 0 });
-const answerTableRef913 = useRef(null);
-
-const [hoveredAnswerIdx, setHoveredAnswerIdx] = useState(null);
-
-// 2. Menu Handler (keep this exactly as is)
-const handleAnswerIconClick913 = (index, event) => {
-  if (clickedAnswerCell913 === index) {
-    setClickedAnswerCell913(null);
-  } else {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const tableRect = answerTableRef913.current.getBoundingClientRect();
-    
-    setMenuPosition913({
-      top: rect.bottom - tableRect.top + window.scrollY + 5,
-      left: tableRect.right - tableRect.left + window.scrollX - 30,
-    });
-    
-    setClickedAnswerCell913(index);
-  }
-};
-
-
 
   // State to track the expanded causes and store fetched data
   const [expandedCauses, setExpandedCauses] = useState({});
@@ -154,119 +129,32 @@ const [isCauseEdited, setIsCauseEdited] = useState(false); // Flag to track if a
   };
 
   // Function to save the edited answer by finding it by name
-  // const handleSaveAnswer9970 = () => {
-  //   console.log("Saving answer:", editingAnswerName9970); // Debugging log
+  const handleSaveAnswer9970 = () => {
+    console.log("Saving answer:", editingAnswerName9970); // Debugging log
 
-  //   // Find the index of the answer in questionAnswers885 based on its name
-  //   const index = questionAnswers885.findIndex((answers) =>
-  //     Array.isArray(answers) ? answers.includes(editingAnswerName9970) : false
-  //   );
+    // Find the index of the answer in questionAnswers885 based on its name
+    const index = questionAnswers885.findIndex((answers) =>
+      Array.isArray(answers) ? answers.includes(editingAnswerName9970) : false
+    );
 
-  //   // If the answer is found, update it
-  //   if (index !== -1) {
-  //     questionAnswers885[index] = questionAnswers885[index].map((answer) =>
-  //       answer === editingAnswerName9970 ? editingAnswerValue9970 : answer
-  //     );
-  //   }
-
-  //   // Clear the editing state after saving
-  //   setEditingAnswerName9970(null);
-  //   setEditingAnswerValue9970("");
-  // };
-
-  // Function to handle Enter key or click outside to save the edit
-  // const handleAnswerKeyDown9970 = (event) => {
-  //   if (event.key === "Enter") {
-  //     handleSaveAnswer9970();
-  //   }
-  // };
-
-  const [editingAnswerIndex, setEditingAnswerIndex] = useState(null);
-const [editingAnswerValue, setEditingAnswerValue] = useState("");
-const inputRef = useRef(null);
-
-const handleEditAnswerClick = (answer, index) => {
-  setEditingAnswerIndex(index);
-  setEditingAnswerValue(answer);
-  // Focus the input after a small delay to ensure it's mounted
-  setTimeout(() => inputRef.current?.focus(), 0);
-};
-
-// const handleSaveAnswer = (index) => {
-//   if (editingAnswerValue.trim() === "") return;
-
-//   // Create a new array with the updated answer
-//   const updatedAnswers = [...questionAnswers885];
-//   updatedAnswers[index] = editingAnswerValue;
-
-//   // Update the state
-//   setQuestionAnswers885(updatedAnswers);
-//   setEditingAnswerIndex(null);
-//   setEditingAnswerValue("");
-// };
-
-const handleSaveAnswer = async (index) => {
-  if (editingAnswerValue.trim() === "") return;
-
-  const oldAnswer = questionAnswers885[index];
-  const newAnswer = editingAnswerValue;
-  const questionName = data884.questions[expandedRow883]?.questionName;
-  const eventID = data884.eventID;
-
-  // Data that will be sent to backend (now including modalName)
-  const requestData = {
-    oldAnswer,
-    newAnswer,
-    questionName,
-    eventID,
-    modalName  // <-- Add the modalName from state
-  };
-
-  console.log('Data being sent to backend:', JSON.stringify(requestData, null, 2));
-
-  try {
-    // Update local state
-    const updatedAnswers = [...questionAnswers885];
-    updatedAnswers[index] = newAnswer;
-    setQuestionAnswers885(updatedAnswers);
-
-    // Send to backend
-    const response = await fetch('http://localhost:3001/api/handle_edit_answer_click', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // If the answer is found, update it
+    if (index !== -1) {
+      questionAnswers885[index] = questionAnswers885[index].map((answer) =>
+        answer === editingAnswerName9970 ? editingAnswerValue9970 : answer
+      );
     }
 
-    const result = await response.json();
-    console.log('Update successful:', result);
+    // Clear the editing state after saving
+    setEditingAnswerName9970(null);
+    setEditingAnswerValue9970("");
+  };
 
-    // Reset editing state
-    setEditingAnswerIndex(null);
-    setEditingAnswerValue("");
-  } catch (error) {
-    console.error('Error:', error);
-    // Revert state on error
-    const originalAnswers = [...questionAnswers885];
-    originalAnswers[index] = oldAnswer;
-    setQuestionAnswers885(originalAnswers);
-  }
-};
-
-const handleAnswerKeyDown = (e, index) => {
-  if (e.key === 'Enter') {
-    handleSaveAnswer(index);
-  } else if (e.key === 'Escape') {
-    setEditingAnswerIndex(null);
-    setEditingAnswerValue("");
-  }
-};
-
+  // Function to handle Enter key or click outside to save the edit
+  const handleAnswerKeyDown9970 = (event) => {
+    if (event.key === "Enter") {
+      handleSaveAnswer9970();
+    }
+  };
 
     // New useState with the '884' suffix
     const [data884, setData884] = useState(null);
@@ -667,149 +555,11 @@ const addNewAction1115 = async () => {
   };
   
 
-  // const handleEditClick3300 = (index, currentValue, field) => {
-  //   setEditingQuestion3300(index);
-  //   setEditValue3300(currentValue);
-  //   setEditingField3300(field);
-  // };
-
-  // const handleEditClick3300 = (index, currentValue, field) => {
-  //   // Capture the previous value
-  //   const previousValue = currentValue;
-  
-  //   // Set the editing state
-  //   setEditingQuestion3300(index);
-  //   setEditValue3300(currentValue);
-  //   setEditingField3300(field);
-  
-  //   // Function to handle the save action
-  //   const handleSave = (newValue) => {
-  //     // Prepare the data to be sent to the API
-  //     const dataToSend = {
-  //       previousValue,
-  //       newValue,
-  //       field,
-  //     };
-  
-  //     // Console log the data being sent to the API
-  //     console.log("Data being sent to the API:", dataToSend);
-  
-  //     // Send the data to the API
-  //     fetch('http://localhost:3001/handle_edit_click', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(dataToSend),
-  //     })
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         console.log("API response:", data);
-  //       })
-  //       .catch(error => {
-  //         console.error("Error sending data to the API:", error);
-  //       });
-  //   };
-  
-  //   // Attach the save handler to the input's onBlur or onKeyDown event
-  //   setTimeout(() => {
-  //     if (editRef3300.current) {
-  //       editRef3300.current.onblur = () => handleSave(editValue3300);
-  //       editRef3300.current.onkeydown = (e) => {
-  //         if (e.key === 'Enter') {
-  //           handleSave(editValue3300);
-  //         }
-  //       };
-  //     }
-  //   }, 0); // Use setTimeout to ensure the ref is set after the component re-renders
-  // };
-
   const handleEditClick3300 = (index, currentValue, field) => {
-    // Set the editing state for the specific row and field
     setEditingQuestion3300(index);
-    setEditingField3300(field);
     setEditValue3300(currentValue);
-  
-    // Focus on the input field after a short delay to ensure it's rendered
-    setTimeout(() => {
-      if (editRef3300.current) {
-        editRef3300.current.focus();
-      }
-    }, 0);
+    setEditingField3300(field);
   };
-
-  const handleSave = (index, field, previousValue, newValue) => {
-    // Prepare the data to be sent to the API
-    const dataToSend = {
-      previousValue,
-      newValue,
-      field,
-      modalName, // Include modalName in the data being sent
-    };
-  
-    console.log("Data being sent to the API:", dataToSend);
-  
-    // Send the data to the API
-    fetch('http://localhost:3001/api/handle_edit_click', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataToSend),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("API response:", data);
-  
-        // Update the table data with the new value
-        const updatedQuestions = data884.questions.map((question, i) => {
-          if (i === index) {
-            return {
-              ...question,
-              [field]: newValue, // Update the specific field (questionName, questionTime, or questionCost)
-            };
-          }
-          return question;
-        });
-  
-        // Update the state with the new data
-        // setData884({ ...data884, questions: updatedQuestions });
-
-        // Call fetchData884 after successful update to refresh the data
-        fetchData884();
-      })
-      .catch(error => {
-        console.error("Error sending data to the API:", error);
-      });
-  
-    // Reset the editing state
-    setEditingQuestion3300(null);
-    setEditingField3300(null);
-    setEditValue3300("");
-};
-
-
-  
-  const handleKeyDown3300 = (e, index, field, currentValue) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSave(index, field, currentValue, editValue3300);
-    }
-  };
-
-  // useEffect to log or process updated data884
-  useEffect(() => {
-    console.log("Updated data884:", data884);
-    // You can add additional logic here to process the updated data
-  }, [data884]); // This effect runs every time data884 changes
-  
-
-  // const handleKeyDown3300 = (e) => {
-  //   if (e.key === "Enter") {
-  //     saveEditedQuestion3300();
-  //   }
-  // };
-
   
 
   const saveEditedQuestion3300 = () => {
@@ -829,7 +579,11 @@ const addNewAction1115 = async () => {
     }
   };
 
-
+  const handleKeyDown3300 = (e) => {
+    if (e.key === "Enter") {
+      saveEditedQuestion3300();
+    }
+  };
 
   React.useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside3300);
@@ -945,32 +699,17 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
         return updatedAnswers;
       });
       
-      // Access modalName from the state
-      // const [modalName, setModalName] = useState(""); <-- This is already defined in your component
-      
-      // Prepare the data to be sent to the API
-      const requestBody = {
-        questionName,
-        newAnswer,
-        modalName, // Include modalName from the state in the request body
-      };
-    
-      // Log the data being sent to the API
-      console.log("Data being sent to the API:", JSON.stringify(requestBody, null, 2));
-    
-      // Construct the full URL for the API request
-      const apiUrl = `${BASE_URL}/api/add_answer`;
-    
-      // Log the full URL being used for the API request
-      console.log("API URL:", apiUrl);
-    
       // Send the new answer to the backend
-      fetch(apiUrl, {
+      // fetch('http://localhost:226/api/add_answer', {
+        fetch(`${BASE_URL}/api/add_answer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          questionName,
+          newAnswer,
+        }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -981,71 +720,8 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
         });
     };
     
-    const deleteQuestion = async (questionIndex, questionName) => {
-      if (window.confirm(`Are you sure you want to delete the question "${questionName}" and all its answers?`)) {
-        try {
-          // Prepare the data to send
-          const requestData = {
-            questionName,
-            modelName: modalName // Include the modalName from state
-          };
-          
-          // Log the data we're about to send
-          console.log('Sending to backend for deletion purpose:', requestData);
-          
-          // Send delete request to backend
-          const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-          });
     
-          if (!response.ok) {
-            throw new Error('Failed to delete question on backend');
-          }
     
-          // Get the response data
-          const result = await response.json();
-          console.log('Deletion API response:', result);
-    
-          /* 
-          COMMENTED OUT THE DIRECT STATE UPDATE IN FAVOR OF FRESH DATA FETCH
-          // Update your state to remove the question
-          setData884(prevData => ({
-            ...prevData,
-            questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
-          }));
-          */
-    
-          // Clear related answers
-          setQuestionAnswers885([]);
-          
-          // Close the menu
-          setClickedCell903(null);
-    
-          console.log('Question deleted successfully, refreshing data...');
-          
-          // Call fetchData884 to get fresh data from the server
-          await fetchData884();
-    
-          // Optional: Show success message
-          alert(`Question "${questionName}" deleted successfully!`);
-    
-        } catch (error) {
-          console.error('Error deleting question:', error);
-          alert('Failed to delete question. Please check console for details.');
-          
-          // You might want to keep the local state update if the API fails
-          // This prevents the UI from getting stuck
-          // setData884(prevData => ({
-          //   ...prevData,
-          //   questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
-          // }));
-        }
-      }
-    };
     
     
 
@@ -1388,51 +1064,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       }
     };
     
-
-    // 1. First, create the delete function (add this with your other functions)
-const deleteAnswer = async (answerIndex) => {
-  try {
-    const answerText = questionAnswers885[answerIndex];
-    
-    if (!answerText) {
-      throw new Error('No answer text found');
-    }
-
-    // Prepare the data to send
-    const requestData = {
-      answerText,
-      questionName: data884.questions[expandedRow883]?.questionName, // Get current question name
-      modelName: modalName // From your existing state
-    };
-
-    console.log('Sending delete request with:', requestData);
-
-    const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log('Delete successful:', result);
-
-    // Remove the answer from local state
-    setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
-    
-    return true;
-  } catch (error) {
-    console.error('Error deleting answer:', error);
-    alert(`Failed to delete answer: ${error.message}`);
-    return false;
-  }
-};
-
 
     
 
@@ -2046,76 +1677,42 @@ const deleteAnswer = async (answerIndex) => {
   
 
   
-  // useEffect(() => {
-  //   const fetchData884 = async () => {
-  //     try {
-  //       // Log the data being sent
-  //       console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
+  useEffect(() => {
+    const fetchData884 = async () => {
+      try {
+        // Log the data being sent
+        console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
 
-  //       // Send a GET request to the API with modalName as a query parameter
-  //       // const response = await fetch(
-  //       //   `http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`
-  //       // );
+        // Send a GET request to the API with modalName as a query parameter
+        // const response = await fetch(
+        //   `http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`
+        // );
 
-  //       const response = await fetch(
-  //         `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
-  //       );
+        const response = await fetch(
+          `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
+        );
 
 
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch data");
-  //       }
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
 
-  //       const result = await response.json();
+        const result = await response.json();
 
-  //       // Log the fetched data
-  //       console.log("Fetched data:", result);
+        // Log the fetched data
+        console.log("Fetched data:", result);
 
-  //       setData884(result); // Save the fetched data in state
-  //     } catch (error) {
-  //       setError884(error.message); // Handle errors
-  //       console.error("Error fetching data:", error.message);
-  //     } finally {
-  //       setLoading884(false); // Set loading to false after the request is complete
-  //     }
-  //   };
+        setData884(result); // Save the fetched data in state
+      } catch (error) {
+        setError884(error.message); // Handle errors
+        console.error("Error fetching data:", error.message);
+      } finally {
+        setLoading884(false); // Set loading to false after the request is complete
+      }
+    };
 
-  //   fetchData884(); // Call the fetch function on component mount
-  // }, [modalName]); // Only re-run the effect if modalName changes
-
-  // Define fetchData884 as a standalone function
-const fetchData884 = async () => {
-  try {
-    // Log the data being sent
-    console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
-
-    // Send a GET request to the API with modalName as a query parameter
-    const response = await fetch(
-      `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-
-    const result = await response.json();
-
-    // Log the fetched data
-    console.log("Fetched data:", result);
-
-    setData884(result); // Save the fetched data in state
-  } catch (error) {
-    setError884(error.message); // Handle errors
-    console.error("Error fetching data:", error.message);
-  } finally {
-    setLoading884(false); // Set loading to false after the request is complete
-  }
-};
-
-// Use useEffect to call fetchData884 on component mount or when modalName changes
-useEffect(() => {
-  fetchData884();
-}, [modalName]);
+    fetchData884(); // Call the fetch function on component mount
+  }, [modalName]); // Only re-run the effect if modalName changes
 
      // useEffect to print expandedCauseData and nestedSubCauseData
      useEffect(() => {
@@ -4518,313 +4115,316 @@ const handleConstraintClick = () => {
               <div className="options-box-1113">
             {/* Create Action Button */}
             <div className="option-1113" onClick={addNewQuestion1115}>
-            {/* <div className="option-1113" > */}
             {/* <div className="option-1113" onClick={handleGearClick1114}> */}
               <FaPlus className="icon-1112" /> Create Question
             </div>
               </div>
             )}
      <div style={{ position: "relative" }} ref={tableRef903}>
-    <table className="modal-table" id="question-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th><FiClock /></th>
-      <th><FiTrendingUp /></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {data884 && data884.questions.map((question, index) => {
-      const isHoveredQuestion =
-        hoverItems894.questions.includes(question.questionName) ||
-        hoverItems895.questions.includes(question.questionName);
-
-      const isHoveredAnswer = questionAnswers885.some(answer =>
-        hoverItems894.questionAnswers.includes(answer) ||
-        hoverItems895.questionAnswers.includes(answer)
-      );
-
-      return (
-        <React.Fragment key={index}>
-          <tr
-            style={{
-              backgroundColor: isHoveredQuestion || isHoveredAnswer
-                ? 'rgba(200, 200, 255, 0.5)'
-                : 'transparent',
-            }}
-            onMouseEnter={() => setHoveredRow(index)}
-            onMouseLeave={() => setHoveredRow(null)}
-          >
-            {/* Editable Name Column */}
-            <td>
-              <div>
-                {editingQuestion3300 === index && editingField3300 === "name" ? (
-                  <input
-                    ref={editRef3300}
-                    value={editValue3300}
-                    onChange={(e) => setEditValue3300(e.target.value)}
-                    onKeyDown={(e) => handleKeyDown3300(e, index, "name", question.questionName)}
-                    onBlur={() => handleSave(index, "name", question.questionName, editValue3300)}
-                    autoFocus
-                  />
-                ) : (
-                  <span
-                    onClick={() => handleEditClick3300(index, question.questionName, "name")}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {question.questionName}
-                  </span>
-                )}
-                <span
-                  style={{ marginLeft: "10px", cursor: "pointer" }}
-                  onClick={() => {
-                    toggleRow883(index, question.questionName);
-                  }}
-                >
-                  {expandedRow883 === index ? "➖" : "➕"}
-                </span>
-              </div>
-            </td>
-
-            {/* Editable Time Column */}
-            <td>
-              {editingQuestion3300 === index && editingField3300 === "time" ? (
-                <input
-                  ref={editRef3300}
-                  value={editValue3300}
-                  onChange={(e) => setEditValue3300(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown3300(e, index, "time", question.questionTime)}
-                  onBlur={() => handleSave(index, "time", question.questionTime, editValue3300)}
-                  autoFocus
-                />
-              ) : (
-                <span
-                  onClick={() => handleEditClick3300(index, question.questionTime, "time")}
-                  style={{ cursor: "pointer" }}
-                >
-                  {question.questionTime}
-                </span>
-              )}
-            </td>
-
-            {/* Editable Cost Column */}
-            <td>
-              {editingQuestion3300 === index && editingField3300 === "cost" ? (
-                <input
-                  ref={editRef3300}
-                  value={editValue3300}
-                  onChange={(e) => setEditValue3300(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown3300(e, index, "cost", question.questionCost)}
-                  onBlur={() => handleSave(index, "cost", question.questionCost, editValue3300)}
-                  autoFocus
-                />
-              ) : (
-                <span
-                  onClick={() => handleEditClick3300(index, question.questionCost, "cost")}
-                  style={{ cursor: "pointer" }}
-                >
-                  {question.questionCost}
-                </span>
-              )}
-            </td>
-
-            {/* Blank TD with Icon */}
-            <td style={{ position: "relative", textAlign: "center" }}>
-              {hoveredRow === index && (
-                <FaCog
-                  style={{ cursor: "pointer" }}
-                  onClick={(event) => handleIconClick903(index, event)}
-                />
-              )}
-            </td>
+      <table className="modal-table" id="question-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th><FiClock /></th>
+            <th><FiTrendingUp /></th>
+            <th></th>
           </tr>
+        </thead>
+        <tbody>
+          {data884 && data884.questions.map((question, index) => {
+            const isHoveredQuestion =
+              hoverItems894.questions.includes(question.questionName) ||
+              hoverItems895.questions.includes(question.questionName);
 
-          {/* Answer rows - only shown when expanded */}
-          {expandedRow883 === index && (
-            <tr>
-              <td colSpan="4" style={{ padding: 0 }}>
-    
-          
-<table style={{ width: '100%' }} ref={answerTableRef913}>
-  <tbody>
-    {Array.isArray(questionAnswers885) && questionAnswers885.length > 0 ? (
-      questionAnswers885.map((answer, idx) => (
+            const isHoveredAnswer = questionAnswers885.some(answer =>
+              hoverItems894.questionAnswers.includes(answer) ||
+              hoverItems895.questionAnswers.includes(answer)
+            );
+
+            return (
+              <tr
+                key={index}
+                style={{
+                  backgroundColor: isHoveredQuestion || isHoveredAnswer
+                    ? 'rgba(200, 200, 255, 0.5)'
+                    : 'transparent',
+                }}
+                onMouseEnter={() => setHoveredRow(index)}
+                onMouseLeave={() => setHoveredRow(null)}
+              >
+                {/* Editable Name Column */}
+                <td>
+                  <div>
+                    {editingQuestion3300 === index && editingField3300 === "name" ? (
+                      <input
+                        ref={editRef3300}
+                        value={editValue3300}
+                        onChange={(e) => setEditValue3300(e.target.value)}
+                        onKeyDown={handleKeyDown3300}
+                        autoFocus
+                      />
+                    ) : (
+                      <span
+                        onClick={() => handleEditClick3300(index, question.questionName, "name")}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {question.questionName}
+                      </span>
+                    )}
+                    <span
+                      style={{ marginLeft: "10px", cursor: "pointer" }}
+                      onClick={() => {
+                        toggleRow883(index, question.questionName);
+                      }}
+                    >
+                      {expandedRow883 === index ? "➖" : "➕"}
+                    </span>
+                  </div>
+                  {/* {expandedRow883 === index && (
+                    <>
+                      {Array.isArray(questionAnswers885[index]) && questionAnswers885[index].length > 0 ? (
+                        questionAnswers885[index].map((answer, idx) => (
+                          <tr key={idx} className="answer-row">
+                            <td colSpan="4">
+                              <div
+                                className="answer-item"
+                                style={{
+                                  backgroundColor: isHoveredAnswer
+                                    ? "rgba(200, 200, 255, 0.5)"
+                                    : "transparent",
+                                }}
+                                onClick={() => handleQuestionAnswerClick()} // Call the function on click
+                              >
+                                {editingAnswerName9970 === answer ? (
+                                  <input
+                                    ref={inputRef9970}
+                                    value={editingAnswerValue9970}
+                                    onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                                    onBlur={handleSaveAnswer9970}
+                                    onKeyDown={handleAnswerKeyDown9970}
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <span
+                                    onClick={() => handleEditAnswerClick9970(answer)}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {answer}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr className="answer-row">
+                          <td colSpan="4">Invalid answers format</td>
+                        </tr>
+                      )}
+                    </>
+                  )} */}
+
+{expandedRow883 === index && (
+  <>
+    {Array.isArray(questionAnswers885[index]) && questionAnswers885[index].length > 0 ? (
+      // If it's already an array, render as usual
+      questionAnswers885[index].map((answer, idx) => (
         <tr key={idx} className="answer-row">
           <td colSpan="4">
             <div
               className="answer-item"
               style={{
-                backgroundColor: isHoveredAnswer ? "rgba(200, 200, 255, 0.5)" : "transparent",
-                padding: '8px 16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                position: 'relative'
+                backgroundColor: isHoveredAnswer
+                  ? "rgba(200, 200, 255, 0.5)"
+                  : "transparent",
               }}
-              onMouseEnter={() => setHoveredAnswerIdx(idx)}
-              onMouseLeave={() => setHoveredAnswerIdx(null)}
+              onClick={() => handleQuestionAnswerClick()} // Call the function on click
             >
-              <div style={{ flex: 1 }}>
-                {editingAnswerIndex === idx ? (
-                  <input
-                    ref={inputRef}
-                    value={editingAnswerValue}
-                    onChange={(e) => setEditingAnswerValue(e.target.value)}
-                    onBlur={() => handleSaveAnswer(idx)}
-                    onKeyDown={(e) => handleAnswerKeyDown(e, idx)}
-                    autoFocus
-                    style={{ width: '100%' }}
-                  />
-                ) : (
-                  <span
-                    onClick={() => handleEditAnswerClick(answer, idx)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {answer}
-                  </span>
-                )}
-              </div>
-              
-              {/* Cog Icon - positioned at extreme right */}
-              {hoveredAnswerIdx === idx && (
-                <div style={{ position: 'absolute', right: 16 }}>
-                  <FaCog
-                    style={{ 
-                      cursor: "pointer",
-                      fontSize: '1.2em',
-                      color: '#555'
-                    }}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAnswerIconClick913(idx, event);
-                    }}
-                  />
-                </div>
+              {editingAnswerName9970 === answer ? (
+                <input
+                  ref={inputRef9970}
+                  value={editingAnswerValue9970}
+                  onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                  onBlur={handleSaveAnswer9970}
+                  onKeyDown={handleAnswerKeyDown9970}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  onClick={() => handleEditAnswerClick9970(answer)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {answer}
+                </span>
               )}
             </div>
           </td>
         </tr>
       ))
     ) : (
-      <tr className="answer-row">
-        <td colSpan="4" style={{ padding: '8px 16px' }}>No answers available</td>
-      </tr>
+      // If it's not an array, check if it's an object and render accordingly
+      typeof questionAnswers885[index] === "object" && questionAnswers885[index] !== null ? (
+        Object.values(questionAnswers885[index]).map((answer, idx) => (
+          <tr key={idx} className="answer-row">
+            <td colSpan="4">
+              <div
+                className="answer-item"
+                style={{
+                  backgroundColor: isHoveredAnswer
+                    ? "rgba(200, 200, 255, 0.5)"
+                    : "transparent",
+                }}
+                onClick={() => handleQuestionAnswerClick()} // Call the function on click
+              >
+                {editingAnswerName9970 === answer ? (
+                  <input
+                    ref={inputRef9970}
+                    value={editingAnswerValue9970}
+                    onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                    onBlur={handleSaveAnswer9970}
+                    onKeyDown={handleAnswerKeyDown9970}
+                    autoFocus
+                  />
+                ) : (
+                  <span
+                    onClick={() => handleEditAnswerClick9970(answer)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {answer}
+                  </span>
+                )}
+              </div>
+            </td>
+          </tr>
+        ))
+      ) : (
+        // If it's neither an array nor an object, treat it as a single string and display
+        <tr className="answer-row">
+          <td colSpan="4">
+            <div
+              className="answer-item"
+              style={{
+                backgroundColor: isHoveredAnswer
+                  ? "rgba(200, 200, 255, 0.5)"
+                  : "transparent",
+              }}
+              onClick={() => handleQuestionAnswerClick()} // Call the function on click
+            >
+              {editingAnswerName9970 === questionAnswers885[index] ? (
+                <input
+                  ref={inputRef9970}
+                  value={editingAnswerValue9970}
+                  onChange={(e) => setEditingAnswerValue9970(e.target.value)}
+                  onBlur={handleSaveAnswer9970}
+                  onKeyDown={handleAnswerKeyDown9970}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  onClick={() => handleEditAnswerClick9970(questionAnswers885[index])}
+                  style={{ cursor: "pointer" }}
+                >
+                  {questionAnswers885[index]}
+                </span>
+              )}
+            </div>
+          </td>
+        </tr>
+      )
     )}
-  </tbody>
-</table>
-
-{/* Answer Options Menu */}
-{clickedAnswerCell913 !== null && (
-  <div
-    style={{
-      position: "absolute",
-      top: `${menuPosition913.top}px`,
-      left: `${menuPosition913.left}px`,
-      zIndex: 1000,
-      backgroundColor: "white",
-      border: "1px solid #ddd",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-      borderRadius: "4px",
-      padding: "8px 0",
-      minWidth: "160px"
-    }}
-    onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside menu
-  >
-    <div
-      style={{
-        padding: "8px 16px",
-        cursor: "pointer",
-        ':hover': { backgroundColor: '#f5f5f5' }
-      }}
-      onClick={() => {
-        handleEditAnswerClick(
-          questionAnswers885[clickedAnswerCell913], 
-          clickedAnswerCell913
-        );
-        setClickedAnswerCell913(null);
-      }}
-    >
-      Edit Answer
-    </div>
-  
-<div
-  style={{
-    padding: "8px 16px",
-    cursor: "pointer",
-    color: "#e74c3c",
-    ':hover': { backgroundColor: '#f5f5f5' }
-  }}
-  onClick={async () => {
-    const answerText = questionAnswers885[clickedAnswerCell913] || "Unknown";
-    if (window.confirm(`Delete answer "${answerText}"?`)) {
-      const success = await deleteAnswer(clickedAnswerCell913);
-      if (success) {
-        setClickedAnswerCell913(null); // Close menu after successful deletion
-      }
-    }
-  }}
->
-  Delete Answer
-</div>
-
-  </div>
+  </>
 )}
-              </td>
-            </tr>
+
+                </td>
+
+                {/* Editable Time Column */}
+                <td>
+                  {editingQuestion3300 === index && editingField3300 === "time" ? (
+                    <input
+                      ref={editRef3300}
+                      value={editValue3300}
+                      onChange={(e) => setEditValue3300(e.target.value)}
+                      onKeyDown={handleKeyDown3300}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      onClick={() => handleEditClick3300(index, question.questionTime, "time")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {question.questionTime}
+                    </span>
+                  )}
+                </td>
+
+                {/* Editable Cost Column */}
+                <td>
+                  {editingQuestion3300 === index && editingField3300 === "cost" ? (
+                    <input
+                      ref={editRef3300}
+                      value={editValue3300}
+                      onChange={(e) => setEditValue3300(e.target.value)}
+                      onKeyDown={handleKeyDown3300}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      onClick={() => handleEditClick3300(index, question.questionCost, "cost")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {question.questionCost}
+                    </span>
+                  )}
+                </td>
+
+                {/* Blank TD with Icon */}
+                <td style={{ position: "relative", textAlign: "center" }}>
+                  {hoveredRow === index && (
+                    <FaCog
+                      style={{ cursor: "pointer" }}
+                      onClick={(event) => handleIconClick903(index, event)}
+                    />
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+
+          {/* Options Menu */}
+          {clickedCell903 !== null && (
+            <div
+              className="options-menu901"
+              style={{
+                position: "absolute",
+                top: `${menuPosition903.top}px`,
+                left: `${menuPosition903.left}px`,
+                zIndex: 1000,
+                background: "white",
+                border: "1px solid #ccc",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                borderRadius: "4px",
+                padding: "10px",
+                minWidth: "150px",
+              }}
+            >
+              <div
+                style={{
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                }}
+                onClick={() =>
+                  createAnswer903(
+                    clickedCell903,
+                    paginatedData990[clickedCell903]?.name || "Unknown"
+                  )
+                }
+              >
+                Create Answer
+              </div>
+            </div>
           )}
-        </React.Fragment>
-      );
-    })}
-
-    {/* Options Menu */}
-{/* Options Menu */}
-{clickedCell903 !== null && (
-  <div
-    className="options-menu901"
-    style={{
-      position: "absolute",
-      top: `${menuPosition903.top}px`,
-      left: `${menuPosition903.left}px`,
-      zIndex: 1000,
-      background: "white",
-      border: "1px solid #ccc",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-      borderRadius: "4px",
-      padding: "10px",
-      minWidth: "150px",
-    }}
-  >
-    <div
-      style={{
-        padding: "8px 12px",
-        cursor: "pointer",
-      }}
-      onClick={() => {
-        const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
-        createAnswer903(clickedCell903, questionName);
-      }}
-    >
-      Create Answer
-    </div>
-    {/* Changed from Delete Answer to Delete Question */}
-    <div
-      style={{
-        padding: "8px 12px",
-        cursor: "pointer",
-        color: "#ff4444",
-      }}
-      onClick={() => {
-        const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
-        deleteQuestion(clickedCell903, questionName);
-      }}
-    >
-      Delete Question
-    </div>
-  </div>
-)}
-  </tbody>
-</table>
+        </tbody>
+      </table>
     </div>
 
 

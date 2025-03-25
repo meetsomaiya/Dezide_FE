@@ -84,31 +84,6 @@ const handleQuestionAnswerClick = () => {
       }
     };
 
-    // State for answer menu
-const [clickedAnswerCell913, setClickedAnswerCell913] = useState(null);
-const [menuPosition913, setMenuPosition913] = useState({ top: 0, left: 0 });
-const answerTableRef913 = useRef(null);
-
-const [hoveredAnswerIdx, setHoveredAnswerIdx] = useState(null);
-
-// 2. Menu Handler (keep this exactly as is)
-const handleAnswerIconClick913 = (index, event) => {
-  if (clickedAnswerCell913 === index) {
-    setClickedAnswerCell913(null);
-  } else {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const tableRect = answerTableRef913.current.getBoundingClientRect();
-    
-    setMenuPosition913({
-      top: rect.bottom - tableRect.top + window.scrollY + 5,
-      left: tableRect.right - tableRect.left + window.scrollX - 30,
-    });
-    
-    setClickedAnswerCell913(index);
-  }
-};
-
-
 
   // State to track the expanded causes and store fetched data
   const [expandedCauses, setExpandedCauses] = useState({});
@@ -773,7 +748,7 @@ const addNewAction1115 = async () => {
         });
   
         // Update the state with the new data
-        // setData884({ ...data884, questions: updatedQuestions });
+        setData884({ ...data884, questions: updatedQuestions });
 
         // Call fetchData884 after successful update to refresh the data
         fetchData884();
@@ -786,6 +761,7 @@ const addNewAction1115 = async () => {
     setEditingQuestion3300(null);
     setEditingField3300(null);
     setEditValue3300("");
+    setData884(null);
 };
 
 
@@ -981,71 +957,6 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
         });
     };
     
-    const deleteQuestion = async (questionIndex, questionName) => {
-      if (window.confirm(`Are you sure you want to delete the question "${questionName}" and all its answers?`)) {
-        try {
-          // Prepare the data to send
-          const requestData = {
-            questionName,
-            modelName: modalName // Include the modalName from state
-          };
-          
-          // Log the data we're about to send
-          console.log('Sending to backend for deletion purpose:', requestData);
-          
-          // Send delete request to backend
-          const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-          });
-    
-          if (!response.ok) {
-            throw new Error('Failed to delete question on backend');
-          }
-    
-          // Get the response data
-          const result = await response.json();
-          console.log('Deletion API response:', result);
-    
-          /* 
-          COMMENTED OUT THE DIRECT STATE UPDATE IN FAVOR OF FRESH DATA FETCH
-          // Update your state to remove the question
-          setData884(prevData => ({
-            ...prevData,
-            questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
-          }));
-          */
-    
-          // Clear related answers
-          setQuestionAnswers885([]);
-          
-          // Close the menu
-          setClickedCell903(null);
-    
-          console.log('Question deleted successfully, refreshing data...');
-          
-          // Call fetchData884 to get fresh data from the server
-          await fetchData884();
-    
-          // Optional: Show success message
-          alert(`Question "${questionName}" deleted successfully!`);
-    
-        } catch (error) {
-          console.error('Error deleting question:', error);
-          alert('Failed to delete question. Please check console for details.');
-          
-          // You might want to keep the local state update if the API fails
-          // This prevents the UI from getting stuck
-          // setData884(prevData => ({
-          //   ...prevData,
-          //   questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
-          // }));
-        }
-      }
-    };
     
     
 
@@ -1388,51 +1299,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       }
     };
     
-
-    // 1. First, create the delete function (add this with your other functions)
-const deleteAnswer = async (answerIndex) => {
-  try {
-    const answerText = questionAnswers885[answerIndex];
-    
-    if (!answerText) {
-      throw new Error('No answer text found');
-    }
-
-    // Prepare the data to send
-    const requestData = {
-      answerText,
-      questionName: data884.questions[expandedRow883]?.questionName, // Get current question name
-      modelName: modalName // From your existing state
-    };
-
-    console.log('Sending delete request with:', requestData);
-
-    const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log('Delete successful:', result);
-
-    // Remove the answer from local state
-    setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
-    
-    return true;
-  } catch (error) {
-    console.error('Error deleting answer:', error);
-    alert(`Failed to delete answer: ${error.message}`);
-    return false;
-  }
-};
-
 
     
 
@@ -4518,7 +4384,6 @@ const handleConstraintClick = () => {
               <div className="options-box-1113">
             {/* Create Action Button */}
             <div className="option-1113" onClick={addNewQuestion1115}>
-            {/* <div className="option-1113" > */}
             {/* <div className="option-1113" onClick={handleGearClick1114}> */}
               <FaPlus className="icon-1112" /> Create Question
             </div>
@@ -4645,62 +4510,39 @@ const handleConstraintClick = () => {
             <tr>
               <td colSpan="4" style={{ padding: 0 }}>
     
-          
-<table style={{ width: '100%' }} ref={answerTableRef913}>
+<table style={{ width: '100%' }}>
   <tbody>
     {Array.isArray(questionAnswers885) && questionAnswers885.length > 0 ? (
       questionAnswers885.map((answer, idx) => (
         <tr key={idx} className="answer-row">
           <td colSpan="4">
-            <div
-              className="answer-item"
-              style={{
-                backgroundColor: isHoveredAnswer ? "rgba(200, 200, 255, 0.5)" : "transparent",
-                padding: '8px 16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                position: 'relative'
-              }}
-              onMouseEnter={() => setHoveredAnswerIdx(idx)}
-              onMouseLeave={() => setHoveredAnswerIdx(null)}
-            >
-              <div style={{ flex: 1 }}>
-                {editingAnswerIndex === idx ? (
-                  <input
-                    ref={inputRef}
-                    value={editingAnswerValue}
-                    onChange={(e) => setEditingAnswerValue(e.target.value)}
-                    onBlur={() => handleSaveAnswer(idx)}
-                    onKeyDown={(e) => handleAnswerKeyDown(e, idx)}
-                    autoFocus
-                    style={{ width: '100%' }}
-                  />
-                ) : (
-                  <span
-                    onClick={() => handleEditAnswerClick(answer, idx)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {answer}
-                  </span>
-                )}
-              </div>
-              
-              {/* Cog Icon - positioned at extreme right */}
-              {hoveredAnswerIdx === idx && (
-                <div style={{ position: 'absolute', right: 16 }}>
-                  <FaCog
-                    style={{ 
-                      cursor: "pointer",
-                      fontSize: '1.2em',
-                      color: '#555'
-                    }}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAnswerIconClick913(idx, event);
-                    }}
-                  />
-                </div>
+          <div
+                              className="answer-item"
+                              style={{
+                                backgroundColor: isHoveredAnswer
+                                  ? "rgba(200, 200, 255, 0.5)"
+                                  : "transparent",
+                                padding: '8px 16px'
+                              }}
+                              onClick={() => handleQuestionAnswerClick()}
+                            >
+              {editingAnswerIndex === idx ? (
+                <input
+                  ref={inputRef}
+                  value={editingAnswerValue}
+                  onChange={(e) => setEditingAnswerValue(e.target.value)}
+                  onBlur={() => handleSaveAnswer(idx)}
+                  onKeyDown={(e) => handleAnswerKeyDown(e, idx)}
+                  autoFocus
+                  style={{ width: '100%' }}
+                />
+              ) : (
+                <span
+                  onClick={() => handleEditAnswerClick(answer, idx)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {answer}
+                </span>
               )}
             </div>
           </td>
@@ -4713,63 +4555,6 @@ const handleConstraintClick = () => {
     )}
   </tbody>
 </table>
-
-{/* Answer Options Menu */}
-{clickedAnswerCell913 !== null && (
-  <div
-    style={{
-      position: "absolute",
-      top: `${menuPosition913.top}px`,
-      left: `${menuPosition913.left}px`,
-      zIndex: 1000,
-      backgroundColor: "white",
-      border: "1px solid #ddd",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-      borderRadius: "4px",
-      padding: "8px 0",
-      minWidth: "160px"
-    }}
-    onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside menu
-  >
-    <div
-      style={{
-        padding: "8px 16px",
-        cursor: "pointer",
-        ':hover': { backgroundColor: '#f5f5f5' }
-      }}
-      onClick={() => {
-        handleEditAnswerClick(
-          questionAnswers885[clickedAnswerCell913], 
-          clickedAnswerCell913
-        );
-        setClickedAnswerCell913(null);
-      }}
-    >
-      Edit Answer
-    </div>
-  
-<div
-  style={{
-    padding: "8px 16px",
-    cursor: "pointer",
-    color: "#e74c3c",
-    ':hover': { backgroundColor: '#f5f5f5' }
-  }}
-  onClick={async () => {
-    const answerText = questionAnswers885[clickedAnswerCell913] || "Unknown";
-    if (window.confirm(`Delete answer "${answerText}"?`)) {
-      const success = await deleteAnswer(clickedAnswerCell913);
-      if (success) {
-        setClickedAnswerCell913(null); // Close menu after successful deletion
-      }
-    }
-  }}
->
-  Delete Answer
-</div>
-
-  </div>
-)}
               </td>
             </tr>
           )}
@@ -4778,51 +4563,36 @@ const handleConstraintClick = () => {
     })}
 
     {/* Options Menu */}
-{/* Options Menu */}
-{clickedCell903 !== null && (
-  <div
-    className="options-menu901"
-    style={{
-      position: "absolute",
-      top: `${menuPosition903.top}px`,
-      left: `${menuPosition903.left}px`,
-      zIndex: 1000,
-      background: "white",
-      border: "1px solid #ccc",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-      borderRadius: "4px",
-      padding: "10px",
-      minWidth: "150px",
-    }}
-  >
-    <div
-      style={{
-        padding: "8px 12px",
-        cursor: "pointer",
-      }}
-      onClick={() => {
-        const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
-        createAnswer903(clickedCell903, questionName);
-      }}
-    >
-      Create Answer
-    </div>
-    {/* Changed from Delete Answer to Delete Question */}
-    <div
-      style={{
-        padding: "8px 12px",
-        cursor: "pointer",
-        color: "#ff4444",
-      }}
-      onClick={() => {
-        const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
-        deleteQuestion(clickedCell903, questionName);
-      }}
-    >
-      Delete Question
-    </div>
-  </div>
-)}
+    {clickedCell903 !== null && (
+      <div
+        className="options-menu901"
+        style={{
+          position: "absolute",
+          top: `${menuPosition903.top}px`,
+          left: `${menuPosition903.left}px`,
+          zIndex: 1000,
+          background: "white",
+          border: "1px solid #ccc",
+          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+          borderRadius: "4px",
+          padding: "10px",
+          minWidth: "150px",
+        }}
+      >
+        <div
+          style={{
+            padding: "8px 12px",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
+            createAnswer903(clickedCell903, questionName);
+          }}
+        >
+          Create Answer
+        </div>
+      </div>
+    )}
   </tbody>
 </table>
     </div>

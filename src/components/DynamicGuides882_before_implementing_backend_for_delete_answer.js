@@ -1389,51 +1389,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     };
     
 
-    // 1. First, create the delete function (add this with your other functions)
-const deleteAnswer = async (answerIndex) => {
-  try {
-    const answerText = questionAnswers885[answerIndex];
-    
-    if (!answerText) {
-      throw new Error('No answer text found');
-    }
-
-    // Prepare the data to send
-    const requestData = {
-      answerText,
-      questionName: data884.questions[expandedRow883]?.questionName, // Get current question name
-      modelName: modalName // From your existing state
-    };
-
-    console.log('Sending delete request with:', requestData);
-
-    const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log('Delete successful:', result);
-
-    // Remove the answer from local state
-    setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
-    
-    return true;
-  } catch (error) {
-    console.error('Error deleting answer:', error);
-    alert(`Failed to delete answer: ${error.message}`);
-    return false;
-  }
-};
-
-
     
 
     const deleteRow = (type, identifier) => {
@@ -4747,27 +4702,23 @@ const handleConstraintClick = () => {
     >
       Edit Answer
     </div>
-  
-<div
-  style={{
-    padding: "8px 16px",
-    cursor: "pointer",
-    color: "#e74c3c",
-    ':hover': { backgroundColor: '#f5f5f5' }
-  }}
-  onClick={async () => {
-    const answerText = questionAnswers885[clickedAnswerCell913] || "Unknown";
-    if (window.confirm(`Delete answer "${answerText}"?`)) {
-      const success = await deleteAnswer(clickedAnswerCell913);
-      if (success) {
-        setClickedAnswerCell913(null); // Close menu after successful deletion
-      }
-    }
-  }}
->
-  Delete Answer
-</div>
-
+    <div
+      style={{
+        padding: "8px 16px",
+        cursor: "pointer",
+        color: "#e74c3c",
+        ':hover': { backgroundColor: '#f5f5f5' }
+      }}
+      onClick={() => {
+        const answerText = questionAnswers885[clickedAnswerCell913] || "Unknown";
+        if (window.confirm(`Delete answer "${answerText}"?`)) {
+          // Your delete logic here
+          setClickedAnswerCell913(null);
+        }
+      }}
+    >
+      Delete Answer
+    </div>
   </div>
 )}
               </td>
