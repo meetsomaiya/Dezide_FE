@@ -58,34 +58,15 @@ const [previousValues, setPreviousValues] = useState({});
     const debounceTimer = useRef(null);
 
     const [lastClickedAnswer, setLastClickedAnswer] = useState(null);
-
-const [identifiedCauses, setIdentifiedCauses] = useState({});
-const [eliminatedCauses, setEliminatedCauses] = useState({});
-    
     
     // Function to toggle state on question answer click
-// const handleQuestionAnswerClick = () => {
-//   // Reset isAnyProgressChecked to false
-//   setIsAnyProgressChecked(false);
-
-//   // Toggle the isAnswerClicked state
-//   setIsAnswerClicked((prevState) => !prevState);
-// };
-
-const handleQuestionAnswerClick = (answer) => {
+const handleQuestionAnswerClick = () => {
   // Reset isAnyProgressChecked to false
   setIsAnyProgressChecked(false);
 
   // Toggle the isAnswerClicked state
   setIsAnswerClicked((prevState) => !prevState);
-
-  // Store the clicked answer name in state
-  setLastClickedAnswer(answer);
 };
-
-useEffect(() => {
-  console.log("Last clicked answer updated:", lastClickedAnswer);
-}, [lastClickedAnswer]);
 
     const handleRowClick903 = (event, index) => {
       // Get the clicked cell's position
@@ -118,42 +99,6 @@ const [menuPosition913, setMenuPosition913] = useState({ top: 0, left: 0 });
 const answerTableRef913 = useRef(null);
 
 const [hoveredAnswerIdx, setHoveredAnswerIdx] = useState(null);
-
-const [lastAction, setLastAction] = useState({
-  type: null,       // 'identify' or 'eliminate'
-  causeName: null,  // The cause/sub-cause name
-  answer: null      // Last clicked answer
-});
-
-const linkQuestionWithCause = async (causeName, actionType, answer) => {
-  // Create the payload object
-  const payload = {
-    causeName,
-    actionType, 
-    questionAnswer: answer,
-    modalName
-  };
-
-  // Log the data before sending
-  console.log("Data being sent to backend:", JSON.stringify(payload, null, 2));
-
-  try {
-    const response = await fetch('http://localhost:3001/api/link_question_with_cause', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) throw new Error('Failed to link question with cause');
-    
-    const data = await response.json();
-    console.log('API Response:', data);
-  } catch (error) {
-    console.error('API Error:', error);
-  }
-};
 
 // 2. Menu Handler (keep this exactly as is)
 const handleAnswerIconClick913 = (index, event) => {
@@ -430,7 +375,6 @@ const [previousactionvalue0008, setPreviousActionValue0008] = useState(""); // P
 const [editingQuestion3300, setEditingQuestion3300] = useState(null);
 const [editValue3300, setEditValue3300] = useState("");
 const [editingField3300, setEditingField3300] = useState("");
-
 
 const editRef3300 = useRef();
 
@@ -1069,21 +1013,6 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
     .catch((error) => {
       console.error("Error sending edited nested sub-cause data:", error);
     });
-};
-
-const handleActionCheckbox = (causeName, actionType) => {
-  // Get the last clicked answer from state
-  const currentAnswer = lastClickedAnswer; 
-  
-  // Update the last action state
-  setLastAction({
-    type: actionType,
-    causeName,
-    answer: currentAnswer
-  });
-
-  // Call API immediately
-  linkQuestionWithCause(causeName, actionType, currentAnswer);
 };
 
     
@@ -1894,9 +1823,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log('question answers updated ,,,,:', questionAnswers885);
     }, [questionAnswers885]); // This dependency array makes it log whenever expandedCauseData changes
   
-    useEffect(() => {
-      console.log("Last action recorded:", lastAction);
-    }, [lastAction]);
+  
 
   const handleEditExplanation = (actionName) => {
     const dataToSend = {
@@ -4205,7 +4132,7 @@ const handleConstraintClick = () => {
             </div>
           </td>
 
-          {/* {isAnswerClicked && (
+          {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4214,24 +4141,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(cause.name, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(cause.name, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
           <td>
   {isAnyProgressChecked && (
@@ -4341,7 +4251,7 @@ const handleConstraintClick = () => {
                   </div>
                 </td>
 
-                {/* {isAnswerClicked && (
+                {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4350,24 +4260,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(causeDetail.CauseName, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(causeDetail.CauseName, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
                 <td>
   {isAnyProgressChecked && (
@@ -4476,7 +4369,7 @@ const handleConstraintClick = () => {
                               </div>
                             </td>
 
-                            {/* {isAnswerClicked && (
+                            {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4485,24 +4378,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(nestedSubCause.eventName, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(nestedSubCause.eventName, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
                             <td>
   {isAnyProgressChecked && (
@@ -5268,7 +5144,7 @@ const handleConstraintClick = () => {
               <td colSpan="4" style={{ padding: 0 }}>
     
           
-              <table style={{ width: '100%' }} ref={answerTableRef913}>
+<table style={{ width: '100%' }} ref={answerTableRef913}>
   <tbody>
     {Array.isArray(questionAnswers885) && questionAnswers885.length > 0 ? (
       questionAnswers885.map((answer, idx) => (
@@ -5286,7 +5162,7 @@ const handleConstraintClick = () => {
               }}
               onMouseEnter={() => setHoveredAnswerIdx(idx)}
               onMouseLeave={() => setHoveredAnswerIdx(null)}
-              onClick={() => handleQuestionAnswerClick(answer)}  // Pass the answer here
+              onClick={() => handleQuestionAnswerClick()}
             >
               <div style={{ flex: 1 }}>
                 {editingAnswerIndex === idx ? (
@@ -5301,10 +5177,7 @@ const handleConstraintClick = () => {
                   />
                 ) : (
                   <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditAnswerClick(answer, idx);
-                    }}
+                    onClick={() => handleEditAnswerClick(answer, idx)}
                     style={{ cursor: 'pointer' }}
                   >
                     {answer}

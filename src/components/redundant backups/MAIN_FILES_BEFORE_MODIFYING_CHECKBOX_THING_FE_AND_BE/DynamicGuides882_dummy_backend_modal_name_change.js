@@ -52,40 +52,44 @@ const [previousValues, setPreviousValues] = useState({});
 
     const [previousName, setPreviousName] = useState("");
 
-    const [initialModalName6055, setInitialModalName6055] = useState(""); // Add this state
-
 
     const debounceTimer = useRef(null);
 
-    const [lastClickedAnswer, setLastClickedAnswer] = useState(null);
+    const originalNameRef = useRef(modalName);
 
-const [identifiedCauses, setIdentifiedCauses] = useState({});
-const [eliminatedCauses, setEliminatedCauses] = useState({});
+    const handleNameSave = async () => {
+      setIsEditing882(false);
+      
+      const oldName = originalNameRef.current;
+      const newName = modalName;
     
+      if (oldName === newName) return; // Skip if unchanged
+    
+      console.log("Sending to backend:", { oldName, newName });
+    
+      try {
+        const response = await fetch('http://localhost:3001/api/update-modal-name', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ oldName, newName }),
+        });
+    
+        if (!response.ok) throw new Error('Update failed');
+        console.log('Success:', await response.json());
+      } catch (error) {
+        console.error('Error:', error);
+        setModalName(oldName); // Revert on failure
+      }
+    };
     
     // Function to toggle state on question answer click
-// const handleQuestionAnswerClick = () => {
-//   // Reset isAnyProgressChecked to false
-//   setIsAnyProgressChecked(false);
-
-//   // Toggle the isAnswerClicked state
-//   setIsAnswerClicked((prevState) => !prevState);
-// };
-
-const handleQuestionAnswerClick = (answer) => {
+const handleQuestionAnswerClick = () => {
   // Reset isAnyProgressChecked to false
   setIsAnyProgressChecked(false);
 
   // Toggle the isAnswerClicked state
   setIsAnswerClicked((prevState) => !prevState);
-
-  // Store the clicked answer name in state
-  setLastClickedAnswer(answer);
 };
-
-useEffect(() => {
-  console.log("Last clicked answer updated:", lastClickedAnswer);
-}, [lastClickedAnswer]);
 
     const handleRowClick903 = (event, index) => {
       // Get the clicked cell's position
@@ -118,42 +122,6 @@ const [menuPosition913, setMenuPosition913] = useState({ top: 0, left: 0 });
 const answerTableRef913 = useRef(null);
 
 const [hoveredAnswerIdx, setHoveredAnswerIdx] = useState(null);
-
-const [lastAction, setLastAction] = useState({
-  type: null,       // 'identify' or 'eliminate'
-  causeName: null,  // The cause/sub-cause name
-  answer: null      // Last clicked answer
-});
-
-const linkQuestionWithCause = async (causeName, actionType, answer) => {
-  // Create the payload object
-  const payload = {
-    causeName,
-    actionType, 
-    questionAnswer: answer,
-    modalName
-  };
-
-  // Log the data before sending
-  console.log("Data being sent to backend:", JSON.stringify(payload, null, 2));
-
-  try {
-    const response = await fetch('http://localhost:3001/api/link_question_with_cause', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) throw new Error('Failed to link question with cause');
-    
-    const data = await response.json();
-    console.log('API Response:', data);
-  } catch (error) {
-    console.error('API Error:', error);
-  }
-};
 
 // 2. Menu Handler (keep this exactly as is)
 const handleAnswerIconClick913 = (index, event) => {
@@ -431,7 +399,6 @@ const [editingQuestion3300, setEditingQuestion3300] = useState(null);
 const [editValue3300, setEditValue3300] = useState("");
 const [editingField3300, setEditingField3300] = useState("");
 
-
 const editRef3300 = useRef();
 
    // Function to handle changes while editing
@@ -458,7 +425,34 @@ const editRef3300 = useRef();
   
   };
 
-   
+    // Function to handle mouse enter and send the action name to the API via GET
+const handleMouseEnter1119 = async (rowIndex, actionName) => {
+  try {
+    // Log the data being sent to the API
+    console.log("Sending data to API:", { actionName });
+
+    // Make the API call to fetch hovering data using GET method
+    // const response = await fetch(`http://localhost:226/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      method: "GET", // Use GET method
+      headers: {
+        "Content-Type": "application/json", // Optional: Only needed if your API requires it
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Hover data received:", data);
+
+      // Update the hoverItems899 state with the hovered action name
+      setHoverItems899(data.causes);
+    } else {
+      console.error("Failed to fetch hover data");
+    }
+  } catch (error) {
+    console.error("Error during hover API call:", error);
+  }
+};
 
 
   // useEffect to print hoverItems899 state to the console for verification
@@ -655,66 +649,18 @@ const addNewAction1115 = async () => {
   //   });
   // };
 
-  // const addNewQuestion1115 = async () => {
-  //   // Ensure `data884` and `data884.questions` are not null or undefined
-  //   setData884((prevData) => {
-  //     const safeData = prevData || { modalName, eventID: 0, questions: [] };
-  //     const safeQuestions = safeData.questions || [];
-    
-  //     // Generate a unique arbitrary suffix for the untitled question
-  //     const newQuestionNumber = safeQuestions.length + 1;
-  //     const newQuestion = {
-  //       questionName: `Untitled Question ${newQuestionNumber}`,
-  //       questionTime: "00:00:00", // Default time for the new question
-  //       questionCost: 0, // Default cost for the new question
-  //     };
-  
-  //     // Return the updated state
-  //     const updatedData = {
-  //       ...safeData,
-  //       questions: [...safeQuestions, newQuestion],
-  //     };
-  
-  //     // Log the data being sent
-  //     console.log("Data to be sent to backend:", updatedData);
-  
-  //     // Send the data to the backend
-  //     // fetch("http://localhost:226/api/add_new_question", {
-  //       fetch(`${BASE_URL}/api/add_new_question`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(updatedData),
-  //     })
-  //       .then((response) => {
-  //         if (!response.ok) {
-  //           throw new Error("Failed to send data to the backend.");
-  //         }
-  //         return response.json();
-  //       })
-  //       .then((data) => {
-  //         console.log("Response from backend:", data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error sending data to backend:", error);
-  //       });
-  
-  //     return updatedData;
-  //   });
-  // };
-
   const addNewQuestion1115 = async () => {
+    // Ensure `data884` and `data884.questions` are not null or undefined
     setData884((prevData) => {
       const safeData = prevData || { modalName, eventID: 0, questions: [] };
       const safeQuestions = safeData.questions || [];
-  
-      // Generate a 6-7 digit random number (between 100,000 and 9,999,999)
-      const newQuestionNumber = Math.floor(100000 + Math.random() * 9900000);
+    
+      // Generate a unique arbitrary suffix for the untitled question
+      const newQuestionNumber = safeQuestions.length + 1;
       const newQuestion = {
         questionName: `Untitled Question ${newQuestionNumber}`,
-        questionTime: "00:00:00",
-        questionCost: 0,
+        questionTime: "00:00:00", // Default time for the new question
+        questionCost: 0, // Default cost for the new question
       };
   
       // Return the updated state
@@ -727,7 +673,8 @@ const addNewAction1115 = async () => {
       console.log("Data to be sent to backend:", updatedData);
   
       // Send the data to the backend
-      fetch(`${BASE_URL}/api/add_new_question`, {
+      // fetch("http://localhost:226/api/add_new_question", {
+        fetch(`${BASE_URL}/api/add_new_question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -823,11 +770,6 @@ const addNewAction1115 = async () => {
     }, 0);
   };
 
-  // Inside your component:
-useEffect(() => {
-  console.log("Current paginatedData990:", paginatedData990);
-}, [paginatedData990]); // Dependency array ensures this runs only when `paginatedData990` changes
-
   const handleSave = (index, field, previousValue, newValue) => {
     // Prepare the data to be sent to the API
     const dataToSend = {
@@ -880,48 +822,24 @@ useEffect(() => {
 
 const deleteActionForModel = async (actionName, modelName) => {
   try {
-    // Prepare the request payload
-    const requestPayload = {
-      action: actionName,
-      model: modelName
-    };
-
-    // Log the request details before sending
-    console.group('API Request Details');
-    console.log('Endpoint:', 'http://localhost:3001/api/delete_action_for_model');
-    console.log('Method:', 'POST');
-    console.log('Headers:', {
-      'Content-Type': 'application/json'
-    });
-    console.log('Payload:', requestPayload);
-    console.log('Stringified Payload:', JSON.stringify(requestPayload));
-    console.groupEnd();
-
-    // Make the API call
+    console.log('Making API call to delete:', { action: actionName, modelName });
     const response = await fetch('http://localhost:3001/api/delete_action_for_model', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestPayload),
+      body: JSON.stringify({
+        action: actionName,
+        model: modelName
+      }),
     });
 
-    // Log response details
-    console.group('API Response Details');
-    console.log('HTTP Status:', response.status, response.statusText);
-    
     if (!response.ok) {
-      console.error('Error Response:', await response.text());
-      console.groupEnd();
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('Response Data:', data);
-    console.groupEnd();
-    
-    // Log before calling handleRowClick
-    console.log('Calling handleRowClick with modelName:', modelName);
+    console.log('Delete API response:', data);
     
     // Call handleRowClick after successful API response
     if (typeof handleRowClick === 'function') {
@@ -932,12 +850,7 @@ const deleteActionForModel = async (actionName, modelName) => {
     
     return data;
   } catch (error) {
-    console.group('API Error Details');
-    console.error('Error in deleteActionForModel:', error);
-    if (error.response) {
-      console.error('Error response data:', error.response.data);
-    }
-    console.groupEnd();
+    console.error('Error deleting action:', error);
     throw error;
   }
 };
@@ -1071,21 +984,6 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
     });
 };
 
-const handleActionCheckbox = (causeName, actionType) => {
-  // Get the last clicked answer from state
-  const currentAnswer = lastClickedAnswer; 
-  
-  // Update the last action state
-  setLastAction({
-    type: actionType,
-    causeName,
-    answer: currentAnswer
-  });
-
-  // Call API immediately
-  linkQuestionWithCause(causeName, actionType, currentAnswer);
-};
-
     
     
 
@@ -1104,32 +1002,24 @@ const handleActionCheckbox = (causeName, actionType) => {
       // Create the new answer with the random 6-digit number
       newAnswer = `Untitled Answer ${random6DigitNumber}`;
       
-      // Update the answers list
+      // Check if there are existing answers
       setQuestionAnswers885((prevAnswers) => {
         const updatedAnswers = [...prevAnswers];
         const existingAnswers = updatedAnswers[rowIndex] || [];
+        
+        // Add the new answer to the array (this will create a new row)
         updatedAnswers[rowIndex] = [...existingAnswers, newAnswer];
         return updatedAnswers;
       });
       
-      // Update the hasAnswer flag in the questions data
-      setData884(prevData => {
-        const updatedQuestions = [...prevData.questions];
-        updatedQuestions[rowIndex] = {
-          ...updatedQuestions[rowIndex],
-          hasAnswer: true // Force hasAnswer to true
-        };
-        return {
-          ...prevData,
-          questions: updatedQuestions
-        };
-      });
+      // Access modalName from the state
+      // const [modalName, setModalName] = useState(""); <-- This is already defined in your component
       
       // Prepare the data to be sent to the API
       const requestBody = {
         questionName,
         newAnswer,
-        modalName,
+        modalName, // Include modalName from the state in the request body
       };
     
       // Log the data being sent to the API
@@ -1137,6 +1027,9 @@ const handleActionCheckbox = (causeName, actionType) => {
     
       // Construct the full URL for the API request
       const apiUrl = `${BASE_URL}/api/add_answer`;
+    
+      // Log the full URL being used for the API request
+      console.log("API URL:", apiUrl);
     
       // Send the new answer to the backend
       fetch(apiUrl, {
@@ -1149,84 +1042,75 @@ const handleActionCheckbox = (causeName, actionType) => {
         .then((response) => response.json())
         .then((data) => {
           console.log("Response from server after adding answer:", data);
-          // Optional: Refresh data from server to ensure consistency
-          fetchData884();
         })
         .catch((error) => {
           console.error("Error while adding answer:", error);
-          // Revert hasAnswer if API call fails
-          setData884(prevData => {
-            const updatedQuestions = [...prevData.questions];
-            updatedQuestions[rowIndex] = {
-              ...updatedQuestions[rowIndex],
-              hasAnswer: false
-            };
-            return {
-              ...prevData,
-              questions: updatedQuestions
-            };
-          });
         });
     };
     
     const deleteQuestion = async (questionIndex, questionName) => {
-      if (!window.confirm(`Are you sure you want to delete the question "${questionName}" and all its answers?`)) {
-        return; // Early return if user cancels
-      }
+      if (window.confirm(`Are you sure you want to delete the question "${questionName}" and all its answers?`)) {
+        try {
+          // Prepare the data to send
+          const requestData = {
+            questionName,
+            modelName: modalName // Include the modalName from state
+          };
+          
+          // Log the data we're about to send
+          console.log('Sending to backend for deletion purpose:', requestData);
+          
+          // Send delete request to backend
+          const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
     
-      try {
-        // Prepare the data to send
-        const requestData = {
-          questionName,
-          modelName: modalName
-        };
-        
-        console.log('Sending to backend for deletion purpose:', requestData);
-        
-        // Send delete request to backend
-        const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
+          if (!response.ok) {
+            throw new Error('Failed to delete question on backend');
+          }
     
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to delete question on backend');
-        }
+          // Get the response data
+          const result = await response.json();
+          console.log('Deletion API response:', result);
     
-        // Get the response data
-        const result = await response.json();
-        console.log('Deletion API response:', result);
+          /* 
+          COMMENTED OUT THE DIRECT STATE UPDATE IN FAVOR OF FRESH DATA FETCH
+          // Update your state to remove the question
+          setData884(prevData => ({
+            ...prevData,
+            questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
+          }));
+          */
     
-        // Only proceed with state updates if deletion was successful
-        if (result.success) {
-          // Clear local state immediately
+          // Clear related answers
           setQuestionAnswers885([]);
+          
+          // Close the menu
           setClickedCell903(null);
-          
-          // Refresh data from server
-          await fetchData884();
-          
-          // Show success message
-          alert(`Question "${questionName}" deleted successfully!`);
-        } else {
-          throw new Error(result.message || 'Deletion failed on server');
-        }
     
-      } catch (error) {
-        console.error('Error deleting question:', error);
-        
-        // Show error message with more details
-        alert(`Failed to delete question: ${error.message}`);
-        
-        // Optional: Fallback to local state update if API fails
-        // setData884(prevData => ({
-        //   ...prevData,
-        //   questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
-        // }));
+          console.log('Question deleted successfully, refreshing data...');
+          
+          // Call fetchData884 to get fresh data from the server
+          await fetchData884();
+    
+          // Optional: Show success message
+          alert(`Question "${questionName}" deleted successfully!`);
+    
+        } catch (error) {
+          console.error('Error deleting question:', error);
+          alert('Failed to delete question. Please check console for details.');
+          
+          // You might want to keep the local state update if the API fails
+          // This prevents the UI from getting stuck
+          // setData884(prevData => ({
+          //   ...prevData,
+          //   questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
+          // }));
+        }
       }
     };
     
@@ -1288,33 +1172,21 @@ const handleActionCheckbox = (causeName, actionType) => {
   //   setIsAnyProgressChecked(isChecked || isAnyProgressChecked);
   // };
 
-  // const handleProgressCheckboxChange = (index, isChecked) => {
-  //     // Set isAnswerClicked to null
-  // setIsAnswerClicked(null);
-  //   // Make a copy of the actionsData
-  //   const updatedActionsData = [...actionsData];
-    
-  //   // Update the progress of the specific action
-  //   updatedActionsData[index].progress = isChecked;
-    
-  //   // Update the state with the modified actionsData
-  //   setActionsData(updatedActionsData);
-    
-  //   // Optionally, if you want to track if any progress is checked globally
-  //   const anyProgressChecked = updatedActionsData.some(action => action.progress === true);
-  //   setIsAnyProgressChecked(anyProgressChecked);
-  // };
-
-  const handleProgressCheckboxChange = (index, isChecked, actionName = null) => {
-    setIsAnswerClicked(null);
+  const handleProgressCheckboxChange = (index, isChecked) => {
+      // Set isAnswerClicked to null
+  setIsAnswerClicked(null);
+    // Make a copy of the actionsData
     const updatedActionsData = [...actionsData];
-    updatedActionsData[index].progress = isChecked;
-    setActionsData(updatedActionsData);
-    setIsAnyProgressChecked(updatedActionsData.some(action => action.progress));
     
-    if (actionName) {
-      console.log(`Progress changed for ${actionName}`); // Example usage
-    }
+    // Update the progress of the specific action
+    updatedActionsData[index].progress = isChecked;
+    
+    // Update the state with the modified actionsData
+    setActionsData(updatedActionsData);
+    
+    // Optionally, if you want to track if any progress is checked globally
+    const anyProgressChecked = updatedActionsData.some(action => action.progress === true);
+    setIsAnyProgressChecked(anyProgressChecked);
   };
   
 
@@ -1388,92 +1260,37 @@ const handleActionCheckbox = (causeName, actionType) => {
 
   
 
-  // const handleSolveCheckboxChange = (e, index, causeName) => {
-  //   const isChecked = e.target.checked;
-  
-  //   // Update the state for the checkboxes
-  //   // setSolveCheckboxes900((prev) => ({
-  //   //   ...prev,
-  //   //   [index]: isChecked,
-  //   // }));
-  
-  //   // Call the API if the checkbox is ticked
-  //   if (isChecked) {
-  //     const selectedAction = paginatedData990[index]; // Fetch the entire action object
-  
-  //     if (selectedAction?.progress) {
-  //       // Prepare data for the API
-  //       const payload = {
-  //         actionName: selectedAction.name,
-  //         time: selectedAction.time,
-  //         money: selectedAction.money,
-  //         level: selectedAction.level,
-  //         causeName,
-  //         modalName,
-  //       };
-  
-  //       // Log the payload for verification
-  //       console.log('Payload being sent to API:', payload);
-  
-  //       // API Call
-  //       // fetch('http://localhost:226/api/match_actions_causes', {
-  //         // fetch('http://localhost:3001/api/match_actions_causes', {
-  //         fetch(`${BASE_URL}/api/match_actions_causes`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(payload),
-  //       })
-  //         .then((response) => {
-  //           if (!response.ok) {
-  //             throw new Error(`Error: ${response.statusText}`);
-  //           }
-  //           return response.json();
-  //         })
-  //         .then((data) => {
-  //           console.log('Successfully sent to API:', data);
-  //         })
-  //         .catch((error) => {
-  //           console.error('API Error:', error);
-  //         });
-  //     } else {
-  //       console.warn('No action with progress found to match with cause.');
-  //     }
-  //   }
-  // };
-  
-
   const handleSolveCheckboxChange = (e, index, causeName) => {
     const isChecked = e.target.checked;
   
-    if (isChecked) {
-      // Find the corresponding action that has progress checked
-      const selectedAction = actionsData.find(action => action.progress);
-      
-      // Debugging logs
-      console.group('Debugging handleSolveCheckboxChange');
-      console.log('Selected action with progress:', selectedAction);
-      console.log('Index:', index);
-      console.log('Cause Name:', causeName);
-      console.log('Modal Name:', modalName);
+    // Update the state for the checkboxes
+    // setSolveCheckboxes900((prev) => ({
+    //   ...prev,
+    //   [index]: isChecked,
+    // }));
   
-      if (selectedAction) {
+    // Call the API if the checkbox is ticked
+    if (isChecked) {
+      const selectedAction = paginatedData990[index]; // Fetch the entire action object
+  
+      if (selectedAction?.progress) {
         // Prepare data for the API
         const payload = {
           actionName: selectedAction.name,
           time: selectedAction.time,
           money: selectedAction.money,
           level: selectedAction.level,
-          causeName: causeName, // Using the passed causeName parameter
-          modalName: modalName,
-          progress: selectedAction.progress || null,
+          causeName,
+          modalName,
         };
   
+        // Log the payload for verification
         console.log('Payload being sent to API:', payload);
   
         // API Call
-        fetch(`${BASE_URL}/api/match_actions_causes`, {
+        // fetch('http://localhost:226/api/match_actions_causes', {
+          // fetch('http://localhost:3001/api/match_actions_causes', {
+          fetch(`${BASE_URL}/api/match_actions_causes`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1487,19 +1304,17 @@ const handleActionCheckbox = (causeName, actionType) => {
             return response.json();
           })
           .then((data) => {
-            console.log('API Success:', data);
-            // Optionally update UI state here if needed
+            console.log('Successfully sent to API:', data);
           })
           .catch((error) => {
             console.error('API Error:', error);
           });
       } else {
-        console.error('No action with progress checked found');
+        console.warn('No action with progress found to match with cause.');
       }
-  
-      console.groupEnd();
     }
   };
+  
   
   
     
@@ -1642,56 +1457,48 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
 
     // 1. First, create the delete function (add this with your other functions)
-    const deleteAnswer = async (answerIndex) => {
-      try {
-        const answerText = questionAnswers885[answerIndex];
-        
-        if (!answerText) {
-          throw new Error('No answer text found');
-        }
+const deleteAnswer = async (answerIndex) => {
+  try {
+    const answerText = questionAnswers885[answerIndex];
     
-        // Prepare the data to send
-        const requestData = {
-          answerText,
-          questionName: data884.questions[expandedRow883]?.questionName,
-          modelName: modalName
-        };
-    
-        console.log('Sending delete request with:', requestData);
-    
-        const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
-    
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-    
-        const result = await response.json();
-        console.log('Delete successful:', result);
-    
-        // Collapse the answer row first
-        if (expandedRow883 !== null) {
-          toggleRow883(expandedRow883, data884.questions[expandedRow883]?.questionName);
-        }
-    
-        // Remove the answer from local state
-        setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
-        
-        // Refresh data after successful deletion
-        await fetchData884();
-        
-        return true;
-      } catch (error) {
-        console.error('Error deleting answer:', error);
-        alert(`Failed to delete answer: ${error.message}`);
-        return false;
-      }
+    if (!answerText) {
+      throw new Error('No answer text found');
+    }
+
+    // Prepare the data to send
+    const requestData = {
+      answerText,
+      questionName: data884.questions[expandedRow883]?.questionName, // Get current question name
+      modelName: modalName // From your existing state
     };
+
+    console.log('Sending delete request with:', requestData);
+
+    const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Delete successful:', result);
+
+    // Remove the answer from local state
+    setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
+    
+    return true;
+  } catch (error) {
+    console.error('Error deleting answer:', error);
+    alert(`Failed to delete answer: ${error.message}`);
+    return false;
+  }
+};
 
 
     
@@ -1894,9 +1701,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log('question answers updated ,,,,:', questionAnswers885);
     }, [questionAnswers885]); // This dependency array makes it log whenever expandedCauseData changes
   
-    useEffect(() => {
-      console.log("Last action recorded:", lastAction);
-    }, [lastAction]);
+  
 
   const handleEditExplanation = (actionName) => {
     const dataToSend = {
@@ -2054,35 +1859,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         console.error("Error fetching items for hovering cause:", error);
       }
     };
-
-     // Function to handle mouse enter and send the action name to the API via GET
-const handleMouseEnter1119 = async (rowIndex, actionName) => {
-  try {
-    // Log the data being sent to the API
-    console.log("Sending data to API:", { actionName });
-
-    // Make the API call to fetch hovering data using GET method
-    // const response = await fetch(`http://localhost:226/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
-      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
-      method: "GET", // Use GET method
-      headers: {
-        "Content-Type": "application/json", // Optional: Only needed if your API requires it
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Hover data received:", data);
-
-      // Update the hoverItems899 state with the hovered action name
-      setHoverItems899(data.causes);
-    } else {
-      console.error("Failed to fetch hover data");
-    }
-  } catch (error) {
-    console.error("Error during hover API call:", error);
-  }
-};
 
     const saveCauseData = () => {
       // Build the data structure with the causes, subcauses, and nestedsubcauses
@@ -2404,38 +2180,33 @@ const handleMouseEnter1119 = async (rowIndex, actionName) => {
   // }, [modalName]); // Only re-run the effect if modalName changes
 
   // Define fetchData884 as a standalone function
-  const fetchData884 = async () => {
-    try {
-      // Clear previous state before making the request
-      setData884(null);      // Clear existing data
-      setError884(null);     // Clear any previous errors
-      setLoading884(true);   // Set loading to true
-  
-      // Log the data being sent
-      console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
-  
-      // Send a GET request to the API with modalName as a query parameter
-      const response = await fetch(
-        `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
-      );
-  
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-  
-      const result = await response.json();
-  
-      // Log the fetched data
-      console.log("Fetched data:", result);
-  
-      setData884(result); // Save the fetched data in state
-    } catch (error) {
-      setError884(error.message); // Handle errors
-      console.error("Error fetching data:", error.message);
-    } finally {
-      setLoading884(false); // Set loading to false after the request is complete
+const fetchData884 = async () => {
+  try {
+    // Log the data being sent
+    console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
+
+    // Send a GET request to the API with modalName as a query parameter
+    const response = await fetch(
+      `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
     }
-  };
+
+    const result = await response.json();
+
+    // Log the fetched data
+    console.log("Fetched data:", result);
+
+    setData884(result); // Save the fetched data in state
+  } catch (error) {
+    setError884(error.message); // Handle errors
+    console.error("Error fetching data:", error.message);
+  } finally {
+    setLoading884(false); // Set loading to false after the request is complete
+  }
+};
 
 // Use useEffect to call fetchData884 on component mount or when modalName changes
 useEffect(() => {
@@ -2974,41 +2745,8 @@ const addNewUntitledSubCause = (causeIndex, parentCauseName) => {
   setIsCreateTopCauseInputVisible(false);
 };
 
-const handleModalNameChange6055 = () => {
-  setIsEditing882(false);
-  
-  if (inputRef882.current && inputRef882.current.value !== initialModalName6055) {
-    const currentName = inputRef882.current.value;
-    setModalName(currentName); // Update local state
-    
-    const requestData = {
-      previousName: initialModalName6055,
-      currentName: currentName
-    };
-    
-    console.log("Sending to backend:", requestData);
-    
-    fetch('http://localhost:3001/api/update-modal-name', {  // Updated endpoint
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    })
-    .then(response => {
-      if (!response.ok) throw new Error('Update failed');
-      return response.json();
-    })
-    .then(data => console.log('Update successful:', data))
-    .catch(error => {
-      console.error('Error:', error);
-      // Revert to initial name if update fails
-      setModalName(initialModalName6055);
-    });
-  } else {
-    console.log("No changes - update skipped");
-  }
-};
+
+
 
 
 const addNewUntitledNestedSubCause = (causeIndex, subCauseIndex) => {
@@ -3654,71 +3392,14 @@ const handleConstraintClick = () => {
     };
 
 
-    // const handleRowClick = async (name) => {
-    //    //   setEditableRow886(index); // Set the row index to editable mode
-    //   console.log(`Navigating to modal with name: ${name}`);
-      
-    //   try {
-    //     // const url = `http://localhost:226/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
-    //     const url = `${BASE_URL}/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
-
-    //     console.log("API URL:", url);
-    
-    //     const response = await fetch(url, { method: "GET" });
-    
-    //     if (!response.ok) {
-    //       throw new Error(`Error: ${response.statusText}`);
-    //     }
-    
-    //     const result = await response.json();
-    //     console.log("API Response:", result);
-    
-    //     // Debug: Check if `tblTopCauseData` exists and is an array
-    //     if (Array.isArray(result.tblTopCauseData)) {
-    //       const extractedCauses = result.tblTopCauseData.map((cause) => {
-    //         console.log("Cause Object:", cause); // Debug individual cause objects
-    //         return {
-    //           name: cause.TopCauseName || "Unknown Name", // Fallback if key is missing
-    //           probability: cause.ProbabilityPercentage || 0, // Fallback if key is missing
-    //           internalCause: cause.internalCause ?? false, // Include internalCause, default to false
-    //         };
-    //       });
-    //       setCausesData(extractedCauses);
-    //     } else {
-    //       console.warn("tblTopCauseData is not an array or missing.");
-    //       setCausesData([]);
-    //     }
-    
-    //     // Debug: Check if `eventObject` exists and is an array
-    //     if (Array.isArray(result.eventObject)) {
-    //       const extractedActions = result.eventObject.map((action) => {
-    //         console.log("Action Object:", action); // Debug individual action objects
-    //         return {
-    //           name: action.ActionName || "Unknown Action", // Fallback if key is missing
-    //           time: action.ActionTime || "N/A", // Fallback if key is missing
-    //           money: action.ActionCost || 0, // Fallback if key is missing
-    //         };
-    //       });
-    //       setActionsData(extractedActions);
-    //     } else {
-    //       console.warn("eventObject is not an array or missing.");
-    //       setActionsData([]);
-    //     }
-    //   } catch (error) {
-    //     console.error("Failed to fetch event causes actions:", error);
-    //     setCausesData([]); // Clear causes data on error
-    //     setActionsData([]); // Clear actions data on error
-    //   }
-    
-    //   setModalName(name); // Set name for modal
-    //   setModalOpen(true); // Open modal
-    // };
-
     const handleRowClick = async (name) => {
+       //   setEditableRow886(index); // Set the row index to editable mode
       console.log(`Navigating to modal with name: ${name}`);
       
       try {
+        // const url = `http://localhost:226/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
         const url = `${BASE_URL}/api/fetch_event_causes_actions?eventName=${encodeURIComponent(name)}`;
+
         console.log("API URL:", url);
     
         const response = await fetch(url, { method: "GET" });
@@ -3733,11 +3414,11 @@ const handleConstraintClick = () => {
         // Debug: Check if `tblTopCauseData` exists and is an array
         if (Array.isArray(result.tblTopCauseData)) {
           const extractedCauses = result.tblTopCauseData.map((cause) => {
-            console.log("Cause Object:", cause);
+            console.log("Cause Object:", cause); // Debug individual cause objects
             return {
-              name: cause.TopCauseName || "Unknown Name",
-              probability: cause.ProbabilityPercentage || 0,
-              internalCause: cause.internalCause ?? false,
+              name: cause.TopCauseName || "Unknown Name", // Fallback if key is missing
+              probability: cause.ProbabilityPercentage || 0, // Fallback if key is missing
+              internalCause: cause.internalCause ?? false, // Include internalCause, default to false
             };
           });
           setCausesData(extractedCauses);
@@ -3749,14 +3430,11 @@ const handleConstraintClick = () => {
         // Debug: Check if `eventObject` exists and is an array
         if (Array.isArray(result.eventObject)) {
           const extractedActions = result.eventObject.map((action) => {
-            console.log("Action Object:", action);
+            console.log("Action Object:", action); // Debug individual action objects
             return {
-              actionId: action.ActionID || null, // Ensure ActionID is included (fallback to null if missing)
-              name: action.ActionName || "Unknown Action",
-              time: action.ActionTime || "N/A",
-              money: action.ActionCost || 0,
-              level: action.Level || 0, // Optional: Include if available
-              progress: action.Progress || false, // Optional: Include if available
+              name: action.ActionName || "Unknown Action", // Fallback if key is missing
+              time: action.ActionTime || "N/A", // Fallback if key is missing
+              money: action.ActionCost || 0, // Fallback if key is missing
             };
           });
           setActionsData(extractedActions);
@@ -3766,12 +3444,12 @@ const handleConstraintClick = () => {
         }
       } catch (error) {
         console.error("Failed to fetch event causes actions:", error);
-        setCausesData([]);
-        setActionsData([]);
+        setCausesData([]); // Clear causes data on error
+        setActionsData([]); // Clear actions data on error
       }
     
-      setModalName(name);
-      setModalOpen(true);
+      setModalName(name); // Set name for modal
+      setModalOpen(true); // Open modal
     };
     
     useEffect(() => {
@@ -4039,29 +3717,29 @@ const handleConstraintClick = () => {
           {/* <div className="modal-title">
             <h2>{modalName}</h2>
           </div> */}
-<div
-  className="modal-title"
-  onClick={() => {
-    if (!isEditing882) {
-      setInitialModalName6055(modalName || "Untitled"); // Capture initial value
-      setIsEditing882(true);
-    }
-  }}
->
-  {isEditing882 ? (
-    <input
-      ref={inputRef882}
-      type="text"
-      defaultValue={initialModalName6055} // Use defaultValue instead of value
-      onChange={(e) => setModalName(e.target.value)}
-      onBlur={() => handleModalNameChange6055()}
-      onKeyDown={(e) => e.key === 'Enter' && handleModalNameChange6055()}
-      autoFocus
-    />
-  ) : (
-    <h2>{modalName || "Untitled"}</h2>
-  )}
-</div>
+  <div
+    className="modal-title"
+    onClick={() => {
+      if (!isEditing882) {
+        originalNameRef.current = modalName; // Store original name
+        setIsEditing882(true);
+      }
+    }}
+  >
+    {isEditing882 ? (
+      <input
+        ref={inputRef882}
+        type="text"
+        value={modalName}
+        onChange={handleNameChange}
+        onBlur={handleNameSave}
+        onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
+        autoFocus
+      />
+    ) : (
+      <h2>{modalName || "Untitled"}</h2>
+    )}
+  </div>
     <div className="modal-controls">
 
   <button className="modal-button best-performing-btn">
@@ -4205,7 +3883,7 @@ const handleConstraintClick = () => {
             </div>
           </td>
 
-          {/* {isAnswerClicked && (
+          {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4214,24 +3892,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(cause.name, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(cause.name, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
           <td>
   {isAnyProgressChecked && (
@@ -4341,7 +4002,7 @@ const handleConstraintClick = () => {
                   </div>
                 </td>
 
-                {/* {isAnswerClicked && (
+                {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4350,24 +4011,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(causeDetail.CauseName, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(causeDetail.CauseName, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
                 <td>
   {isAnyProgressChecked && (
@@ -4476,7 +4120,7 @@ const handleConstraintClick = () => {
                               </div>
                             </td>
 
-                            {/* {isAnswerClicked && (
+                            {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4485,24 +4129,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(nestedSubCause.eventName, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(nestedSubCause.eventName, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
                             <td>
   {isAnyProgressChecked && (
@@ -4757,23 +4384,11 @@ const handleConstraintClick = () => {
 
            {/* Progress Checkbox */}
            <td>
-                  {/* <input
+                  <input
                     type="checkbox"
                     checked={action.progress || false}
                     onChange={(e) => handleProgressCheckboxChange(rowIndex, e.target.checked)}
-                  /> */}
-
-<input
-  type="checkbox"
-  checked={action.progress || false}
-  onChange={(e) => {
-    const isChecked = e.target.checked;
-    handleProgressCheckboxChange(rowIndex, isChecked); // UI update
-    if (isChecked) {
-      handleSolveCheckboxChange(e, rowIndex, action.name); // API call
-    }
-  }}
-/>
+                  />
                 </td>
 
               {/* Hover Configuration Icon */}
@@ -5193,19 +4808,8 @@ const handleConstraintClick = () => {
                     toggleRow883(index, question.questionName);
                   }}
                 >
-                  {/* {expandedRow883 === index ? "➖" : "➕"} */}
+                  {expandedRow883 === index ? "➖" : "➕"}
                 </span>
-                               {/* Only show expand/collapse if hasAnswer is true */}
-                               {question.hasAnswer && (
-                  <span
-                    style={{ marginLeft: "10px", cursor: "pointer" }}
-                    onClick={() => {
-                      toggleRow883(index, question.questionName);
-                    }}
-                  >
-                    {expandedRow883 === index ? "➖" : "➕"}
-                  </span>
-                )}
               </div>
             </td>
 
@@ -5268,7 +4872,7 @@ const handleConstraintClick = () => {
               <td colSpan="4" style={{ padding: 0 }}>
     
           
-              <table style={{ width: '100%' }} ref={answerTableRef913}>
+<table style={{ width: '100%' }} ref={answerTableRef913}>
   <tbody>
     {Array.isArray(questionAnswers885) && questionAnswers885.length > 0 ? (
       questionAnswers885.map((answer, idx) => (
@@ -5286,7 +4890,6 @@ const handleConstraintClick = () => {
               }}
               onMouseEnter={() => setHoveredAnswerIdx(idx)}
               onMouseLeave={() => setHoveredAnswerIdx(null)}
-              onClick={() => handleQuestionAnswerClick(answer)}  // Pass the answer here
             >
               <div style={{ flex: 1 }}>
                 {editingAnswerIndex === idx ? (
@@ -5301,10 +4904,7 @@ const handleConstraintClick = () => {
                   />
                 ) : (
                   <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditAnswerClick(answer, idx);
-                    }}
+                    onClick={() => handleEditAnswerClick(answer, idx)}
                     style={{ cursor: 'pointer' }}
                   >
                     {answer}

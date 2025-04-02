@@ -56,36 +56,15 @@ const [previousValues, setPreviousValues] = useState({});
 
 
     const debounceTimer = useRef(null);
-
-    const [lastClickedAnswer, setLastClickedAnswer] = useState(null);
-
-const [identifiedCauses, setIdentifiedCauses] = useState({});
-const [eliminatedCauses, setEliminatedCauses] = useState({});
-    
     
     // Function to toggle state on question answer click
-// const handleQuestionAnswerClick = () => {
-//   // Reset isAnyProgressChecked to false
-//   setIsAnyProgressChecked(false);
-
-//   // Toggle the isAnswerClicked state
-//   setIsAnswerClicked((prevState) => !prevState);
-// };
-
-const handleQuestionAnswerClick = (answer) => {
+const handleQuestionAnswerClick = () => {
   // Reset isAnyProgressChecked to false
   setIsAnyProgressChecked(false);
 
   // Toggle the isAnswerClicked state
   setIsAnswerClicked((prevState) => !prevState);
-
-  // Store the clicked answer name in state
-  setLastClickedAnswer(answer);
 };
-
-useEffect(() => {
-  console.log("Last clicked answer updated:", lastClickedAnswer);
-}, [lastClickedAnswer]);
 
     const handleRowClick903 = (event, index) => {
       // Get the clicked cell's position
@@ -118,42 +97,6 @@ const [menuPosition913, setMenuPosition913] = useState({ top: 0, left: 0 });
 const answerTableRef913 = useRef(null);
 
 const [hoveredAnswerIdx, setHoveredAnswerIdx] = useState(null);
-
-const [lastAction, setLastAction] = useState({
-  type: null,       // 'identify' or 'eliminate'
-  causeName: null,  // The cause/sub-cause name
-  answer: null      // Last clicked answer
-});
-
-const linkQuestionWithCause = async (causeName, actionType, answer) => {
-  // Create the payload object
-  const payload = {
-    causeName,
-    actionType, 
-    questionAnswer: answer,
-    modalName
-  };
-
-  // Log the data before sending
-  console.log("Data being sent to backend:", JSON.stringify(payload, null, 2));
-
-  try {
-    const response = await fetch('http://localhost:3001/api/link_question_with_cause', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) throw new Error('Failed to link question with cause');
-    
-    const data = await response.json();
-    console.log('API Response:', data);
-  } catch (error) {
-    console.error('API Error:', error);
-  }
-};
 
 // 2. Menu Handler (keep this exactly as is)
 const handleAnswerIconClick913 = (index, event) => {
@@ -431,7 +374,6 @@ const [editingQuestion3300, setEditingQuestion3300] = useState(null);
 const [editValue3300, setEditValue3300] = useState("");
 const [editingField3300, setEditingField3300] = useState("");
 
-
 const editRef3300 = useRef();
 
    // Function to handle changes while editing
@@ -458,7 +400,34 @@ const editRef3300 = useRef();
   
   };
 
-   
+    // Function to handle mouse enter and send the action name to the API via GET
+const handleMouseEnter1119 = async (rowIndex, actionName) => {
+  try {
+    // Log the data being sent to the API
+    console.log("Sending data to API:", { actionName });
+
+    // Make the API call to fetch hovering data using GET method
+    // const response = await fetch(`http://localhost:226/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      method: "GET", // Use GET method
+      headers: {
+        "Content-Type": "application/json", // Optional: Only needed if your API requires it
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Hover data received:", data);
+
+      // Update the hoverItems899 state with the hovered action name
+      setHoverItems899(data.causes);
+    } else {
+      console.error("Failed to fetch hover data");
+    }
+  } catch (error) {
+    console.error("Error during hover API call:", error);
+  }
+};
 
 
   // useEffect to print hoverItems899 state to the console for verification
@@ -655,66 +624,18 @@ const addNewAction1115 = async () => {
   //   });
   // };
 
-  // const addNewQuestion1115 = async () => {
-  //   // Ensure `data884` and `data884.questions` are not null or undefined
-  //   setData884((prevData) => {
-  //     const safeData = prevData || { modalName, eventID: 0, questions: [] };
-  //     const safeQuestions = safeData.questions || [];
-    
-  //     // Generate a unique arbitrary suffix for the untitled question
-  //     const newQuestionNumber = safeQuestions.length + 1;
-  //     const newQuestion = {
-  //       questionName: `Untitled Question ${newQuestionNumber}`,
-  //       questionTime: "00:00:00", // Default time for the new question
-  //       questionCost: 0, // Default cost for the new question
-  //     };
-  
-  //     // Return the updated state
-  //     const updatedData = {
-  //       ...safeData,
-  //       questions: [...safeQuestions, newQuestion],
-  //     };
-  
-  //     // Log the data being sent
-  //     console.log("Data to be sent to backend:", updatedData);
-  
-  //     // Send the data to the backend
-  //     // fetch("http://localhost:226/api/add_new_question", {
-  //       fetch(`${BASE_URL}/api/add_new_question`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(updatedData),
-  //     })
-  //       .then((response) => {
-  //         if (!response.ok) {
-  //           throw new Error("Failed to send data to the backend.");
-  //         }
-  //         return response.json();
-  //       })
-  //       .then((data) => {
-  //         console.log("Response from backend:", data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error sending data to backend:", error);
-  //       });
-  
-  //     return updatedData;
-  //   });
-  // };
-
   const addNewQuestion1115 = async () => {
+    // Ensure `data884` and `data884.questions` are not null or undefined
     setData884((prevData) => {
       const safeData = prevData || { modalName, eventID: 0, questions: [] };
       const safeQuestions = safeData.questions || [];
-  
-      // Generate a 6-7 digit random number (between 100,000 and 9,999,999)
-      const newQuestionNumber = Math.floor(100000 + Math.random() * 9900000);
+    
+      // Generate a unique arbitrary suffix for the untitled question
+      const newQuestionNumber = safeQuestions.length + 1;
       const newQuestion = {
         questionName: `Untitled Question ${newQuestionNumber}`,
-        questionTime: "00:00:00",
-        questionCost: 0,
+        questionTime: "00:00:00", // Default time for the new question
+        questionCost: 0, // Default cost for the new question
       };
   
       // Return the updated state
@@ -727,7 +648,8 @@ const addNewAction1115 = async () => {
       console.log("Data to be sent to backend:", updatedData);
   
       // Send the data to the backend
-      fetch(`${BASE_URL}/api/add_new_question`, {
+      // fetch("http://localhost:226/api/add_new_question", {
+        fetch(`${BASE_URL}/api/add_new_question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1071,21 +993,6 @@ const handleSaveNestedSubCauseField7773 = (key, nestedIndex, field, newValue) =>
     });
 };
 
-const handleActionCheckbox = (causeName, actionType) => {
-  // Get the last clicked answer from state
-  const currentAnswer = lastClickedAnswer; 
-  
-  // Update the last action state
-  setLastAction({
-    type: actionType,
-    causeName,
-    answer: currentAnswer
-  });
-
-  // Call API immediately
-  linkQuestionWithCause(causeName, actionType, currentAnswer);
-};
-
     
     
 
@@ -1095,138 +1002,124 @@ const handleActionCheckbox = (causeName, actionType) => {
     };
     
   
-    const createAnswer903 = (rowIndex, questionName) => {
-      let newAnswer = "New Answer"; // Default new answer
+    // const createAnswer903 = (rowIndex, questionName) => {
+    //   let newAnswer = "New Answer"; // Default new answer
       
-      // Generate a random 6-digit number
-      const random6DigitNumber = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
+    //   // Generate a random 6-digit number
+    //   const random6DigitNumber = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
       
-      // Create the new answer with the random 6-digit number
-      newAnswer = `Untitled Answer ${random6DigitNumber}`;
+    //   // Create the new answer with the random 6-digit number
+    //   newAnswer = `Untitled Answer ${random6DigitNumber}`;
       
-      // Update the answers list
-      setQuestionAnswers885((prevAnswers) => {
-        const updatedAnswers = [...prevAnswers];
-        const existingAnswers = updatedAnswers[rowIndex] || [];
-        updatedAnswers[rowIndex] = [...existingAnswers, newAnswer];
-        return updatedAnswers;
-      });
+    //   // Check if there are existing answers
+    //   setQuestionAnswers885((prevAnswers) => {
+    //     const updatedAnswers = [...prevAnswers];
+    //     const existingAnswers = updatedAnswers[rowIndex] || [];
+        
+    //     // Add the new answer to the array (this will create a new row)
+    //     updatedAnswers[rowIndex] = [...existingAnswers, newAnswer];
+    //     return updatedAnswers;
+    //   });
       
-      // Update the hasAnswer flag in the questions data
-      setData884(prevData => {
-        const updatedQuestions = [...prevData.questions];
-        updatedQuestions[rowIndex] = {
-          ...updatedQuestions[rowIndex],
-          hasAnswer: true // Force hasAnswer to true
-        };
-        return {
-          ...prevData,
-          questions: updatedQuestions
-        };
-      });
+    //   // Access modalName from the state
+    //   // const [modalName, setModalName] = useState(""); <-- This is already defined in your component
       
-      // Prepare the data to be sent to the API
-      const requestBody = {
-        questionName,
-        newAnswer,
-        modalName,
-      };
+    //   // Prepare the data to be sent to the API
+    //   const requestBody = {
+    //     questionName,
+    //     newAnswer,
+    //     modalName, // Include modalName from the state in the request body
+    //   };
     
-      // Log the data being sent to the API
-      console.log("Data being sent to the API:", JSON.stringify(requestBody, null, 2));
+    //   // Log the data being sent to the API
+    //   console.log("Data being sent to the API:", JSON.stringify(requestBody, null, 2));
     
-      // Construct the full URL for the API request
-      const apiUrl = `${BASE_URL}/api/add_answer`;
+    //   // Construct the full URL for the API request
+    //   const apiUrl = `${BASE_URL}/api/add_answer`;
     
-      // Send the new answer to the backend
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Response from server after adding answer:", data);
-          // Optional: Refresh data from server to ensure consistency
-          fetchData884();
-        })
-        .catch((error) => {
-          console.error("Error while adding answer:", error);
-          // Revert hasAnswer if API call fails
-          setData884(prevData => {
-            const updatedQuestions = [...prevData.questions];
-            updatedQuestions[rowIndex] = {
-              ...updatedQuestions[rowIndex],
-              hasAnswer: false
-            };
-            return {
-              ...prevData,
-              questions: updatedQuestions
-            };
-          });
-        });
-    };
+    //   // Log the full URL being used for the API request
+    //   console.log("API URL:", apiUrl);
+    
+    //   // Send the new answer to the backend
+    //   fetch(apiUrl, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(requestBody),
+    //   })
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       console.log("Response from server after adding answer:", data);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error while adding answer:", error);
+    //     });
+    // };
     
     const deleteQuestion = async (questionIndex, questionName) => {
-      if (!window.confirm(`Are you sure you want to delete the question "${questionName}" and all its answers?`)) {
-        return; // Early return if user cancels
-      }
+      if (window.confirm(`Are you sure you want to delete the question "${questionName}" and all its answers?`)) {
+        try {
+          // Prepare the data to send
+          const requestData = {
+            questionName,
+            modelName: modalName // Include the modalName from state
+          };
+          
+          // Log the data we're about to send
+          console.log('Sending to backend for deletion purpose:', requestData);
+          
+          // Send delete request to backend
+          const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
     
-      try {
-        // Prepare the data to send
-        const requestData = {
-          questionName,
-          modelName: modalName
-        };
-        
-        console.log('Sending to backend for deletion purpose:', requestData);
-        
-        // Send delete request to backend
-        const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
+          if (!response.ok) {
+            throw new Error('Failed to delete question on backend');
+          }
     
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to delete question on backend');
-        }
+          // Get the response data
+          const result = await response.json();
+          console.log('Deletion API response:', result);
     
-        // Get the response data
-        const result = await response.json();
-        console.log('Deletion API response:', result);
+          /* 
+          COMMENTED OUT THE DIRECT STATE UPDATE IN FAVOR OF FRESH DATA FETCH
+          // Update your state to remove the question
+          setData884(prevData => ({
+            ...prevData,
+            questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
+          }));
+          */
     
-        // Only proceed with state updates if deletion was successful
-        if (result.success) {
-          // Clear local state immediately
+          // Clear related answers
           setQuestionAnswers885([]);
+          
+          // Close the menu
           setClickedCell903(null);
-          
-          // Refresh data from server
-          await fetchData884();
-          
-          // Show success message
-          alert(`Question "${questionName}" deleted successfully!`);
-        } else {
-          throw new Error(result.message || 'Deletion failed on server');
-        }
     
-      } catch (error) {
-        console.error('Error deleting question:', error);
-        
-        // Show error message with more details
-        alert(`Failed to delete question: ${error.message}`);
-        
-        // Optional: Fallback to local state update if API fails
-        // setData884(prevData => ({
-        //   ...prevData,
-        //   questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
-        // }));
+          console.log('Question deleted successfully, refreshing data...');
+          
+          // Call fetchData884 to get fresh data from the server
+          await fetchData884();
+    
+          // Optional: Show success message
+          alert(`Question "${questionName}" deleted successfully!`);
+    
+        } catch (error) {
+          console.error('Error deleting question:', error);
+          alert('Failed to delete question. Please check console for details.');
+          
+          // You might want to keep the local state update if the API fails
+          // This prevents the UI from getting stuck
+          // setData884(prevData => ({
+          //   ...prevData,
+          //   questions: prevData.questions.filter((_, idx) => idx !== questionIndex)
+          // }));
+        }
       }
     };
     
@@ -1642,56 +1535,48 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
 
     // 1. First, create the delete function (add this with your other functions)
-    const deleteAnswer = async (answerIndex) => {
-      try {
-        const answerText = questionAnswers885[answerIndex];
-        
-        if (!answerText) {
-          throw new Error('No answer text found');
-        }
+const deleteAnswer = async (answerIndex) => {
+  try {
+    const answerText = questionAnswers885[answerIndex];
     
-        // Prepare the data to send
-        const requestData = {
-          answerText,
-          questionName: data884.questions[expandedRow883]?.questionName,
-          modelName: modalName
-        };
-    
-        console.log('Sending delete request with:', requestData);
-    
-        const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
-    
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-    
-        const result = await response.json();
-        console.log('Delete successful:', result);
-    
-        // Collapse the answer row first
-        if (expandedRow883 !== null) {
-          toggleRow883(expandedRow883, data884.questions[expandedRow883]?.questionName);
-        }
-    
-        // Remove the answer from local state
-        setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
-        
-        // Refresh data after successful deletion
-        await fetchData884();
-        
-        return true;
-      } catch (error) {
-        console.error('Error deleting answer:', error);
-        alert(`Failed to delete answer: ${error.message}`);
-        return false;
-      }
+    if (!answerText) {
+      throw new Error('No answer text found');
+    }
+
+    // Prepare the data to send
+    const requestData = {
+      answerText,
+      questionName: data884.questions[expandedRow883]?.questionName, // Get current question name
+      modelName: modalName // From your existing state
     };
+
+    console.log('Sending delete request with:', requestData);
+
+    const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Delete successful:', result);
+
+    // Remove the answer from local state
+    setQuestionAnswers885(prev => prev.filter((_, idx) => idx !== answerIndex));
+    
+    return true;
+  } catch (error) {
+    console.error('Error deleting answer:', error);
+    alert(`Failed to delete answer: ${error.message}`);
+    return false;
+  }
+};
 
 
     
@@ -1894,9 +1779,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log('question answers updated ,,,,:', questionAnswers885);
     }, [questionAnswers885]); // This dependency array makes it log whenever expandedCauseData changes
   
-    useEffect(() => {
-      console.log("Last action recorded:", lastAction);
-    }, [lastAction]);
+  
 
   const handleEditExplanation = (actionName) => {
     const dataToSend = {
@@ -2054,35 +1937,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         console.error("Error fetching items for hovering cause:", error);
       }
     };
-
-     // Function to handle mouse enter and send the action name to the API via GET
-const handleMouseEnter1119 = async (rowIndex, actionName) => {
-  try {
-    // Log the data being sent to the API
-    console.log("Sending data to API:", { actionName });
-
-    // Make the API call to fetch hovering data using GET method
-    // const response = await fetch(`http://localhost:226/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
-      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
-      method: "GET", // Use GET method
-      headers: {
-        "Content-Type": "application/json", // Optional: Only needed if your API requires it
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Hover data received:", data);
-
-      // Update the hoverItems899 state with the hovered action name
-      setHoverItems899(data.causes);
-    } else {
-      console.error("Failed to fetch hover data");
-    }
-  } catch (error) {
-    console.error("Error during hover API call:", error);
-  }
-};
 
     const saveCauseData = () => {
       // Build the data structure with the causes, subcauses, and nestedsubcauses
@@ -2404,38 +2258,33 @@ const handleMouseEnter1119 = async (rowIndex, actionName) => {
   // }, [modalName]); // Only re-run the effect if modalName changes
 
   // Define fetchData884 as a standalone function
-  const fetchData884 = async () => {
-    try {
-      // Clear previous state before making the request
-      setData884(null);      // Clear existing data
-      setError884(null);     // Clear any previous errors
-      setLoading884(true);   // Set loading to true
-  
-      // Log the data being sent
-      console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
-  
-      // Send a GET request to the API with modalName as a query parameter
-      const response = await fetch(
-        `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
-      );
-  
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-  
-      const result = await response.json();
-  
-      // Log the fetched data
-      console.log("Fetched data:", result);
-  
-      setData884(result); // Save the fetched data in state
-    } catch (error) {
-      setError884(error.message); // Handle errors
-      console.error("Error fetching data:", error.message);
-    } finally {
-      setLoading884(false); // Set loading to false after the request is complete
+const fetchData884 = async () => {
+  try {
+    // Log the data being sent
+    console.log(`Sending request to: http://localhost:226/api/fetch_question_for_events?modalName=${modalName}`);
+
+    // Send a GET request to the API with modalName as a query parameter
+    const response = await fetch(
+      `${BASE_URL}/api/fetch_question_for_events?modalName=${modalName}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
     }
-  };
+
+    const result = await response.json();
+
+    // Log the fetched data
+    console.log("Fetched data:", result);
+
+    setData884(result); // Save the fetched data in state
+  } catch (error) {
+    setError884(error.message); // Handle errors
+    console.error("Error fetching data:", error.message);
+  } finally {
+    setLoading884(false); // Set loading to false after the request is complete
+  }
+};
 
 // Use useEffect to call fetchData884 on component mount or when modalName changes
 useEffect(() => {
@@ -4205,7 +4054,7 @@ const handleConstraintClick = () => {
             </div>
           </td>
 
-          {/* {isAnswerClicked && (
+          {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4214,24 +4063,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(cause.name, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(cause.name, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
           <td>
   {isAnyProgressChecked && (
@@ -4341,7 +4173,7 @@ const handleConstraintClick = () => {
                   </div>
                 </td>
 
-                {/* {isAnswerClicked && (
+                {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4350,24 +4182,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(causeDetail.CauseName, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(causeDetail.CauseName, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
                 <td>
   {isAnyProgressChecked && (
@@ -4476,7 +4291,7 @@ const handleConstraintClick = () => {
                               </div>
                             </td>
 
-                            {/* {isAnswerClicked && (
+                            {isAnswerClicked && (
             <>
               <td>
                 <input type="checkbox" />
@@ -4485,24 +4300,7 @@ const handleConstraintClick = () => {
                 <input type="checkbox" />
               </td>
             </>
-          )} */}
-
-{isAnswerClicked && (
-  <>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(nestedSubCause.eventName, 'identify')}
-      />
-    </td>
-    <td>
-      <input 
-        type="checkbox" 
-        onChange={() => handleActionCheckbox(nestedSubCause.eventName, 'eliminate')}
-      />
-    </td>
-  </>
-)}
+          )}
 
                             <td>
   {isAnyProgressChecked && (
@@ -5268,7 +5066,7 @@ const handleConstraintClick = () => {
               <td colSpan="4" style={{ padding: 0 }}>
     
           
-              <table style={{ width: '100%' }} ref={answerTableRef913}>
+<table style={{ width: '100%' }} ref={answerTableRef913}>
   <tbody>
     {Array.isArray(questionAnswers885) && questionAnswers885.length > 0 ? (
       questionAnswers885.map((answer, idx) => (
@@ -5286,7 +5084,7 @@ const handleConstraintClick = () => {
               }}
               onMouseEnter={() => setHoveredAnswerIdx(idx)}
               onMouseLeave={() => setHoveredAnswerIdx(null)}
-              onClick={() => handleQuestionAnswerClick(answer)}  // Pass the answer here
+              onClick={() => handleQuestionAnswerClick()}
             >
               <div style={{ flex: 1 }}>
                 {editingAnswerIndex === idx ? (
@@ -5301,10 +5099,7 @@ const handleConstraintClick = () => {
                   />
                 ) : (
                   <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditAnswerClick(answer, idx);
-                    }}
+                    onClick={() => handleEditAnswerClick(answer, idx)}
                     style={{ cursor: 'pointer' }}
                   >
                     {answer}
