@@ -61,28 +61,6 @@ const [previousValues, setPreviousValues] = useState({});
 
 const [identifiedCauses, setIdentifiedCauses] = useState({});
 const [eliminatedCauses, setEliminatedCauses] = useState({});
-
-const menuRef903 = useRef(null);
-
-const [optionsBoxPosition1112, setOptionsBoxPosition1112] = useState({ top: 0, left: 0 });
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (menuRef903.current && !menuRef903.current.contains(event.target)) {
-      // Close the menu if clicked outside
-      setClickedCell903(null);
-    }
-  };
-
-  // Only add listener when menu is open
-  if (clickedCell903 !== null) {
-    document.addEventListener('mousedown', handleClickOutside);
-  }
-
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, [clickedCell903]);
     
     
     // Function to toggle state on question answer click
@@ -125,14 +103,9 @@ useEffect(() => {
         const rect = event.target.getBoundingClientRect();
         const tableRect = tableRef903.current.getBoundingClientRect(); // Use tableRef903 for positioning
   
-        // setMenuPosition903({
-        //   top: rect.bottom - tableRect.top + window.scrollY, // Position below the icon
-        //   left: rect.left - tableRect.left + window.scrollX, // Align with the icon
-        // });
-
         setMenuPosition903({
-          top: (rect.bottom - tableRect.top + window.scrollY) - 30, // 10px upwards from original position
-          left: (rect.left - tableRect.left + window.scrollX) - 30, // 10px to the left from original position
+          top: rect.bottom - tableRect.top + window.scrollY, // Position below the icon
+          left: rect.left - tableRect.left + window.scrollX, // Align with the icon
         });
   
         setClickedCell903(index); // Open the menu for the clicked cell
@@ -190,14 +163,9 @@ const handleAnswerIconClick913 = (index, event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const tableRect = answerTableRef913.current.getBoundingClientRect();
     
-    // setMenuPosition913({
-    //   top: rect.bottom - tableRect.top + window.scrollY + 5,
-    //   left: tableRect.right - tableRect.left + window.scrollX - 30,
-    // });
-
     setMenuPosition913({
-      top: rect.bottom - tableRect.top + window.scrollY + 20,
-      left: tableRect.right - tableRect.left + window.scrollX - 70,
+      top: rect.bottom - tableRect.top + window.scrollY + 5,
+      left: tableRect.right - tableRect.left + window.scrollX - 30,
     });
     
     setClickedAnswerCell913(index);
@@ -592,52 +560,11 @@ useEffect(() => {
     }
   };
 
-  // const shouldHideTickMark = (index, subIndex = null, nestedIndex = null) => {
-  //   if (solveCheckboxes900[index]) return true; // If the cause is hidden
-  //   if (subIndex !== null && solveCheckboxes900[`${index}-${subIndex}`]) return true; // If sub-cause is hidden
-  //   if (nestedIndex !== null && solveCheckboxes900[`${index}-${subIndex}-${nestedIndex}`]) return true; // If nested sub-cause is hidden
-  //   return false;
-  // };
-
-  const shouldHideTickMark = (name, index, subIndex = null, nestedIndex = null) => {
-    // First condition: Check solveCheckboxes900 status
-    const solveKey = nestedIndex !== null 
-      ? `${index}-${subIndex}-${nestedIndex}`
-      : subIndex !== null
-        ? `${index}-${subIndex}`
-        : index;
-  
-    const isSolved = solveCheckboxes900[solveKey] || false;
-    
-    // Second condition: Check hasQuestionAnswer flag
-    let hasQuestions = false;
-    
-    if (nestedIndex !== null) {
-      const nestedCause = nestedSubCauseData[`${causesData[index]?.name}-${expandedCauseData[subIndex]?.CauseName}`]?.[nestedIndex];
-      hasQuestions = nestedCause?.hasQuestionAnswer ?? false;
-    } else if (subIndex !== null) {
-      const subCause = expandedCauseData?.find(c => c.CauseName === name);
-      hasQuestions = subCause?.hasQuestionAnswer ?? false;
-    } else {
-      const mainCause = causesData?.find(c => c.name === name);
-      hasQuestions = mainCause?.hasQuestionAnswer ?? false;
-    }
-  
-    // NEW LOGIC: Hide tick if either:
-    // 1. isSolved is true (regardless of hasQuestions)
-    // 2. isSolved is false AND hasQuestions is true
-    const shouldHide = isSolved || (!isSolved && hasQuestions);
-  
-    // Clear console logging
-    console.log(`Checking "${name}":`, {
-      type: nestedIndex !== null ? 'Nested Sub-Cause' : subIndex !== null ? 'Sub-Cause' : 'Main Cause',
-      isSolved,
-      hasQuestions,
-      shouldHideTick: shouldHide,
-      hideReason: isSolved ? 'Because it is solved' : 'Because it has questions'
-    });
-  
-    return shouldHide;
+  const shouldHideTickMark = (index, subIndex = null, nestedIndex = null) => {
+    if (solveCheckboxes900[index]) return true; // If the cause is hidden
+    if (subIndex !== null && solveCheckboxes900[`${index}-${subIndex}`]) return true; // If sub-cause is hidden
+    if (nestedIndex !== null && solveCheckboxes900[`${index}-${subIndex}-${nestedIndex}`]) return true; // If nested sub-cause is hidden
+    return false;
   };
   
 
@@ -1071,47 +998,9 @@ const deleteActionForModel = async (actionName, modelName) => {
   }, []);
   
 
-  // const handleGearClick1112 = () => {
-  //   setShowOptionsBox1112(!showOptionsBox1112);
-  // };
-
-  const gearRef1112 = useRef(null);
-
-  // const handleGearClick1112 = (e) => {
-  //   e.stopPropagation(); // Prevent this click from triggering the document click handler
-  //   setShowOptionsBox1112(!showOptionsBox1112);
-  // };
-
-  const handleGearClick1112 = (e) => {
-    e.stopPropagation(); // Prevent this click from triggering the document click handler
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const offset = 10; // Adjust this value as needed
-    
-    setOptionsBoxPosition1112({
-      top: rect.top + window.scrollY - offset, // Move up by 'offset' pixels
-      left: rect.left + window.scrollX - offset, // Move left by 'offset' pixels
-    });
-    
+  const handleGearClick1112 = () => {
     setShowOptionsBox1112(!showOptionsBox1112);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (gearRef1112.current && !gearRef1112.current.contains(event.target)) {
-        setShowOptionsBox1112(false);
-      }
-    };
-
-    // Only add the listener if the options box is shown
-    if (showOptionsBox1112) {
-      document.addEventListener('click', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [showOptionsBox1112]);
 
   const handleGearClick1113 = () => {
     setShowOptionsBox1113(!showOptionsBox1113);
@@ -1636,61 +1525,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
   const handleMouseEnter901 = (index) => setHoveredCell901(index);
   const handleMouseLeave901 = () => setHoveredCell901(null);
 
-  const [clickedCell0050, setClickedCell0050] = useState(null);
-  const [menuPosition0050, setMenuPosition0050] = useState({ top: 0, left: 0 });
-  const tableContainerRef0050 = useRef(null);
-  const [isDeleting0050, setIsDeleting0050] = useState(false);
-
-  const handleGearClick0050 = (index, event) => {
-    event.stopPropagation();
-    
-    if (clickedCell0050 === index) {
-      setClickedCell0050(null);
-    } else {
-      const rect = event.currentTarget.getBoundingClientRect();
-      const containerRect = tableContainerRef0050.current.getBoundingClientRect();
-      const offset = 10;
-
-      setMenuPosition0050({
-        top: rect.bottom - containerRect.top + window.scrollY - offset,
-        left: rect.left - containerRect.left + window.scrollX - offset,
-      });
-
-      setClickedCell0050(index);
-    }
-  };
-
-  const handleDelete0050 = async (name) => {
-    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
-      setIsDeleting0050(true);
-      try {
-        const requestBody = { name };
-        console.log('Data being sent to backend for topcause deletion:', requestBody);  // <-- Add this line
-        
-        const response = await fetch('http://localhost:3001/api/delete_top_cause', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to delete');
-        }
-  
-        alert(`${name} deleted successfully`);
-        setClickedCell0050(null);
-        // Add logic to refresh your data here
-      } catch (error) {
-        console.error('Error deleting:', error);
-        alert('Error deleting item');
-      } finally {
-        setIsDeleting0050(false);
-      }
-    }
-  };
-
   const handleIconClick901 = (index, event) => {
     if (clickedCell901 === index) {
       setClickedCell901(null); // Close if already open
@@ -1790,7 +1624,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         const tableRect = tableRef.current.getBoundingClientRect();
     
         setMenuPosition902({
-          top: rect.bottom - tableRect.top + window.scrollY - 30,
+          top: rect.bottom - tableRect.top + window.scrollY + 10,
           left: rect.left - tableRect.left + 5 - 40,
         });
     
@@ -3856,30 +3690,32 @@ const handleConstraintClick = () => {
   const handleSubCauseToggleAndFetch = async (key, subCauseName) => {
     console.log(`Toggling sub-cause: ${subCauseName}`); // Log the name being sent
 
-    // Store the last clicked sub-cause name (CauseName)
-    setLastClickedCauseName(subCauseName);
-  
+      // Store the last clicked sub-cause name (CauseName)
+      setLastClickedCauseName(subCauseName);
+    
     // Toggle the expanded state for the sub-cause
     setExpandedSubCause((prevState) => ({
       ...prevState,
       [key]: !prevState[key], // Toggle the state
     }));
-
+  
     // Fetch data only if expanding the sub-cause and no data exists
     if (!expandedSubCause[key] || !nestedSubCauseData[key]) {
       try {
+        // const url = `http://localhost:226/api/fetch_sub_cause_based_on_cause?CauseName=${encodeURIComponent(subCauseName)}`;
         const url = `${BASE_URL}/api/fetch_sub_cause_based_on_cause?CauseName=${encodeURIComponent(subCauseName)}`;
+
         console.log(`subcause URL formed: ${url}`); // Log the URL being used
-
+  
         const response = await fetch(url);
-
+  
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+  
         const data = await response.json();
         console.log('Fetched sub-cause data:', data);
-
+  
         if (data.success && data.data) {
           // Embed the fetched sub-cause data under the current sub-cause
           setNestedSubCauseData((prevState) => {
@@ -3888,12 +3724,12 @@ const handleConstraintClick = () => {
               [key]: data.data.map((item) => ({
                 eventName: item.EventName, // Store EventName
                 probability: item.ProbabilityPercentage || 0, // Store ProbabilityPercentage with default fallback
-                hasQuestionAnswer: item.hasQuestionAnswer || false // Include the Q&A flag with default fallback
               })),
             };
             console.log("Updated Nested Sub-Cause State:", updatedState);
             return updatedState;
           });
+          ;
         }
       } catch (error) {
         console.error('Error fetching sub-cause data:', error);
@@ -4015,7 +3851,6 @@ const handleConstraintClick = () => {
               name: cause.TopCauseName || "Unknown Name",
               probability: cause.ProbabilityPercentage || 0,
               internalCause: cause.internalCause ?? false,
-              hasQuestionAnswer: cause.hasQuestionAnswer ?? false // Add this flag
             };
           });
           setCausesData(extractedCauses);
@@ -4257,88 +4092,53 @@ const handleConstraintClick = () => {
     </button>
       </div>
 
-      <div className="dynamic-guides-container-882" ref={tableContainerRef0050}>
+      <div className="dynamic-guides-container-882">
       <table className="dynamic-guides-table-882">
-        <thead>
-          <tr>
-            <th>Select</th>
-            <th>Name</th>
-            <th>Taxonomy</th>
-            <th>Language</th>
-            <th>Last Change</th>
-            <th>Last Change By</th>
-            <th>Published</th>
-            <th>Created By</th>
-            <th>Actions</th>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Name</th>
+          <th>Taxonomy</th>
+          <th>Language</th>
+          <th>Last Change</th>
+          <th>Last Change By</th>
+          <th>Published</th>
+          <th>Created By</th>
+          <th>Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.map((row, index) => (
+          <tr key={index}>
+            <td>
+              <input type="checkbox" checked={row.select} readOnly />
+            </td>
+            <td>
+              <button
+                className="name-link-button"
+                onClick={() => handleRowClick(row.name)}
+              >
+                {row.name}
+              </button>
+            </td>
+            <td>
+              {row.taxonomy.map((tag, i) => (
+                <span key={i} className="taxonomy-tag-882">
+                  {tag}
+                </span>
+              ))}
+            </td>
+            <td>{row.language}</td>
+            <td>{row.lastChange}</td>
+            <td>{row.lastChangeBy}</td>
+            <td>{row.published}</td>
+            <td>{row.createdBy}</td>
+            <td>{row.version}</td>
           </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, index) => (
-            <tr key={index}>
-              <td>
-                <input type="checkbox" checked={row.select} readOnly />
-              </td>
-              <td>
-                <button
-                  className="name-link-button"
-                  onClick={() => handleRowClick(row.name)}
-                >
-                  {row.name}
-                </button>
-              </td>
-              <td>
-                {row.taxonomy.map((tag, i) => (
-                  <span key={i} className="taxonomy-tag-882">
-                    {tag}
-                  </span>
-                ))}
-              </td>
-              <td>{row.language}</td>
-              <td>{row.lastChange}</td>
-              <td>{row.lastChangeBy}</td>
-              <td>{row.published}</td>
-              <td>{row.createdBy}</td>
-              <td>
-                <button 
-                  className="gear-icon"
-                  onClick={(e) => handleGearClick0050(index, e)}
-                  disabled={isDeleting0050}
-                >
-                  ⚙️
-                </button>
-                {clickedCell0050 === index && (
-                  <div 
-                    className="options-menu" 
-                    style={{
-                      position: 'absolute',
-                      top: `${menuPosition0050.top}px`,
-                      left: `${menuPosition0050.left}px`,
-                      zIndex: 1000,
-                      backgroundColor: 'white',
-                      border: '1px solid #ccc',
-                      borderRadius: '4px',
-                      padding: '8px',
-                      boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                    }}
-                  >
-                    {/* <div className="menu-item">Edit</div>
-                    <div className="menu-item">Duplicate</div> */}
-                    <div 
-                      className="menu-item" 
-                      onClick={() => handleDelete0050(row.name)}
-                      style={{ color: 'red' }}
-                    >
-                      {isDeleting0050 ? 'Deleting...' : 'Delete'}
-                    </div>
-                  </div>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  
+        ))}
+      </tbody>
+    </table>
+        </div>
 
       </div>
 
@@ -4416,17 +4216,16 @@ const handleConstraintClick = () => {
   </span>
 </h3> */}
 
-<div className="causes-header-container" ref={gearRef1112}>
-      <h3>
+<h3>
         Causes
         <span className="gear-icon-1112" onClick={handleGearClick1112}>
           <FaCog />
         </span>
       </h3>
-      
       {showOptionsBox1112 && (
         <div className="options-box-1112">
           <div className="option-1112" onClick={handleCreateTopCauseClick}>
+          {/* <div className="option-1112" onClick={addNewSubCause}> */}
             <FaPlus className="icon-1112" /> Create Top Cause
           </div>
           <div className="option-1112" onClick={handleRearrangeClick1112}>
@@ -4434,8 +4233,6 @@ const handleConstraintClick = () => {
           </div>
         </div>
       )}
-    </div>
-  
       
 
       <table className="modal-table" id="cause-table">
@@ -4476,13 +4273,8 @@ const handleConstraintClick = () => {
       : 'transparent' // Default color
   }}
 >
-  {/* Main Cause */}
-{/* <td>
-  {!shouldHideTickMark(index) && <span>✓</span>} 
-</td> */}
-
 <td>
-  {!shouldHideTickMark(cause.name, index) && <span>✓</span>}
+  {!shouldHideTickMark(index) && <span>✓</span>} {/* Main Cause */}
 </td>
 
           <td>
@@ -4610,13 +4402,8 @@ const handleConstraintClick = () => {
       : 'transparent' // Default color
   }}
 >
-  {/* Sub-Cause */}
-{/* <td>
-  {!shouldHideTickMark(index, subIndex) && <span>✓</span>} 
-</td> */}
-
 <td>
-  {!shouldHideTickMark(causeDetail.CauseName, index, subIndex) && <span>✓</span>}
+  {!shouldHideTickMark(index, subIndex) && <span>✓</span>} {/* Sub-Cause */}
 </td>
 
 
@@ -4754,14 +4541,8 @@ const handleConstraintClick = () => {
     setHoveredCause993(null); // Clear hovered cause when mouse leaves
   }}
 >
-
-  {/* Nested Sub-Cause */}
-{/* <td>
-  {!shouldHideTickMark(index, subIndex, nestedIndex) && <span>✓</span>} 
-</td> */}
-
 <td>
-  {!shouldHideTickMark(nestedSubCause.eventName, index, subIndex, nestedIndex) && <span>✓</span>}
+  {!shouldHideTickMark(index, subIndex, nestedIndex) && <span>✓</span>} {/* Nested Sub-Cause */}
 </td>
 
 
@@ -5707,33 +5488,19 @@ const handleConstraintClick = () => {
       boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
       borderRadius: "4px",
       padding: "8px 0",
-      minWidth: "160px",
+      minWidth: "160px"
     }}
     onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside menu
-    ref={(node) => {
-      // Close menu when clicking outside
-      if (node) {
-        const handleClickOutside = (e) => {
-          if (!node.contains(e.target)) {
-            setClickedAnswerCell913(null);
-          }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
-        };
-      }
-    }}
   >
     <div
       style={{
         padding: "8px 16px",
         cursor: "pointer",
-        ":hover": { backgroundColor: "#f5f5f5" },
+        ':hover': { backgroundColor: '#f5f5f5' }
       }}
       onClick={() => {
         handleEditAnswerClick(
-          questionAnswers885[clickedAnswerCell913],
+          questionAnswers885[clickedAnswerCell913], 
           clickedAnswerCell913
         );
         setClickedAnswerCell913(null);
@@ -5741,26 +5508,27 @@ const handleConstraintClick = () => {
     >
       Edit Answer
     </div>
+  
+<div
+  style={{
+    padding: "8px 16px",
+    cursor: "pointer",
+    color: "#e74c3c",
+    ':hover': { backgroundColor: '#f5f5f5' }
+  }}
+  onClick={async () => {
+    const answerText = questionAnswers885[clickedAnswerCell913] || "Unknown";
+    if (window.confirm(`Delete answer "${answerText}"?`)) {
+      const success = await deleteAnswer(clickedAnswerCell913);
+      if (success) {
+        setClickedAnswerCell913(null); // Close menu after successful deletion
+      }
+    }
+  }}
+>
+  Delete Answer
+</div>
 
-    <div
-      style={{
-        padding: "8px 16px",
-        cursor: "pointer",
-        color: "#e74c3c",
-        ":hover": { backgroundColor: "#f5f5f5" },
-      }}
-      onClick={async () => {
-        const answerText = questionAnswers885[clickedAnswerCell913] || "Unknown";
-        if (window.confirm(`Delete answer "${answerText}"?`)) {
-          const success = await deleteAnswer(clickedAnswerCell913);
-          if (success) {
-            setClickedAnswerCell913(null); // Close menu after successful deletion
-          }
-        }
-      }}
-    >
-      Delete Answer
-    </div>
   </div>
 )}
               </td>
@@ -5771,10 +5539,9 @@ const handleConstraintClick = () => {
     })}
 
     {/* Options Menu */}
- 
+{/* Options Menu */}
 {clickedCell903 !== null && (
   <div
-    ref={menuRef903}
     className="options-menu901"
     style={{
       position: "absolute",
@@ -5794,26 +5561,23 @@ const handleConstraintClick = () => {
         padding: "8px 12px",
         cursor: "pointer",
       }}
-      onClick={(e) => {
-        e.stopPropagation();
+      onClick={() => {
         const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
         createAnswer903(clickedCell903, questionName);
-        setClickedCell903(null);
       }}
     >
       Create Answer
     </div>
+    {/* Changed from Delete Answer to Delete Question */}
     <div
       style={{
         padding: "8px 12px",
         cursor: "pointer",
         color: "#ff4444",
       }}
-      onClick={(e) => {
-        e.stopPropagation();
+      onClick={() => {
         const questionName = data884.questions[clickedCell903]?.questionName || "Unknown";
         deleteQuestion(clickedCell903, questionName);
-        setClickedCell903(null);
       }}
     >
       Delete Question

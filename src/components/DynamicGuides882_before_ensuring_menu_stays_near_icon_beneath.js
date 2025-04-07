@@ -64,8 +64,6 @@ const [eliminatedCauses, setEliminatedCauses] = useState({});
 
 const menuRef903 = useRef(null);
 
-const [optionsBoxPosition1112, setOptionsBoxPosition1112] = useState({ top: 0, left: 0 });
-
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (menuRef903.current && !menuRef903.current.contains(event.target)) {
@@ -125,14 +123,9 @@ useEffect(() => {
         const rect = event.target.getBoundingClientRect();
         const tableRect = tableRef903.current.getBoundingClientRect(); // Use tableRef903 for positioning
   
-        // setMenuPosition903({
-        //   top: rect.bottom - tableRect.top + window.scrollY, // Position below the icon
-        //   left: rect.left - tableRect.left + window.scrollX, // Align with the icon
-        // });
-
         setMenuPosition903({
-          top: (rect.bottom - tableRect.top + window.scrollY) - 30, // 10px upwards from original position
-          left: (rect.left - tableRect.left + window.scrollX) - 30, // 10px to the left from original position
+          top: rect.bottom - tableRect.top + window.scrollY, // Position below the icon
+          left: rect.left - tableRect.left + window.scrollX, // Align with the icon
         });
   
         setClickedCell903(index); // Open the menu for the clicked cell
@@ -190,14 +183,9 @@ const handleAnswerIconClick913 = (index, event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const tableRect = answerTableRef913.current.getBoundingClientRect();
     
-    // setMenuPosition913({
-    //   top: rect.bottom - tableRect.top + window.scrollY + 5,
-    //   left: tableRect.right - tableRect.left + window.scrollX - 30,
-    // });
-
     setMenuPosition913({
-      top: rect.bottom - tableRect.top + window.scrollY + 20,
-      left: tableRect.right - tableRect.left + window.scrollX - 70,
+      top: rect.bottom - tableRect.top + window.scrollY + 5,
+      left: tableRect.right - tableRect.left + window.scrollX - 30,
     });
     
     setClickedAnswerCell913(index);
@@ -1077,22 +1065,8 @@ const deleteActionForModel = async (actionName, modelName) => {
 
   const gearRef1112 = useRef(null);
 
-  // const handleGearClick1112 = (e) => {
-  //   e.stopPropagation(); // Prevent this click from triggering the document click handler
-  //   setShowOptionsBox1112(!showOptionsBox1112);
-  // };
-
   const handleGearClick1112 = (e) => {
     e.stopPropagation(); // Prevent this click from triggering the document click handler
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const offset = 10; // Adjust this value as needed
-    
-    setOptionsBoxPosition1112({
-      top: rect.top + window.scrollY - offset, // Move up by 'offset' pixels
-      left: rect.left + window.scrollX - offset, // Move left by 'offset' pixels
-    });
-    
     setShowOptionsBox1112(!showOptionsBox1112);
   };
 
@@ -1636,61 +1610,6 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
   const handleMouseEnter901 = (index) => setHoveredCell901(index);
   const handleMouseLeave901 = () => setHoveredCell901(null);
 
-  const [clickedCell0050, setClickedCell0050] = useState(null);
-  const [menuPosition0050, setMenuPosition0050] = useState({ top: 0, left: 0 });
-  const tableContainerRef0050 = useRef(null);
-  const [isDeleting0050, setIsDeleting0050] = useState(false);
-
-  const handleGearClick0050 = (index, event) => {
-    event.stopPropagation();
-    
-    if (clickedCell0050 === index) {
-      setClickedCell0050(null);
-    } else {
-      const rect = event.currentTarget.getBoundingClientRect();
-      const containerRect = tableContainerRef0050.current.getBoundingClientRect();
-      const offset = 10;
-
-      setMenuPosition0050({
-        top: rect.bottom - containerRect.top + window.scrollY - offset,
-        left: rect.left - containerRect.left + window.scrollX - offset,
-      });
-
-      setClickedCell0050(index);
-    }
-  };
-
-  const handleDelete0050 = async (name) => {
-    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
-      setIsDeleting0050(true);
-      try {
-        const requestBody = { name };
-        console.log('Data being sent to backend for topcause deletion:', requestBody);  // <-- Add this line
-        
-        const response = await fetch('http://localhost:3001/api/delete_top_cause', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to delete');
-        }
-  
-        alert(`${name} deleted successfully`);
-        setClickedCell0050(null);
-        // Add logic to refresh your data here
-      } catch (error) {
-        console.error('Error deleting:', error);
-        alert('Error deleting item');
-      } finally {
-        setIsDeleting0050(false);
-      }
-    }
-  };
-
   const handleIconClick901 = (index, event) => {
     if (clickedCell901 === index) {
       setClickedCell901(null); // Close if already open
@@ -1790,7 +1709,7 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         const tableRect = tableRef.current.getBoundingClientRect();
     
         setMenuPosition902({
-          top: rect.bottom - tableRect.top + window.scrollY - 30,
+          top: rect.bottom - tableRect.top + window.scrollY + 10,
           left: rect.left - tableRect.left + 5 - 40,
         });
     
@@ -4257,88 +4176,53 @@ const handleConstraintClick = () => {
     </button>
       </div>
 
-      <div className="dynamic-guides-container-882" ref={tableContainerRef0050}>
+      <div className="dynamic-guides-container-882">
       <table className="dynamic-guides-table-882">
-        <thead>
-          <tr>
-            <th>Select</th>
-            <th>Name</th>
-            <th>Taxonomy</th>
-            <th>Language</th>
-            <th>Last Change</th>
-            <th>Last Change By</th>
-            <th>Published</th>
-            <th>Created By</th>
-            <th>Actions</th>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Name</th>
+          <th>Taxonomy</th>
+          <th>Language</th>
+          <th>Last Change</th>
+          <th>Last Change By</th>
+          <th>Published</th>
+          <th>Created By</th>
+          <th>Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.map((row, index) => (
+          <tr key={index}>
+            <td>
+              <input type="checkbox" checked={row.select} readOnly />
+            </td>
+            <td>
+              <button
+                className="name-link-button"
+                onClick={() => handleRowClick(row.name)}
+              >
+                {row.name}
+              </button>
+            </td>
+            <td>
+              {row.taxonomy.map((tag, i) => (
+                <span key={i} className="taxonomy-tag-882">
+                  {tag}
+                </span>
+              ))}
+            </td>
+            <td>{row.language}</td>
+            <td>{row.lastChange}</td>
+            <td>{row.lastChangeBy}</td>
+            <td>{row.published}</td>
+            <td>{row.createdBy}</td>
+            <td>{row.version}</td>
           </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, index) => (
-            <tr key={index}>
-              <td>
-                <input type="checkbox" checked={row.select} readOnly />
-              </td>
-              <td>
-                <button
-                  className="name-link-button"
-                  onClick={() => handleRowClick(row.name)}
-                >
-                  {row.name}
-                </button>
-              </td>
-              <td>
-                {row.taxonomy.map((tag, i) => (
-                  <span key={i} className="taxonomy-tag-882">
-                    {tag}
-                  </span>
-                ))}
-              </td>
-              <td>{row.language}</td>
-              <td>{row.lastChange}</td>
-              <td>{row.lastChangeBy}</td>
-              <td>{row.published}</td>
-              <td>{row.createdBy}</td>
-              <td>
-                <button 
-                  className="gear-icon"
-                  onClick={(e) => handleGearClick0050(index, e)}
-                  disabled={isDeleting0050}
-                >
-                  ⚙️
-                </button>
-                {clickedCell0050 === index && (
-                  <div 
-                    className="options-menu" 
-                    style={{
-                      position: 'absolute',
-                      top: `${menuPosition0050.top}px`,
-                      left: `${menuPosition0050.left}px`,
-                      zIndex: 1000,
-                      backgroundColor: 'white',
-                      border: '1px solid #ccc',
-                      borderRadius: '4px',
-                      padding: '8px',
-                      boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                    }}
-                  >
-                    {/* <div className="menu-item">Edit</div>
-                    <div className="menu-item">Duplicate</div> */}
-                    <div 
-                      className="menu-item" 
-                      onClick={() => handleDelete0050(row.name)}
-                      style={{ color: 'red' }}
-                    >
-                      {isDeleting0050 ? 'Deleting...' : 'Delete'}
-                    </div>
-                  </div>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  
+        ))}
+      </tbody>
+    </table>
+        </div>
 
       </div>
 
