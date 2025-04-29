@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faHeadset } from '@fortawesome/free-solid-svg-icons';
 import './ImportDynamicGuide003.css'; // Import the CSS file
+import Sidebar991 from './Sidebar991';
 
 const ImportDynamicGuide003 = () => {
   const [fileName, setFileName] = useState(null);
@@ -21,7 +22,7 @@ const ImportDynamicGuide003 = () => {
     <div className="page-container-003">
       {/* Sidebar */}
             {/* Sidebar */}
-            <div className="sidebar-001">
+            {/* <div className="sidebar-001">
   <ul>
     <li className="active-001">
       <Link to="/dashboard">
@@ -46,7 +47,9 @@ const ImportDynamicGuide003 = () => {
       <FontAwesomeIcon icon={faHeadset} /> Contact Center
     </li>
   </ul>
-</div>
+</div> */}
+
+<Sidebar991/>
 
       {/* Main Content */}
       <div className="main-content-003">

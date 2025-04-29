@@ -165,7 +165,8 @@ const linkQuestionWithCause = async (causeName, actionType, answer) => {
   console.log("Data being sent to backend:", JSON.stringify(payload, null, 2));
 
   try {
-    const response = await fetch('http://localhost:3001/api/link_question_with_cause', {
+    // const response = await fetch('http://localhost:3001/api/link_question_with_cause', {
+      const response = await fetch(`${BASE_URL}/api/link_question_with_cause`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -327,7 +328,8 @@ const handleSaveAnswer = async (index) => {
     setQuestionAnswers885(updatedAnswers);
 
     // Send to backend
-    const response = await fetch('http://localhost:3001/api/handle_edit_answer_click', {
+    // const response = await fetch('http://localhost:3001/api/handle_edit_answer_click', {
+      const response = await fetch(`${BASE_URL}/api/handle_edit_answer_click`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -918,7 +920,8 @@ useEffect(() => {
     console.log("Data being sent to the API:", dataToSend);
   
     // Send the data to the API
-    fetch('http://localhost:3001/api/handle_edit_click', {
+    // fetch('http://localhost:3001/api/handle_edit_click', {
+      fetch(`${BASE_URL}/api/handle_edit_click`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -976,7 +979,8 @@ const deleteActionForModel = async (actionName, modelName) => {
     console.groupEnd();
 
     // Make the API call
-    const response = await fetch('http://localhost:3001/api/delete_action_for_model', {
+    // const response = await fetch('http://localhost:3001/api/delete_action_for_model', {
+      const response = await fetch(`${BASE_URL}/api/delete_action_for_model`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1300,7 +1304,8 @@ const handleActionCheckbox = (causeName, actionType) => {
         console.log('Sending to backend for deletion purpose:', requestData);
         
         // Send delete request to backend
-        const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
+        // const response = await fetch('http://localhost:3001/api/delete_question_for_model', {
+          const response = await fetch(`${BASE_URL}/api/delete_question_for_model`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1667,7 +1672,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
         const requestBody = { name };
         console.log('Data being sent to backend for topcause deletion:', requestBody);  // <-- Add this line
         
-        const response = await fetch('http://localhost:3001/api/delete_top_cause', {
+        // const response = await fetch('http://localhost:3001/api/delete_top_cause', {
+          const response = await fetch(`${BASE_URL}/api/delete_top_cause`, {  
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1830,7 +1836,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
     
         console.log('Sending delete request with:', requestData);
     
-        const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
+        // const response = await fetch('http://localhost:3001/api/delete_answer_for_question', {
+          const response = await fetch(`${BASE_URL}/api/delete_answer_for_question`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -2033,7 +2040,8 @@ const [menuPosition902, setMenuPosition902] = useState({ top: 0, left: 0 });
       console.log("Sending to API:", payload); // Log before sending
 
       try {
-        const response = await fetch('http://localhost:3001/change_modal_name_for_event', {
+        // const response = await fetch('http://localhost:3001/change_modal_name_for_event', {
+          const response = await fetch(`${BASE_URL}/change_modal_name_for_event`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -2295,7 +2303,8 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
     });
     console.groupEnd();
     
-    const response = await fetch('http://localhost:3001/api/fetch_hovering_data_for_question_answer', {
+    // const response = await fetch('http://localhost:3001/api/fetch_hovering_data_for_question_answer', {
+      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3267,7 +3276,8 @@ const handleModalNameChange6055 = () => {
     
     console.log("Sending to backend:", requestData);
     
-    fetch('http://localhost:3001/api/update-modal-name', {  // Updated endpoint
+    // fetch('http://localhost:3001/api/update-modal-name', {  // Updated endpoint
+    fetch(`${BASE_URL}/api/update-modal-name`, {  // Updated endpoint
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -4075,7 +4085,8 @@ const handleConstraintClick = () => {
         console.log(`Fetching additional data for cause: ${causeName}`);
 
             // Form the URL
-    const url = `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
+    // const url = `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
+    const url = `${BASE_URL}/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
     
     // Log the URL formed
     console.log("cause URL formed from top cause:", url);
@@ -4127,7 +4138,9 @@ const handleConstraintClick = () => {
       console.log(`Fetching additional data for cause: ${causeName}`);
 
           // Form the URL
-  const url = `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
+  // const url = `http://localhost:226/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
+
+  const url = `${BASE_URL}/api/fetch_cause_from_top_cause?topCauseName=${encodeURIComponent(causeName)}`;
   
   // Log the URL formed
   console.log("cause URL formed from top cause:", url);
@@ -4171,7 +4184,8 @@ const handleConstraintClick = () => {
   // Function to update the name via API
   const updateModalName = async (newName, oldName) => {
     try {
-      const response = await fetch('http://localhost:3001/update_modal_name_for_event', {
+      // const response = await fetch('http://localhost:3001/update_modal_name_for_event', {
+        const response = await fetch(`${BASE_URL}/update_modal_name_for_event`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -5128,13 +5142,13 @@ const handleConstraintClick = () => {
       </tbody>
     </table>
 
-    <div className="save-button-container-882">
+{/*<div className="save-button-container-882">
   <button
     className="save-button-882"
   >
     Save
   </button>
-</div> 
+</div>  */}    
 
 
   {clickedCell901 !== null && (
