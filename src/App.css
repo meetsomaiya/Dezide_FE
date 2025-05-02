@@ -1,0 +1,32 @@
+/* styles.css */
+.App {
+  font-family: Arial, sans-serif;
+}
+
+.main-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.login-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.sidebar-880 {
+  width: 20vw;
+  height: 100vh;
+}
+
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  background: #f8fafc;
+  overflow-y: auto;
+}
+
+.login-content {
+  width: 300px;
+}

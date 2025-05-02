@@ -1,0 +1,264 @@
+  .preview-container-920 {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    position: relative;
+  }
+
+  .preview-header-920 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .breadcrumb-920 {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  .header-buttons-920 button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+  }
+
+  .restart-button-920 {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    color: #333;
+    border-radius: 5px;
+  }
+
+  .edit-button-920 {
+    background-color: #d9534f;
+    border: none;
+    color: white;
+    border-radius: 5px;
+  }
+
+  .question-section-920 h3 {
+    margin-bottom: 15px;
+  }
+
+  .options-container-920 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .option-button-920,
+  .unknown-button-920 {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .option-button-920 {
+    background-color: #fff;
+    color: #333;
+  }
+
+  .unknown-button-920 {
+    background-color: #ffa500;
+    color: white;
+  }
+
+  .history-box-920 {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 200px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 10px;
+    font-size: 0.9rem;
+    z-index: 10;
+  }
+
+  .history-box-920 h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .footer-section-920 {
+    margin-top: 20px;
+  }
+
+  .details-button-920 {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+  }
+
+  .details-section-920 {
+    margin-top: 20px;
+  }
+
+  .details-tables-920 {
+    display: flex;
+    gap: 20px;
+  }
+
+  .details-table-920 {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+  }
+
+  .details-table-920 th,
+  .details-table-920 td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .details-table-920 th {
+    background-color: #f9f9f9;
+  }
+
+  .expert-level-box-920 {
+    position: absolute;
+    top: 70px; /* Move it above the history box */
+    right: 20px;
+    width: 100px; /* Reduced width */
+    height: 60px; /* Reduced height */
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 5px;
+  }
+
+  .history-box-920 {
+    position: absolute;
+    top: 200px; /* Thrust downwards */
+    right: 20px;
+    width: 200px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .slider-container-920 {
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  .slider-920 {
+    width: 100%;
+    height: 4px; /* Reduced height of the slider stick */
+    background: repeating-linear-gradient(
+      90deg,
+      #ddd,
+      #ddd 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    border-radius: 2px;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .slider-920::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px; /* Larger ball */
+    height: 14px;
+    background: red;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .slider-920::-moz-range-thumb {
+    width: 14px; /* Larger ball */
+    height: 14px;
+    background: red;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .main-content-920 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.question-section-920 {
+  width: 90%; /* Adjust width to allow space for side container */
+}
+
+.right-side-container-920 {
+  display: flex;
+  flex-direction: column; /* Stack the boxes vertically */
+  align-items: center; /* Center content */
+  width: 10%; /* Adjust width to fit beside the question section */
+  gap: 20px; /* Add space between the boxes */
+}
+
+.history-box-920,
+.expert-level-box-920 {
+  width: 10%; /* Compact appearance */
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  padding: 10px;
+  font-size: 0.9rem;
+  position: absolute; /* Ensure proper positioning */
+}
+
+.history-box-920 {
+  top: 140px; /* Adjust this value to move it closer to the slider box */
+  right: 20px;
+}
+
+.expert-level-box-920 {
+  top: 40px; /* Adjust this for slider-box positioning */
+  right: 20px;
+}
+
+.history-box-920 h4,
+.expert-level-box-920 h4 {
+  margin: 0 0 10px;
+}
+
+.slider-container-920 {
+  margin-top: 5px;
+}
+
+.slider-container-920 input {
+  margin-top: 5px;
+  height:1px
+}
+
+.slider-920 {
+  width: 80%; /* Width adjustment */
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #ddd,
+    #ddd 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider-920::-webkit-slider-thumb,
+.slider-920::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: red;
+  border-radius: 50%;
+  cursor: pointer;
+}
+

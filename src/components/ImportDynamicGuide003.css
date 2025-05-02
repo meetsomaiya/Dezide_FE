@@ -1,0 +1,76 @@
+/* Page container */
+.page-container-003 {
+    display: flex;
+    height: 100vh;  /* Full viewport height */
+    width: 100vw;   /* Full viewport width */
+  }
+  
+  
+  /* Main Content Styles */
+  .main-content-003 {
+    flex-grow: 1; /* Allow the content to take remaining space */
+    padding: 3vw; /* Padding inside the content */
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .main-content-003 h2 {
+    font-size: 3vw; /* Font size relative to viewport width */
+    margin-bottom: 2vh;
+  }
+  
+  .form-container-003 {
+    max-width: 80%; /* Content area should be 80% of the width */
+    margin: 0 auto;
+  }
+  
+  .form-section-003 {
+    background-color: #f4f4f4;
+    padding: 2vw;
+    border-radius: 1vw;
+  }
+  
+  .form-section-003 h3 {
+    font-size: 2.5vw;
+    margin-bottom: 1.5vh;
+  }
+  
+  .form-group-003 {
+    margin-bottom: 3vh; /* Vertical spacing between form elements */
+  }
+  
+  .form-group-003 label {
+    font-size: 2vw;
+    display: block;
+    margin-bottom: 1vh;
+  }
+  
+  .form-group-003 input {
+    width: 100%; /* Full width for inputs */
+    padding: 1.5vh;
+    font-size: 1.5vw;
+    margin-top: 1vh;
+    box-sizing: border-box;
+    border-radius: 0.5vw;
+  }
+  
+  .form-group-003 small {
+    display: block;
+    margin-top: 1vh;
+    font-size: 1.5vw;
+  }
+  
+  .upload-btn-003 {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1.5vh 2vw;
+    font-size: 2vw;
+    border: none;
+    border-radius: 0.5vw;
+    cursor: pointer;
+  }
+  
+  .upload-btn-003:hover {
+    background-color: #45a049;
+  }
+  

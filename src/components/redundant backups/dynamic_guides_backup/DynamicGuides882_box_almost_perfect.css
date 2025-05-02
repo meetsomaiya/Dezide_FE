@@ -1,0 +1,611 @@
+/* General Layout */
+.layout-container-882 {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar-882 {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar-882 ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-882 ul li {
+  margin: 15px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.sidebar-882 ul li i {
+  margin-right: 10px;
+}
+
+.sidebar-882 ul li:hover {
+  background-color: #34495e;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Content */
+.content-882 {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Table */
+.dynamic-guides-container-882 {
+  height: calc(100vh - 40px);
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.dynamic-guides-table-882 {
+  width: 100%;
+  border-collapse: collapse;
+  position: relative;
+}
+
+.dynamic-guides-table-882 thead {
+  position: sticky;
+  top: 0;
+  background-color: #f7f7f7;
+  z-index: 1;
+}
+
+.dynamic-guides-table-882 th,
+.dynamic-guides-table-882 td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.dynamic-guides-table-882 th {
+  font-weight: bold;
+}
+
+.dynamic-guides-table-882 tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.dynamic-guides-table-882 tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Taxonomy Tags */
+.taxonomy-tag-882 {
+  display: inline-block;
+  background-color: #e7e7e7;
+  color: #333;
+  border-radius: 4px;
+  padding: 5px;
+  margin: 2px;
+  font-size: 12px;
+}
+
+/* Button Container */
+.button-container-882 {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+/* Buttons */
+.import-btn-882, .create-btn-882 {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.import-btn-882:hover, .create-btn-882:hover {
+  background-color: #0056b3;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+  /* width: 85%;
+  height: 85%; */
+/* .modal-container {
+  background: #ffffff;
+
+  width: 95vw;
+  height: 95vh;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  font-family: 'Roboto', sans-serif;
+  overflow: auto;
+} */
+.modal-container {
+  background: #ffffff;
+  width: 90vw; /* 95% of the viewport width */
+  height: 95vh; /* 95% of the viewport height */
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  font-family: 'Roboto', sans-serif;
+  overflow: auto;
+  
+  position: fixed; /* Fix position to avoid scrolling */
+  top: 0; /* You can adjust top margin */
+  left: 10; /* Align to the left side */
+  right: 0; /* Ensure no space on the right side */
+  margin-left: 0; /* Optional if you want no left margin */
+}
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-title h2 {
+  margin: 0;
+  color: #333;
+  font-weight: bold;
+}
+
+.modal-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-button, .hierarchy-dropdown, .tools-dropdown {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-button {
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-button.preview-btn {
+  background: #28a745;
+}
+
+.modal-left-panel, .modal-right-panel {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.modal-content {
+  display: flex;
+  gap: 20px;
+}
+
+.table-container {
+  margin-bottom: 20px;
+}
+
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+/* added new */
+
+.modal-table input {
+  width: 100px; /* Set a standard width */
+  font-size: 12px; /* Set a decent font size */
+  padding: 8px; /* Add some padding for better spacing inside the input */
+  border: 1px solid #ddd; /* Optional: To ensure consistency with table borders */
+  border-radius: 4px; /* Optional: To make the corners of the input slightly rounded */
+}
+
+
+.modal-table th, .modal-table td {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+
+  font-size: 12px; /* Set a decent font size */
+}
+
+.modal-table td {
+  cursor: pointer;
+}
+
+.modal-table th {
+  background: #f8f9fa;
+}
+
+.close-modal-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Style for sub-cause rows */
+.sub-cause-row {
+  background-color: #f9f9f9; /* A light gray shade */
+}
+
+.sub-cause-row input {
+  margin-left: 2rem;
+}
+
+.sub-cause-row span {
+  display: inline-block; /* Ensures consistent alignment */
+  margin-left: 2rem; /* Add spacing to the left */
+  text-indent: 0; /* Prevents additional indentation for wrapped lines */
+}
+
+
+
+/* Optional: Add hover effect to sub-cause rows */
+.sub-cause-row:hover {
+  background-color: #f0f0f0; /* Slightly darker gray for hover */
+}
+
+/* If you need nested sub-cause rows styled differently */
+.nested-sub-cause-row {
+  background-color: #fefefe; /* A slightly different shade */
+}
+
+/* Styling for the * icon */
+.create-top-cause {
+  cursor: pointer;
+  font-size: 2vh; /* Scaled based on viewport height */
+  color: #007bff; /* A primary blue */
+  margin-left: 1vw; /* Add spacing from "Causes" text */
+  display: inline-block;
+  position: relative;
+}
+
+/* Tooltip-style box for the "Create Top Cause" feature */
+.top-cause-box {
+  position: absolute;
+  top: 19vh; /* Adjust to position below the * icon */
+  left: 15rem;
+  width: 30%; /* Width relative to the parent container */
+  padding: 2vh 2vw; /* Padding inside the box */
+  background-color: #fff; /* White background */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 0.5vw; /* Rounded corners */
+  box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  z-index: 1000; /* Ensure it's above other elements */
+  font-size: 1.5vh; /* Font size scaled to viewport height */
+  cursor: pointer;
+}
+
+/* Adjustments for responsiveness */
+@media (max-width: 768px) {
+  .top-cause-box {
+    width: 50%; /* Adjust width for smaller screens */
+  }
+}
+
+/* Styling for the top cause */
+.top-cause-row {
+  font-weight: bold; /* Make the top cause more noticeable */
+  background-color: #f0f8ff; /* Light blue background */
+}
+
+/* OK button styling */
+.top-cause-row button {
+  background-color: #28a745; /* Green background for success */
+  color: white;
+  border: none;
+  padding: 0.5vh 1vw;
+  cursor: pointer;
+}
+
+.top-cause-row button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+
+.create-top-cause {
+  cursor: pointer;
+  color: blue;
+  font-size: 1.5rem;
+  margin-left: 10px;
+}
+
+.remove-top-cause {
+  cursor: pointer;
+  color: red;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+}
+
+/* new ones after top cause collapse input */
+input {
+  padding: 5px;
+  margin: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-top-cause {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.add-top-cause:hover {
+  background-color: #45a049;
+}
+
+
+.slider-container {
+  display: flex;
+  align-items: center;
+}
+
+
+
+.slider {
+  /* -webkit-appearance: none; */
+  /* width: 60%;
+  height: 0.8vh; */
+  /* width: 10%; */
+  height: 0.2vh;
+  background: #ddd;
+  border-radius: 5px;
+  outline: none;
+  margin-right: 10px;
+}
+
+.slider::-webkit-slider-thumb {
+  /* -webkit-appearance: none; */
+  /* width: 1.4vw;
+  height: 1.4vw; */
+  width: 1.1vw;
+  height: 1.1vw;
+  border-radius: 50%;
+  background: #4caf50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 2vw;
+  height: 2vw;
+  border-radius: 50%;
+  background: #4caf50;
+  cursor: pointer;
+}
+
+.probability {
+  font-size: 1rem;
+}
+
+/* Styling for Save Button */
+.save-button-882 {
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  padding: 6px 12px; /* Adds padding for a larger, clickable area */
+  font-size: 18px;
+  border: none;
+  border-radius: 30px; /* Rounded corners for a soft look */
+  text-transform: uppercase; /* Makes the text all caps */
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition for effects */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  display: inline-block; /* Ensures the button stays inline */
+}
+
+.save-button-882:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Darker shadow on hover for depth */
+}
+
+.save-button-882:active {
+  transform: translateY(0); /* Button appears pressed down when clicked */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Reset shadow on click */
+}
+
+.save-button-882:focus {
+  outline: none; /* Removes the default focus outline */
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5); /* Green glow effect when focused */
+}
+
+.modal-button.best-performing-btn {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 6px 20px; /* Modest padding for height control */
+  font-size: 14px; /* Modest font size */
+  width: 100%; /* Take full width of its container */
+  max-width: 500px; /* Optional: Set a max-width for the button */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block; /* Ensures the button behaves as a block element */
+  margin-bottom: 10px; /* Adds space between this button and the next element */
+  text-align: center; /* Centers the text */
+  box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.modal-button.best-performing-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+
+/* pagination for actions */
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5vh 2.5vw; /* Slightly increased padding */
+  margin-bottom: 2vh;
+  background-color: #ffffff; /* Clean white background */
+  border: 1px solid #ddd;
+  border-radius: 0.5vw;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
+  font-family: Arial, sans-serif;
+  font-size: 1.5vh; /* Increased font size */
+}
+
+.rows-dropdown {
+  width: 7vw; /* Slightly wider */
+  height: 4vh; /* Slightly taller */
+  font-size: 1.5vh; /* Larger font */
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 0.3vw;
+  padding: 0.4vh 0.7vw; /* Adjusted padding */
+  background-color: #f9f9f9;
+  margin-right: 1vw;
+  appearance: none; /* Removes default styles */
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rows-dropdown:hover {
+  border-color: #007bff;
+  box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.4);
+}
+
+.pagination-info {
+  font-size: 1.6vh; /* Slightly increased font size */
+  color: #333;
+  margin-right: 1vw;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw; /* Increased spacing between buttons */
+}
+
+.page-button {
+  background-color: #ffffff;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 0.3vw;
+  padding: 0.6vh 1.2vw; /* Increased padding */
+  font-size: 1.5vh; /* Larger font size */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.page-button:hover {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+.page-button:disabled {
+  background-color: #f1f1f1;
+  color: #aaa;
+  border-color: #eee;
+  cursor: not-allowed;
+}
+
+.active-page {
+  background-color: #ff6347; /* Tomato red for the active page */
+  color: white;
+  border: none;
+}
+
+.page-dropdown {
+  width: 6vw; /* Adjusted for consistency */
+  height: 4vh; /* Taller */
+  font-size: 1.5vh; /* Increased font size */
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 0.3vw;
+  padding: 0.4vh 0.7vw; /* Adjusted padding */
+  background-color: #f9f9f9;
+  appearance: none; /* Removes default styles */
+  cursor: pointer;
+}
+
+.page-dropdown:hover {
+  border-color: #007bff;
+  box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.4);
+}
+
+
+/* config icon box */
+
+/* Config icon styling */
+.config-icon901 {
+  cursor: pointer;
+  font-size: 2vh;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.config-icon901:hover {
+  color: #007bff;
+}
+
+/* Options menu styling */
+.options-menu901 {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 1vh;
+  z-index: 10;
+  width: 20vw; /* Modest size */
+  font-size: 1.5vh;
+}
+
+.options-menu901 div {
+  padding: 1vh 1vw;
+  cursor: pointer;
+}
+
+.options-menu901 div:hover {
+  background-color: #f0f0f0;
+}

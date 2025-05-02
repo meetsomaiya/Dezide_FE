@@ -1,0 +1,33 @@
+/* Bordered Box for Session Information */
+.session-info-box-331 {
+    border: 2px solid #ccc; /* Light gray border */
+    padding: 20px; /* Padding for inner content */
+    margin-top: 20px; /* Margin to space out from the previous container */
+    background-color: #f9f9f9; /* Slightly light background */
+    border-radius: 8px; /* Rounded corners */
+  }
+  
+  .session-info-box-331 p {
+    font-size: 16px; /* Standard font size */
+    margin-bottom: 10px; /* Spacing between paragraphs */
+  }
+  
+  .session-id-331 {
+    font-weight: bold; /* Make session ID stand out */
+    color: #333; /* Darker color for session ID */
+  }
+  
+  .btn-331 {
+    margin-top: 15px; /* Space above the button */
+    padding: 10px 20px; /* Padding inside the button */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners for the button */
+    cursor: pointer; /* Change cursor to pointer when hovering */
+  }
+  
+  .btn-331:hover {
+    background-color: #0056b3; /* Darker blue when button is hovered */
+  }
+  
