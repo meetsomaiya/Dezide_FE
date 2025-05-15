@@ -9,7 +9,7 @@ import { faTachometerAlt, faFileAlt, faBook, faQuestionCircle, faPhotoVideo, faH
 
 import { FiTrendingUp } from "react-icons/fi"; // Slant upward icon
 import { FiClock } from "react-icons/fi"; // Import clock icon
-import { FaPlus, FaRandom, FaCog, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaRandom, FaCog } from 'react-icons/fa';
 
 import { BASE_URL } from '../config'
 
@@ -65,12 +65,6 @@ const [eliminatedCauses, setEliminatedCauses] = useState({});
 const menuRef903 = useRef(null);
 
 const [optionsBoxPosition1112, setOptionsBoxPosition1112] = useState({ top: 0, left: 0 });
-
-const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-const handleSidebarCollapse = () => {
-  setIsSidebarCollapsed(true); // Collapse the sidebar
-};
 
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -2265,42 +2259,33 @@ useEffect(() => {
 }, [hoverItems894]);
 
      // Function to handle mouse enter and send the action name to the API via GET
-     const handleMouseEnter1119 = async (rowIndex, actionName) => {
-      try {
-        // Log the data being sent to the API
-        console.log("Sending data to API:", { actionName });
-    
-        // Make the API call to fetch hovering data using GET method
-        const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
-          method: "GET", // Use GET method
-          headers: {
-            "Content-Type": "application/json", // Optional: Only needed if your API requires it
-          },
-        });
-    
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Hover data received:", data);
-    
-          // Update the hoverItems899 state with the hovered action name
-          setHoverItems899(data.causes);
-        } else {
-          console.error("Failed to fetch hover data");
-          // Set dummy values in case of a failed response
-          setHoverItems899(["dummycauses"]);
-        }
-      } catch (error) {
-        console.error("Error during hover API call:", error);
-    
-        // Set dummy values in case of an error
-        setHoverItems899(["dummycauses"]);
-      }
-    };
+const handleMouseEnter1119 = async (rowIndex, actionName) => {
+  try {
+    // Log the data being sent to the API
+    console.log("Sending data to API:", { actionName });
 
-      // useEffect to log hoverItems899 whenever it changes
-  useEffect(() => {
-    console.log("Updated hoverItems899 after latest fetching:", hoverItems899);
-  }, [hoverItems899]);
+    // Make the API call to fetch hovering data using GET method
+    // const response = await fetch(`http://localhost:226/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_action?actionName=${encodeURIComponent(actionName)}`, {
+      method: "GET", // Use GET method
+      headers: {
+        "Content-Type": "application/json", // Optional: Only needed if your API requires it
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Hover data received:", data);
+
+      // Update the hoverItems899 state with the hovered action name
+      setHoverItems899(data.causes);
+    } else {
+      console.error("Failed to fetch hover data");
+    }
+  } catch (error) {
+    console.error("Error during hover API call:", error);
+  }
+};
 
 // Inside your component where hoverItems996 is used:
 useEffect(() => {
@@ -2331,7 +2316,8 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
     });
     console.groupEnd();
     
-    const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer`, {
+    // const response = await fetch('http://localhost:3001/api/fetch_hovering_data_for_question_answer', {
+      const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -2385,26 +2371,18 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
       timestamp: new Date().toISOString()
     });
     console.groupEnd();
-
-    // Update state with dummy values in case of an error
-    const dummyHoverState = {
-      answer: "dummyanswer",
-      questionName: "dummyquestion",
-      modalName: "dummymodal",
+    
+    // Return error state if needed
+    return {
+      answer,
+      questionName,
+      modalName,
       eventId: null,
       questionId: null,
       subEventIds: [],
       eventNames: [],
       status: 'error'
     };
-
-    setHoverItems996(dummyHoverState);
-
-    // Log the dummy state being set
-    console.log("State set to dummy values due to error:", dummyHoverState);
-
-    // Return the dummy state
-    return dummyHoverState;
   }
 };
     const saveCauseData = () => {
@@ -4286,24 +4264,9 @@ const handleConstraintClick = () => {
   // }}
 
   return (
-  
-
     <div className="layout-container-882">
 
-<Sidebar991 onCollapse={handleSidebarCollapse} />
-
-      {/* Cross Icon */}
-      <FaTimes
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          cursor: 'pointer',
-          fontSize: '20px',
-          color: 'black',
-        }}
-        // Call the onClose function when clicked
-        ></FaTimes>
+<Sidebar991 />
 
       {/* Main Content */}
       <div className="content-882">
@@ -4678,7 +4641,7 @@ const handleConstraintClick = () => {
     setHoveredCause993(null); // Clear hovered cause when mouse leaves
   }}
   style={{
-    backgroundColor: hoverItems899.includes(causeDetail.CauseName)
+    backgroundColor: hoverItems899.includes(cause.name)
       ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
       : 'transparent' // Default color
   }}
@@ -4825,12 +4788,6 @@ const handleConstraintClick = () => {
   onMouseLeave={() => {
     setHoveredCell1114(null); // Clear hovered nested sub-cause cell
     setHoveredCause993(null); // Clear hovered cause when mouse leaves
-  }}
-
-  style={{
-    backgroundColor: hoverItems899.includes(nestedSubCause.eventName)
-      ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
-      : 'transparent' // Default color
   }}
 >
 
@@ -5095,11 +5052,7 @@ const handleConstraintClick = () => {
                 handleMouseEnter1119(rowIndex, action.name); // Call handleMouseEnter1119 with rowIndex and action.name
                 handleMouseEnter901(rowIndex); // Call handleMouseEnter901 with rowIndex
               }}
-              onMouseLeave={() => {
-                console.log("Mouse left the row, sending request with dummycause");
-                handleMouseEnter1119(rowIndex, "dummycause"); // Send request with dummycause
-                handleMouseLeave901(); // Call handleMouseLeave901
-              }}
+              onMouseLeave={() => handleMouseLeave901()} // Call handleMouseLeave901 on mouse leave
               style={{
                 // backgroundColor:
                 //   hoveredCell901 === rowIndex ? "rgba(200, 200, 255, 0.5)" : "transparent",
@@ -5723,17 +5676,9 @@ const handleConstraintClick = () => {
       modalName: modalName              // From component state
     });
   }}
-  onMouseLeave={() => {
-    console.log("Mouse left, sending request with dummy values");
-    fetchHoveringDataForQuestionAnswer({
-      answer: "dummyanswer",            // Dummy answer
-      questionName: "dummyquestion",    // Dummy question
-      modalName: "dummymodal"           // Dummy modal name
-    });
-    setHoveredAnswerIdx(null);          // Reset the hovered index
-  }}
+  onMouseLeave={() => setHoveredAnswerIdx(null)}
   onClick={() => handleQuestionAnswerClick(answer)}
-  >
+>
               <div style={{ flex: 1 }}>
                 {editingAnswerIndex === idx ? (
                   <input

@@ -2,7 +2,7 @@
   "name": "dezide_fe",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/dezide", 
+  "homepage": "/SolvePro", 
 
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.0",

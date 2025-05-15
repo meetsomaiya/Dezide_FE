@@ -68,10 +68,6 @@ const [optionsBoxPosition1112, setOptionsBoxPosition1112] = useState({ top: 0, l
 
 const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-const handleSidebarCollapse = () => {
-  setIsSidebarCollapsed(true); // Collapse the sidebar
-};
-
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (menuRef903.current && !menuRef903.current.contains(event.target)) {
@@ -2296,12 +2292,6 @@ useEffect(() => {
         setHoverItems899(["dummycauses"]);
       }
     };
-
-      // useEffect to log hoverItems899 whenever it changes
-  useEffect(() => {
-    console.log("Updated hoverItems899 after latest fetching:", hoverItems899);
-  }, [hoverItems899]);
-
 // Inside your component where hoverItems996 is used:
 useEffect(() => {
   console.group("Current Hover State");
@@ -4095,6 +4085,9 @@ const handleConstraintClick = () => {
     
       setModalName(name);
       setModalOpen(true);
+
+          // Collapse the sidebar
+    setIsSidebarCollapsed(true);
     };
     
     useEffect(() => {
@@ -4290,7 +4283,7 @@ const handleConstraintClick = () => {
 
     <div className="layout-container-882">
 
-<Sidebar991 onCollapse={handleSidebarCollapse} />
+<Sidebar991 />
 
       {/* Cross Icon */}
       <FaTimes
@@ -4678,7 +4671,7 @@ const handleConstraintClick = () => {
     setHoveredCause993(null); // Clear hovered cause when mouse leaves
   }}
   style={{
-    backgroundColor: hoverItems899.includes(causeDetail.CauseName)
+    backgroundColor: hoverItems899.includes(cause.name)
       ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
       : 'transparent' // Default color
   }}
@@ -4825,12 +4818,6 @@ const handleConstraintClick = () => {
   onMouseLeave={() => {
     setHoveredCell1114(null); // Clear hovered nested sub-cause cell
     setHoveredCause993(null); // Clear hovered cause when mouse leaves
-  }}
-
-  style={{
-    backgroundColor: hoverItems899.includes(nestedSubCause.eventName)
-      ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
-      : 'transparent' // Default color
   }}
 >
 

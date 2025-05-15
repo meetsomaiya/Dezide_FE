@@ -5,7 +5,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-left">
         <i className="fas fa-bars"></i>
-        <span className="brand-name">DEZIDE</span>
+        {/* <span className="brand-name">DEZIDE</span> */}
+        <span className="brand-name">SOLVEPRO</span>
       </div>
       <div className="navbar-right">
         <i className="fas fa-check"></i>

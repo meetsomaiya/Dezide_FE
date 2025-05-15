@@ -342,7 +342,7 @@ const handleAlarmItemClick = async (eventName) => {
       )}
 
       {/* Footer Section */}
-      <footer className="footer005">© Dezide 2025</footer>
+      <footer className="footer005">© SolvePro 2025</footer>
     </div>
   );
 };

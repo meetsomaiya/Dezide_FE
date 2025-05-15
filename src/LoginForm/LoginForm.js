@@ -133,7 +133,8 @@ const Login = () => {
       <div className="w-full h-full flex flex-row items-center justify-center sm:justify-end sm:pr-32 z-10">
         <div className="border pt-4 pb-8 px-8 rounded w-96 h-[420px] flex flex-col items-center justify-between">
           {/* Replaced logo with text "Dezide" */}
-          <h1 className="text-4xl font-bold text-white" id="dezide">Dezide</h1>
+          {/* <h1 className="text-4xl font-bold text-white" id="dezide">Dezide</h1> */}
+          <h1 className="text-4xl font-bold text-white" id="dezide">SOLVEPRO</h1>
           <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
             <label className="label" htmlFor="user-id">User ID</label>
             <input

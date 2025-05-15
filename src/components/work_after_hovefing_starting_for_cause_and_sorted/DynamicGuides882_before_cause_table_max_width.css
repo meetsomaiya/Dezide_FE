@@ -325,41 +325,6 @@
   margin-left: 7rem; /* Pushes the table to the extreme right */
   
 }
-#cause-table {
-  width: 20vw;
-}
-
-.sub-cause-row {
-  /* display: none; */
-width: 20px;
-}
-
-.nested-sub-cause-row {
-  /* display: none; */
-  margin-left: 8rem;
-}
-
-.modal-table2 {
-  /* width: 100vw;
-  max-height: 50vh; */
-  background-color: white; /* White background */
-  border-collapse: collapse; /* Remove spacing between cells */
-  border: 0.2vh solid #ccc; /* Light border around the table */
-}
-
-.modal-table2 th, .modal-table2 td {
-  text-align: left; /* Align text to the left */
-  border: 0.1vh solid #ddd; /* Light border for cells */
-}
-
-.modal-table2 th {
-  background-color: #f7f7f7; /* Subtle gray for headers */
-  font-weight: bold; /* Bold text for headers */
-}
-
-.modal-table2 tr:nth-child(even) {
-  background-color: #fafafa; /* Alternate row color */
-}
 
 /* Styling for the * icon */
 .create-top-cause {

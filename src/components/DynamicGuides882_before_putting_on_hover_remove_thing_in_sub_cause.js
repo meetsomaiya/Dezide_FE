@@ -68,10 +68,6 @@ const [optionsBoxPosition1112, setOptionsBoxPosition1112] = useState({ top: 0, l
 
 const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-const handleSidebarCollapse = () => {
-  setIsSidebarCollapsed(true); // Collapse the sidebar
-};
-
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (menuRef903.current && !menuRef903.current.contains(event.target)) {
@@ -4290,7 +4286,7 @@ const handleConstraintClick = () => {
 
     <div className="layout-container-882">
 
-<Sidebar991 onCollapse={handleSidebarCollapse} />
+<Sidebar991 />
 
       {/* Cross Icon */}
       <FaTimes
@@ -4678,7 +4674,7 @@ const handleConstraintClick = () => {
     setHoveredCause993(null); // Clear hovered cause when mouse leaves
   }}
   style={{
-    backgroundColor: hoverItems899.includes(causeDetail.CauseName)
+    backgroundColor: hoverItems899.includes(cause.name)
       ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
       : 'transparent' // Default color
   }}
