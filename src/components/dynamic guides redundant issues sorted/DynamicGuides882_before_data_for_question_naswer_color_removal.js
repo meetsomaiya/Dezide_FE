@@ -2330,8 +2330,7 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
       modalName 
     });
     console.groupEnd();
-
-    // Send POST request
+    
     const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer`, {
       method: 'POST',
       headers: {
@@ -2408,15 +2407,6 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
     return dummyHoverState;
   }
 };
-
-useEffect(() => {
-  if (hoverItems996) {
-    console.group("Hover Items State Updated");
-    console.log("Updated Hover Items State:", hoverItems996);
-    console.groupEnd();
-  }
-}, [hoverItems996]);
-
     const saveCauseData = () => {
       // Build the data structure with the causes, subcauses, and nestedsubcauses
       const causesPayload = causesData.map((cause, index) => {
@@ -5706,45 +5696,44 @@ const handleConstraintClick = () => {
               <td colSpan="4" style={{ padding: 0 }}>
     
           
-  <table
-  style={{ width: '100%' }}
-  ref={answerTableRef913}
-  onMouseEnter={() => {
-    // Clear any dummy hover state when entering the table
-    setHoveredAnswerIdx(null);
-  }}
-  onMouseLeave={() => {
-    // Send dummy data only when leaving the entire table
-    console.log("Mouse left the table, sending request with dummy values");
-    fetchHoveringDataForQuestionAnswer({
-      answer: "dummyanswer",            // Dummy answer
-      questionName: "dummyquestion",    // Dummy question
-      modalName: "dummymodal"           // Dummy modal name
-    });
-  }}
->
+              <table style={{ width: '100%' }} ref={answerTableRef913}>
   <tbody>
     {Array.isArray(questionAnswers885) && questionAnswers885.length > 0 ? (
       questionAnswers885.map((answer, idx) => (
         <tr key={idx} className="answer-row">
           <td colSpan="4">
-            <div
-              className="answer-item"
-              onMouseEnter={() => {
-                // Set hovered index and fetch data for the specific answer
-                setHoveredAnswerIdx(idx);
-                fetchHoveringDataForQuestionAnswer({
-                  answer: answer,                   // The answer text
-                  questionName: question.questionName, // From parent question
-                  modalName: modalName              // From component state
-                });
-              }}
-              onMouseLeave={() => {
-                // Clear hovered index when leaving the specific answer
-                setHoveredAnswerIdx(null);
-              }}
-              onClick={() => handleQuestionAnswerClick(answer)}
-            >
+          <div
+  className="answer-item"
+  // style={{
+  //   backgroundColor: 
+  //     hoverItems894?.questionAnswers?.includes(answer) 
+  //       ? 'rgba(200, 200, 255, 0.5)' // Highlighted color
+  //       : isHoveredAnswer ? "rgba(200, 200, 255, 0.5)" : "transparent",
+  //   padding: '8px 16px',
+  //   display: 'flex',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   position: 'relative'
+  // }}
+  onMouseEnter={() => {
+    setHoveredAnswerIdx(idx);
+    fetchHoveringDataForQuestionAnswer({
+      answer: answer,                   // The answer text
+      questionName: question.questionName, // From parent question
+      modalName: modalName              // From component state
+    });
+  }}
+  onMouseLeave={() => {
+    console.log("Mouse left, sending request with dummy values");
+    fetchHoveringDataForQuestionAnswer({
+      answer: "dummyanswer",            // Dummy answer
+      questionName: "dummyquestion",    // Dummy question
+      modalName: "dummymodal"           // Dummy modal name
+    });
+    setHoveredAnswerIdx(null);          // Reset the hovered index
+  }}
+  onClick={() => handleQuestionAnswerClick(answer)}
+  >
               <div style={{ flex: 1 }}>
                 {editingAnswerIndex === idx ? (
                   <input
@@ -5768,11 +5757,11 @@ const handleConstraintClick = () => {
                   </span>
                 )}
               </div>
-
+              
               {hoveredAnswerIdx === idx && (
                 <div style={{ position: 'absolute', right: 16 }}>
                   <FaCog
-                    style={{
+                    style={{ 
                       cursor: "pointer",
                       fontSize: '1.2em',
                       color: '#555'

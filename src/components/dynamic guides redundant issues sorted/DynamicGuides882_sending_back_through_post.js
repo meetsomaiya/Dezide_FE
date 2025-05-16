@@ -2331,17 +2331,16 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
     });
     console.groupEnd();
 
-    // Send POST request
-    const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        answer,
-        questionName,
-        modalName 
-      }),
+    // Construct query parameters for GET request
+    const queryParams = new URLSearchParams({
+      answer,
+      questionName,
+      modalName
+    }).toString();
+
+    // Send GET request
+    const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer?${queryParams}`, {
+      method: 'GET',
     });
 
     if (!response.ok) {

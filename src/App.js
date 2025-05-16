@@ -27,6 +27,9 @@ import files011 from "./components/File011";
 import './styles.css';
 import File011 from './components/File011';
 
+import GuideQuestionItem007 from './components/GuideQuestionItem007';
+
+
 function App() {
   return (
     <HashRouter>
@@ -77,6 +80,8 @@ function MainApp() {
             <Route path="/videos" element={<Videos010 />} />
 
             <Route path="/files" element={<File011 />} />
+
+            <Route path="/guide-question-item2" element={<GuideQuestionItem007 />} />
 
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<Navigate to="/login" replace />} />

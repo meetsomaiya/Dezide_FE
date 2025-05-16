@@ -2330,8 +2330,7 @@ const fetchHoveringDataForQuestionAnswer = async ({ answer, questionName, modalN
       modalName 
     });
     console.groupEnd();
-
-    // Send POST request
+    
     const response = await fetch(`${BASE_URL}/api/fetch_hovering_data_for_question_answer`, {
       method: 'POST',
       headers: {
